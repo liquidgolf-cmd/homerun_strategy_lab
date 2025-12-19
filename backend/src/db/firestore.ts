@@ -7,9 +7,42 @@
 
 import * as admin from 'firebase-admin';
 
-// Initialize Firebase Admin (only in Cloud Functions environment)
+// Initialize Firebase Admin
+// For local development, use emulator if FIRESTORE_EMULATOR_HOST is set
+// For production/Cloud Functions, use default credentials
 if (!admin.apps.length) {
-  admin.initializeApp();
+  if (process.env.FIRESTORE_EMULATOR_HOST) {
+    // Running with Firebase emulator (local development)
+    try {
+      admin.initializeApp({
+        projectId: process.env.GCLOUD_PROJECT || 'demo-project',
+      });
+      console.log('Firebase Admin initialized with emulator:', process.env.FIRESTORE_EMULATOR_HOST);
+    } catch (error) {
+      console.error('Error initializing Firebase Admin with emulator:', error);
+      throw error;
+    }
+  } else {
+    // Production or Cloud Functions environment
+    try {
+      admin.initializeApp();
+      console.log('Firebase Admin initialized (production/Cloud Functions)');
+    } catch (error: any) {
+      // If initialization fails, try with minimal config
+      console.warn('Firebase Admin initialization warning:', error.message);
+      try {
+        admin.initializeApp({
+          projectId: process.env.GCLOUD_PROJECT || process.env.FIREBASE_PROJECT_ID || 'demo-project',
+        });
+        console.log('Firebase Admin initialized with fallback config');
+      } catch (fallbackError) {
+        console.error('Failed to initialize Firebase Admin:', fallbackError);
+        // For local development without emulator, we'll still try to proceed
+        // but operations will fail until credentials are set up
+        console.warn('Continuing without Firebase Admin - set FIRESTORE_EMULATOR_HOST or GOOGLE_APPLICATION_CREDENTIALS');
+      }
+    }
+  }
 }
 
 const db = admin.firestore();
@@ -207,4 +240,3 @@ export async function saveFinalDocument(documentData: Omit<FinalDocument, 'id'>)
 }
 
 export default db;
-

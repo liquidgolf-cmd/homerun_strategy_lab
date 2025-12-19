@@ -5,14 +5,15 @@ import path from 'path';
 import modulesRoutes from './routes/modules';
 import aiRoutes from './routes/ai';
 import documentsRoutes from './routes/documents';
-import './db/schema'; // Initialize database
+// Import Firestore to initialize (will use emulator if available, or real Firestore)
+import './db/firestore';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS configuration - allow frontend from Vercel or localhost
+// CORS configuration - allow frontend from localhost
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',')
   : ['http://localhost:3001', 'http://localhost:5173'];
@@ -21,17 +22,17 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('.vercel.app')) {
+    if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(null, true); // Allow all for now, restrict in production if needed
+      callback(null, true); // Allow all for local dev
     }
   },
   credentials: true
 }));
 app.use(express.json());
 
-// API routes must come before static file serving
+// API routes
 app.use('/api/modules', modulesRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/documents', documentsRoutes);
@@ -53,5 +54,5 @@ if (process.env.NODE_ENV === 'production') {
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`API available at http://localhost:${PORT}/api`);
 });
-
