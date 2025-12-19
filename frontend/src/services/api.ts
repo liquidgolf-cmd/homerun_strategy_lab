@@ -1,10 +1,8 @@
 import axios from 'axios';
 
-// Use environment variable for backend URL, fallback to relative path for dev
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
-
+// Use relative path for API - works when frontend and backend are on same domain
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
   },
