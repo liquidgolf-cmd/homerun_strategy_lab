@@ -11,7 +11,7 @@ const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json());
 
-// API routes
+// API routes - these will be accessible at /api/modules, /api/ai, /api/documents
 app.use('/modules', modulesRoutes);
 app.use('/ai', aiRoutes);
 app.use('/documents', documentsRoutes);
@@ -21,5 +21,6 @@ app.get('/health', (req, res) => {
 });
 
 // Export as Firebase Cloud Function
+// This will be accessible at /api/* based on firebase.json rewrites
 export const api = functions.https.onRequest(app);
 

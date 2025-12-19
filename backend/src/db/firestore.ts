@@ -72,6 +72,11 @@ export async function createUser(userData: Omit<User, 'id'>): Promise<User> {
   return { id: docRef.id, ...userData };
 }
 
+// Helper to update user
+export async function updateUser(userId: string, updates: Partial<User>): Promise<void> {
+  await usersCollection.doc(userId).update(updates);
+}
+
 // Helper to get session by ID
 export async function getSessionById(sessionId: string): Promise<Session | null> {
   const doc = await sessionsCollection.doc(sessionId).get();
@@ -95,6 +100,108 @@ export async function getLatestSessionForUser(userId: string): Promise<Session |
 export async function createSession(sessionData: Omit<Session, 'id'>): Promise<Session> {
   const docRef = await sessionsCollection.add(sessionData);
   return { id: docRef.id, ...sessionData };
+}
+
+// Helper to get module response
+export async function getModuleResponse(sessionId: string, moduleNumber: number): Promise<ModuleResponse | null> {
+  const snapshot = await moduleResponsesCollection
+    .where('sessionId', '==', sessionId)
+    .where('moduleNumber', '==', moduleNumber)
+    .limit(1)
+    .get();
+  if (snapshot.empty) return null;
+  const doc = snapshot.docs[0];
+  const data = doc.data();
+  return {
+    id: doc.id,
+    ...data,
+    aiTranscript: data.aiTranscript ? (typeof data.aiTranscript === 'string' ? JSON.parse(data.aiTranscript) : data.aiTranscript) : undefined,
+    formData: data.formData ? (typeof data.formData === 'string' ? JSON.parse(data.formData) : data.formData) : undefined,
+  } as ModuleResponse;
+}
+
+// Helper to save/update module response
+export async function saveModuleResponse(responseData: Omit<ModuleResponse, 'id'>): Promise<string> {
+  // Check if exists
+  const existing = await getModuleResponse(responseData.sessionId, responseData.moduleNumber);
+  
+  const dataToSave = {
+    ...responseData,
+    aiTranscript: responseData.aiTranscript ? JSON.stringify(responseData.aiTranscript) : null,
+    formData: responseData.formData ? JSON.stringify(responseData.formData) : null,
+  };
+
+  if (existing) {
+    // Update existing
+    await moduleResponsesCollection.doc(existing.id).update(dataToSave);
+    return existing.id;
+  } else {
+    // Create new
+    const docRef = await moduleResponsesCollection.add(dataToSave);
+    return docRef.id;
+  }
+}
+
+// Helper to get all module responses for a session
+export async function getModuleResponsesBySession(sessionId: string): Promise<ModuleResponse[]> {
+  const snapshot = await moduleResponsesCollection
+    .where('sessionId', '==', sessionId)
+    .orderBy('moduleNumber')
+    .get();
+  
+  return snapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      aiTranscript: data.aiTranscript ? (typeof data.aiTranscript === 'string' ? JSON.parse(data.aiTranscript) : data.aiTranscript) : undefined,
+      formData: data.formData ? (typeof data.formData === 'string' ? JSON.parse(data.formData) : data.formData) : undefined,
+    } as ModuleResponse;
+  });
+}
+
+// Helper to get completed module responses
+export async function getCompletedModuleResponses(sessionId: string): Promise<ModuleResponse[]> {
+  const snapshot = await moduleResponsesCollection
+    .where('sessionId', '==', sessionId)
+    .where('completedAt', '!=', null)
+    .orderBy('completedAt')
+    .orderBy('moduleNumber')
+    .get();
+  
+  return snapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      aiTranscript: data.aiTranscript ? (typeof data.aiTranscript === 'string' ? JSON.parse(data.aiTranscript) : data.aiTranscript) : undefined,
+      formData: data.formData ? (typeof data.formData === 'string' ? JSON.parse(data.formData) : data.formData) : undefined,
+    } as ModuleResponse;
+  });
+}
+
+// Helper to get final document
+export async function getFinalDocument(sessionId: string): Promise<FinalDocument | null> {
+  const snapshot = await finalDocumentsCollection
+    .where('sessionId', '==', sessionId)
+    .limit(1)
+    .get();
+  if (snapshot.empty) return null;
+  const doc = snapshot.docs[0];
+  return { id: doc.id, ...doc.data() } as FinalDocument;
+}
+
+// Helper to save final document
+export async function saveFinalDocument(documentData: Omit<FinalDocument, 'id'>): Promise<string> {
+  const existing = await getFinalDocument(documentData.sessionId);
+  
+  if (existing) {
+    await finalDocumentsCollection.doc(existing.id).update(documentData);
+    return existing.id;
+  } else {
+    const docRef = await finalDocumentsCollection.add(documentData);
+    return docRef.id;
+  }
 }
 
 export default db;

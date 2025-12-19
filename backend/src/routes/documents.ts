@@ -1,20 +1,14 @@
 import { Router } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import db from '../db/schema';
+import {
+  getCompletedModuleResponses,
+  getFinalDocument,
+  saveFinalDocument,
+} from '../db/firestore';
 import {
   generateCombinedOverview,
   generateActionPlan,
 } from '../services/anthropicService';
-interface ModuleResponse {
-  id: string;
-  sessionId: string;
-  moduleNumber: number;
-  inputMethod: 'ai' | 'form';
-  aiTranscript?: Array<{ role: string; content: string }>;
-  formData?: Record<string, any>;
-  auditReviewDocument?: string;
-  completedAt?: string;
-}
+import type { ModuleResponse } from '../db/firestore';
 
 const router = Router();
 
@@ -24,11 +18,7 @@ router.post('/session/:sessionId/generate', async (req, res) => {
     const { sessionId } = req.params;
 
     // Get all completed module responses
-    const responses = db
-      .prepare(
-        'SELECT * FROM module_responses WHERE sessionId = ? AND completedAt IS NOT NULL ORDER BY moduleNumber'
-      )
-      .all(sessionId) as any[];
+    const responses = await getCompletedModuleResponses(sessionId);
 
     if (responses.length < 5) {
       return res
@@ -36,20 +26,13 @@ router.post('/session/:sessionId/generate', async (req, res) => {
         .json({ error: 'All 5 modules must be completed before generating final documents' });
     }
 
-    // Parse responses
-    const parsedResponses: ModuleResponse[] = responses.map((r) => ({
-      ...r,
-      aiTranscript: r.aiTranscript ? JSON.parse(r.aiTranscript) : undefined,
-      formData: r.formData ? JSON.parse(r.formData) : undefined,
-    }));
-
     // Prepare data for AI generation
-    const moduleAudits = parsedResponses.map((r) => ({
+    const moduleAudits = responses.map((r) => ({
       moduleNumber: r.moduleNumber,
       auditReview: r.auditReviewDocument || '',
     }));
 
-    const allModuleData = parsedResponses.map((r) => ({
+    const allModuleData = responses.map((r) => ({
       moduleNumber: r.moduleNumber,
       auditReview: r.auditReviewDocument || '',
       responses: {
@@ -67,34 +50,20 @@ router.post('/session/:sessionId/generate', async (req, res) => {
 
     // Save final documents
     const generatedAt = new Date().toISOString();
+    const id = await saveFinalDocument({
+      sessionId,
+      combinedOverviewDocument: combinedOverview,
+      actionPlanDocument: actionPlan,
+      generatedAt,
+    });
 
-    // Check if exists
-    const existing = db.prepare('SELECT id FROM final_documents WHERE sessionId = ?').get(sessionId);
-
-    if (existing) {
-      db.prepare(
-        'UPDATE final_documents SET combinedOverviewDocument = ?, actionPlanDocument = ?, generatedAt = ? WHERE sessionId = ?'
-      ).run(combinedOverview, actionPlan, generatedAt, sessionId);
-      res.json({
-        success: true,
-        id: (existing as any).id,
-        combinedOverview,
-        actionPlan,
-        generatedAt,
-      });
-    } else {
-      const id = uuidv4();
-      db.prepare(
-        'INSERT INTO final_documents (id, sessionId, combinedOverviewDocument, actionPlanDocument, generatedAt) VALUES (?, ?, ?, ?, ?)'
-      ).run(id, sessionId, combinedOverview, actionPlan, generatedAt);
-      res.json({
-        success: true,
-        id,
-        combinedOverview,
-        actionPlan,
-        generatedAt,
-      });
-    }
+    res.json({
+      success: true,
+      id,
+      combinedOverview,
+      actionPlan,
+      generatedAt,
+    });
   } catch (error: any) {
     console.error('Error generating final documents:', error);
     res.status(500).json({ error: error.message || 'Error generating final documents' });
@@ -102,12 +71,10 @@ router.post('/session/:sessionId/generate', async (req, res) => {
 });
 
 // Get final documents
-router.get('/session/:sessionId', (req, res) => {
+router.get('/session/:sessionId', async (req, res) => {
   try {
     const { sessionId } = req.params;
-    const documents = db
-      .prepare('SELECT * FROM final_documents WHERE sessionId = ?')
-      .get(sessionId) as any;
+    const documents = await getFinalDocument(sessionId);
 
     if (!documents) {
       return res.status(404).json({ error: 'Final documents not found' });
@@ -121,4 +88,3 @@ router.get('/session/:sessionId', (req, res) => {
 });
 
 export default router;
-
