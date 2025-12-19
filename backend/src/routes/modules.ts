@@ -17,8 +17,10 @@ const router = Router();
 // Get or create user session
 router.post('/session', (req, res) => {
   try {
+    console.log('Session creation request:', { body: req.body });
     const { email, name } = req.body;
     if (!email || !name) {
+      console.log('Missing email or name');
       return res.status(400).json({ error: 'Email and name are required' });
     }
 
@@ -62,10 +64,15 @@ router.post('/session', (req, res) => {
       };
     }
 
+    console.log('Session created successfully:', { userId: user.id, sessionId: session.id });
     res.json({ user, session });
   } catch (error: any) {
     console.error('Error creating session:', error);
-    res.status(500).json({ error: error.message });
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ 
+      error: error.message || 'Internal server error',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiService } from '../services/api';
 import VideoPlaceholder from './VideoPlaceholder';
+import logo from '../assets/LoamStrategy4Logo.png';
 
 export default function MainPage() {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ export default function MainPage() {
         <header className="mb-8 text-center">
           <div className="mb-4">
             <img
-              src={LoamStrategy4Logo}
+              src={logo}
               alt="Loam Strategy"
               className="h-16 mx-auto mb-4"
             />
