@@ -1,4 +1,4 @@
-import type { ModuleConfig, Question } from '../types';
+import type { ModuleConfig } from '../types';
 
 export const module4Config: ModuleConfig = {
   number: 4,

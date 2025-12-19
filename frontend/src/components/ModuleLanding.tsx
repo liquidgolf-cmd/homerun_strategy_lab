@@ -9,7 +9,7 @@ interface ModuleLandingProps {
 
 export default function ModuleLanding({
   config,
-  moduleContext,
+  moduleContext: _moduleContext,
   onSelectInputMethod,
 }: ModuleLandingProps) {
   return (

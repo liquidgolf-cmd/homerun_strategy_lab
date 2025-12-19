@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { apiService } from '../services/api';
 import type { ModuleConfig, Question } from '../types';
 
 interface ManualFormProps {
@@ -147,7 +146,7 @@ export default function ManualForm({
 
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-8">
         <div className="space-y-8">
-          {config.questions.map((question, index) => (
+          {config.questions.map((question, _index) => (
             <div key={question.id}>
               <label
                 htmlFor={question.id}
