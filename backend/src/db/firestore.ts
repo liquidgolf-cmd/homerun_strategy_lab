@@ -162,14 +162,13 @@ export async function getModuleResponsesBySession(sessionId: string): Promise<Mo
 
 // Helper to get completed module responses
 export async function getCompletedModuleResponses(sessionId: string): Promise<ModuleResponse[]> {
+  // Firestore requires composite index for multiple orderBy - for now, get all and sort in memory
   const snapshot = await moduleResponsesCollection
     .where('sessionId', '==', sessionId)
     .where('completedAt', '!=', null)
-    .orderBy('completedAt')
-    .orderBy('moduleNumber')
     .get();
   
-  return snapshot.docs.map(doc => {
+  const responses = snapshot.docs.map(doc => {
     const data = doc.data();
     return {
       id: doc.id,
@@ -178,6 +177,9 @@ export async function getCompletedModuleResponses(sessionId: string): Promise<Mo
       formData: data.formData ? (typeof data.formData === 'string' ? JSON.parse(data.formData) : data.formData) : undefined,
     } as ModuleResponse;
   });
+  
+  // Sort by moduleNumber
+  return responses.sort((a, b) => a.moduleNumber - b.moduleNumber);
 }
 
 // Helper to get final document
