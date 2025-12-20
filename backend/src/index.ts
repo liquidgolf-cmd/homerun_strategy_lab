@@ -7,40 +7,13 @@ import documentsRoutes from './routes/documents';
 
 const app = express();
 
-// CORS - allow requests from Vercel and Firebase Hosting
-const allowedOrigins = [
-  'https://homerun-strategy-lab.vercel.app',
-  'https://homerun-strategy-lab-*.vercel.app', // Preview deployments
-  'https://*.vercel.app', // All Vercel deployments
-];
-
+// CORS - allow all origins (Vercel, Firebase Hosting, localhost)
+// This handles preflight OPTIONS requests properly
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    // Check if origin is in allowed list or matches Vercel pattern
-    if (allowedOrigins.some(allowed => {
-      if (allowed.includes('*')) {
-        // Simple wildcard matching for Vercel domains
-        return origin.includes('vercel.app');
-      }
-      return origin === allowed;
-    })) {
-      callback(null, true);
-    } else {
-      // For development, allow localhost
-      if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-        callback(null, true);
-      } else {
-        // Allow all origins for now (you can restrict this in production)
-        callback(null, true);
-      }
-    }
-  },
+  origin: true, // Allow all origins
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
 app.use(express.json());
 
