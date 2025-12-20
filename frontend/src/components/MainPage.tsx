@@ -49,12 +49,6 @@ export default function MainPage() {
     }
   };
 
-  const handleContinue = () => {
-    if (session) {
-      navigate(`/module/${session.session.currentModule}`);
-    }
-  };
-
   const handleModuleClick = (moduleNumber: number) => {
     if (appSession && moduleNumber <= appSession.session.currentModule) {
       navigate(`/module/${moduleNumber}`);

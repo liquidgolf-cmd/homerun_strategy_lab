@@ -70,11 +70,6 @@ export const apiService = {
     return response.data;
   },
 
-  getSession: async (sessionId: string) => {
-    const response = await api.get<Session>(`/modules/session/${sessionId}`);
-    return response.data;
-  },
-
   // Module responses
   getModuleResponse: async (sessionId: string, moduleNumber: number) => {
     const response = await api.get<ModuleResponse>(

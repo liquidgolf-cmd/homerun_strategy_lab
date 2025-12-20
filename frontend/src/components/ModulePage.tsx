@@ -33,6 +33,7 @@ export default function ModulePage() {
         loadSession();
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading]);
 
   useEffect(() => {
