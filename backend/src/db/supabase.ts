@@ -182,7 +182,7 @@ export async function saveModuleResponse(responseData: Partial<ModuleResponse> &
       .single();
 
     if (error) throw error;
-    return existing.id;
+    return String(existing.id);
   } else {
     // Create new - need inputMethod
     if (!dataToSave.inputMethod) {
@@ -195,7 +195,7 @@ export async function saveModuleResponse(responseData: Partial<ModuleResponse> &
       .single();
 
     if (error) throw error;
-    return data.id;
+    return String(data.id);
   }
 }
 
