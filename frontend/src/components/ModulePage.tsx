@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
 import { moduleConfigs, moduleContexts } from '../modules';
 import ModuleLanding from './ModuleLanding';
@@ -12,6 +13,7 @@ type ViewState = 'landing' | 'input' | 'review';
 export default function ModulePage() {
   const { moduleNumber } = useParams<{ moduleNumber: string }>();
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
   const moduleNum = parseInt(moduleNumber || '0');
   const config = moduleConfigs[moduleNum];
   const moduleContext = moduleContexts[moduleNum];
@@ -24,8 +26,14 @@ export default function ModulePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadSession();
-  }, []);
+    if (!authLoading) {
+      if (!user) {
+        navigate('/');
+      } else {
+        loadSession();
+      }
+    }
+  }, [user, authLoading]);
 
   useEffect(() => {
     if (session) {
@@ -35,13 +43,8 @@ export default function ModulePage() {
 
   const loadSession = async () => {
     try {
-      const saved = localStorage.getItem('session');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        setSession(parsed);
-      } else {
-        navigate('/');
-      }
+      const data = await apiService.getSession();
+      setSession(data);
     } catch (error) {
       console.error('Error loading session:', error);
       navigate('/');

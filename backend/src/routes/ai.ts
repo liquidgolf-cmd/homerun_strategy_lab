@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { verifyAuth } from '../middleware/auth';
 import { chatWithCoach, generateAuditReview } from '../services/anthropicService';
 import {
   module0AuditPrompt,
@@ -18,8 +19,8 @@ const auditPrompts = [
   module4AuditPrompt,
 ];
 
-// Chat endpoint
-router.post('/chat', async (req, res) => {
+// Chat endpoint (requires authentication)
+router.post('/chat', verifyAuth, async (req, res) => {
   try {
     const { messages, moduleNumber, moduleContext } = req.body;
 
@@ -35,8 +36,8 @@ router.post('/chat', async (req, res) => {
   }
 });
 
-// Generate audit review
-router.post('/audit-review', async (req, res) => {
+// Generate audit review (requires authentication)
+router.post('/audit-review', verifyAuth, async (req, res) => {
   try {
     const { moduleNumber, aiTranscript, formData } = req.body;
 

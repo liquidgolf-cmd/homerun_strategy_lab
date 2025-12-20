@@ -24,10 +24,9 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
 });
 
 // Type definitions (matching existing structure)
-export interface User {
-  id: string;
-  email: string;
-  name: string;
+export interface UserProfile {
+  id: string; // References auth.users.id
+  name: string | null;
   createdAt: string;
   lastAccessedAt: string;
 }
@@ -62,36 +61,76 @@ export interface FinalDocument {
 
 // Helper functions for common operations
 
-export async function getUserByEmail(email: string): Promise<User | null> {
+/**
+ * Get user profile by user ID (auth.users.id)
+ */
+export async function getUserProfile(userId: string): Promise<UserProfile | null> {
   const { data, error } = await supabase
-    .from('users')
+    .from('user_profiles')
     .select('*')
-    .eq('email', email)
+    .eq('id', userId)
     .maybeSingle();
 
   if (error || !data) return null;
-  return { ...data, id: String(data.id) } as User;
+  return {
+    ...data,
+    id: String(data.id),
+    name: data.name || null,
+  } as UserProfile;
 }
 
-export async function createUser(userData: Omit<User, 'id'>): Promise<User> {
+/**
+ * Create user profile for an authenticated user
+ */
+export async function createUserProfile(userId: string, name?: string): Promise<UserProfile> {
+  const now = new Date().toISOString();
   const { data, error } = await supabase
-    .from('users')
-    .insert(userData)
+    .from('user_profiles')
+    .insert({
+      id: userId,
+      name: name || null,
+      createdAt: now,
+      lastAccessedAt: now,
+    })
     .select()
     .single();
 
   if (error) throw error;
-  // Convert UUID to string if needed
-  return { ...data, id: String(data.id) } as User;
+  return {
+    ...data,
+    id: String(data.id),
+    name: data.name || null,
+  } as UserProfile;
 }
 
-export async function updateUser(userId: string, updates: Partial<User>): Promise<void> {
+/**
+ * Update user profile
+ */
+export async function updateUserProfile(userId: string, updates: Partial<UserProfile>): Promise<void> {
   const { error } = await supabase
-    .from('users')
+    .from('user_profiles')
     .update(updates)
     .eq('id', userId);
 
   if (error) throw error;
+}
+
+/**
+ * Get or create user profile (creates if doesn't exist)
+ */
+export async function getOrCreateUserProfile(userId: string, name?: string): Promise<UserProfile> {
+  let profile = await getUserProfile(userId);
+  
+  if (!profile) {
+    profile = await createUserProfile(userId, name);
+  } else {
+    // Update lastAccessedAt
+    const now = new Date().toISOString();
+    await updateUserProfile(userId, { lastAccessedAt: now });
+    profile.lastAccessedAt = now;
+  }
+  
+  return profile;
 }
 
 export async function getSessionById(sessionId: string): Promise<Session | null> {

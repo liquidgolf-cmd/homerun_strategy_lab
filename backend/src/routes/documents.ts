@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { verifyAuth } from '../middleware/auth';
 import {
   getCompletedModuleResponses,
   getFinalDocument,
@@ -12,8 +13,8 @@ import type { ModuleResponse } from '../db/supabase';
 
 const router = Router();
 
-// Generate final documents
-router.post('/session/:sessionId/generate', async (req, res) => {
+// Generate final documents (requires authentication)
+router.post('/session/:sessionId/generate', verifyAuth, async (req, res) => {
   try {
     const { sessionId } = req.params;
 
@@ -70,8 +71,8 @@ router.post('/session/:sessionId/generate', async (req, res) => {
   }
 });
 
-// Get final documents
-router.get('/session/:sessionId', async (req, res) => {
+// Get final documents (requires authentication)
+router.get('/session/:sessionId', verifyAuth, async (req, res) => {
   try {
     const { sessionId } = req.params;
     const documents = await getFinalDocument(sessionId);

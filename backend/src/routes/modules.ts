@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import { v4 as uuidv4 } from 'uuid';
+import { createClient } from '@supabase/supabase-js';
+import { verifyAuth } from '../middleware/auth';
 import {
-  getUserByEmail,
-  createUser,
-  updateUser,
+  getOrCreateUserProfile,
   getSessionById,
   getLatestSessionForUser,
   createSession,
@@ -16,43 +15,41 @@ import type { ModuleResponse } from '../db/supabase';
 
 const router = Router();
 
-// Get or create user session
-router.post('/session', async (req, res) => {
+// Get or create user session (requires authentication)
+// User is extracted from JWT token via auth middleware
+router.get('/session', verifyAuth, async (req, res) => {
   try {
-    console.log('Session creation request:', { body: req.body });
-    const { email, name } = req.body;
-    if (!email || !name) {
-      console.log('Missing email or name');
-      return res.status(400).json({ error: 'Email and name are required' });
+    if (!req.user) {
+      return res.status(401).json({ error: 'User not authenticated' });
     }
 
-    // Check if user exists
-    let user = await getUserByEmail(email);
+    const userId = req.user.id;
+    const userEmail = req.user.email;
 
-    if (!user) {
-      // Create new user
-      const now = new Date().toISOString();
-      user = await createUser({
-        email,
-        name,
-        createdAt: now,
-        lastAccessedAt: now,
-      });
-    } else {
-      // Update last accessed
-      const now = new Date().toISOString();
-      await updateUser(user.id, { lastAccessedAt: now });
-      user.lastAccessedAt = now;
+    // Get or create user profile
+    // Get user metadata from auth.users if needed (name from Google profile)
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      throw new Error('Supabase credentials not configured');
     }
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    
+    const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(userId);
+    const userName = authUser?.user?.user_metadata?.full_name || authUser?.user?.user_metadata?.name || null;
+
+    const userProfile = await getOrCreateUserProfile(userId, userName || undefined);
 
     // Check if active session exists
-    let session = await getLatestSessionForUser(user.id);
+    let session = await getLatestSessionForUser(userId);
 
     if (!session) {
       // Create new session
       const now = new Date().toISOString();
       session = await createSession({
-        userId: user.id,
+        userId: userId,
         currentModule: 0,
         completionStatus: 0,
         createdAt: now,
@@ -60,10 +57,17 @@ router.post('/session', async (req, res) => {
       });
     }
 
-    console.log('Session created successfully:', { userId: user.id, sessionId: session.id });
-    res.json({ user, session });
+    console.log('Session retrieved/created successfully:', { userId: userProfile.id, sessionId: session.id });
+    res.json({ 
+      user: {
+        id: userProfile.id,
+        email: userEmail,
+        name: userProfile.name,
+      },
+      session 
+    });
   } catch (error: any) {
-    console.error('Error creating session:', error);
+    console.error('Error getting/creating session:', error);
     console.error('Error stack:', error.stack);
     res.status(500).json({
       error: error.message || 'Internal server error',
@@ -72,8 +76,8 @@ router.post('/session', async (req, res) => {
   }
 });
 
-// Get session
-router.get('/session/:sessionId', async (req, res) => {
+// Get session by ID (requires authentication)
+router.get('/session/:sessionId', verifyAuth, async (req, res) => {
   try {
     const { sessionId } = req.params;
     const session = await getSessionById(sessionId);
@@ -89,8 +93,8 @@ router.get('/session/:sessionId', async (req, res) => {
   }
 });
 
-// Get module response
-router.get('/session/:sessionId/module/:moduleNumber', async (req, res) => {
+// Get module response (requires authentication)
+router.get('/session/:sessionId/module/:moduleNumber', verifyAuth, async (req, res) => {
   try {
     const { sessionId, moduleNumber } = req.params;
     const moduleNum = parseInt(moduleNumber);
@@ -108,8 +112,8 @@ router.get('/session/:sessionId/module/:moduleNumber', async (req, res) => {
   }
 });
 
-// Save module response
-router.post('/session/:sessionId/module/:moduleNumber', async (req, res) => {
+// Save module response (requires authentication)
+router.post('/session/:sessionId/module/:moduleNumber', verifyAuth, async (req, res) => {
   try {
     const { sessionId, moduleNumber } = req.params;
     const { inputMethod, aiTranscript, formData } = req.body;
@@ -142,8 +146,8 @@ router.post('/session/:sessionId/module/:moduleNumber', async (req, res) => {
   }
 });
 
-// Save audit review
-router.post('/session/:sessionId/module/:moduleNumber/audit', async (req, res) => {
+// Save audit review (requires authentication)
+router.post('/session/:sessionId/module/:moduleNumber/audit', verifyAuth, async (req, res) => {
   try {
     const { sessionId, moduleNumber } = req.params;
     const { auditReviewDocument } = req.body;

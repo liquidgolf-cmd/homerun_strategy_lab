@@ -4,19 +4,19 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Users table
-CREATE TABLE IF NOT EXISTS users (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  email TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
+-- User profiles table (linked to Supabase auth.users)
+-- This stores app-specific user data
+CREATE TABLE IF NOT EXISTS user_profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  name TEXT,
   "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "lastAccessedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Sessions table
+-- Sessions table (references auth.users via user_profiles)
 CREATE TABLE IF NOT EXISTS sessions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "userId" UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  "userId" UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   "currentModule" INTEGER NOT NULL DEFAULT 0,
   "completionStatus" INTEGER NOT NULL DEFAULT 0,
   "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS final_documents (
 );
 
 -- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_user_profiles_id ON user_profiles(id);
 CREATE INDEX IF NOT EXISTS idx_sessions_userId ON sessions("userId");
 CREATE INDEX IF NOT EXISTS idx_sessions_updatedAt ON sessions("updatedAt");
 CREATE INDEX IF NOT EXISTS idx_module_responses_sessionId ON module_responses("sessionId");
@@ -54,7 +54,7 @@ CREATE INDEX IF NOT EXISTS idx_module_responses_session_module ON module_respons
 CREATE INDEX IF NOT EXISTS idx_final_documents_sessionId ON final_documents("sessionId");
 
 -- Enable Row Level Security (RLS) - you can adjust policies as needed
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE module_responses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE final_documents ENABLE ROW LEVEL SECURITY;
@@ -62,8 +62,8 @@ ALTER TABLE final_documents ENABLE ROW LEVEL SECURITY;
 -- For now, allow all operations (you can restrict this later)
 -- When using service role key, RLS is bypassed, but it's good to have policies set
 
--- Users policies (allow all for now)
-CREATE POLICY "Allow all operations on users" ON users
+-- User profiles policies (allow all for now)
+CREATE POLICY "Allow all operations on user_profiles" ON user_profiles
   FOR ALL USING (true) WITH CHECK (true);
 
 -- Sessions policies

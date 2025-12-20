@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { supabase } from '../lib/supabase';
 
-// Use Firebase Functions URL in production, relative path in development
+// Use environment variable for API URL, fallback to relative path
 const getApiBaseURL = () => {
-  // If VITE_API_URL is set, use it (for Vercel deployment pointing to Firebase Functions)
+  // If VITE_API_URL is set, use it (for Vercel deployment pointing to backend)
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
@@ -21,6 +22,15 @@ const api = axios.create({
   },
 });
 
+// Add auth token to all requests
+api.interceptors.request.use(async (config) => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.access_token) {
+    config.headers.Authorization = `Bearer ${session.access_token}`;
+  }
+  return config;
+});
+
 export interface Session {
   id: string;
   userId: string;
@@ -33,9 +43,7 @@ export interface Session {
 export interface User {
   id: string;
   email: string;
-  name: string;
-  createdAt: string;
-  lastAccessedAt: string;
+  name: string | null;
 }
 
 export interface ModuleResponse {
@@ -50,12 +58,15 @@ export interface ModuleResponse {
 }
 
 export const apiService = {
-  // Session management
-  createSession: async (email: string, name: string) => {
-    const response = await api.post<{ user: User; session: Session }>('/modules/session', {
-      email,
-      name,
-    });
+  // Session management - Get or create session (requires auth)
+  getSession: async () => {
+    const response = await api.get<{ user: User; session: Session }>('/modules/session');
+    return response.data;
+  },
+
+  // Get session by ID
+  getSessionById: async (sessionId: string) => {
+    const response = await api.get<Session>(`/modules/session/${sessionId}`);
     return response.data;
   },
 

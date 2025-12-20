@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS configuration - allow frontend from localhost
+// CORS configuration - allow frontend and Supabase origins
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',')
   : ['http://localhost:3001', 'http://localhost:5173'];
@@ -22,13 +22,22 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
+    // Allow localhost for development
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
-    } else {
-      callback(null, true); // Allow all for local dev
+    } 
+    // Allow Vercel deployments (check for vercel.app domain)
+    else if (origin.includes('vercel.app') || origin.includes('localhost')) {
+      callback(null, true);
+    }
+    // Allow all for local dev (will be restricted in production)
+    else {
+      callback(null, true);
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json());
 
