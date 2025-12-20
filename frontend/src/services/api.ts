@@ -1,8 +1,21 @@
 import axios from 'axios';
 
-// Use relative path for API - works when frontend and backend are on same domain
+// Use Firebase Functions URL in production, relative path in development
+const getApiBaseURL = () => {
+  // If VITE_API_URL is set, use it (for Vercel deployment pointing to Firebase Functions)
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  // In development, use relative path (proxied by Vite to backend)
+  if (import.meta.env.DEV) {
+    return '/api';
+  }
+  // In production, use relative path (assumes frontend and backend on same domain)
+  return '/api';
+};
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: getApiBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
