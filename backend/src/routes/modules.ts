@@ -7,12 +7,12 @@ import {
   getSessionById,
   getLatestSessionForUser,
   createSession,
+  updateSession,
   getModuleResponse,
   saveModuleResponse,
-  sessionsCollection,
-  moduleResponsesCollection,
-} from '../db/firestore';
-import type { ModuleResponse } from '../db/firestore';
+  getCompletedModuleResponses,
+} from '../db/supabase';
+import type { ModuleResponse } from '../db/supabase';
 
 const router = Router();
 
@@ -159,23 +159,20 @@ router.post('/session/:sessionId/module/:moduleNumber/audit', async (req, res) =
     const existing = await getModuleResponse(sessionId, moduleNum);
 
     if (existing) {
-      // Update with audit review
-      await moduleResponsesCollection.doc(existing.id).update({
+      // Update with audit review using saveModuleResponse
+      await saveModuleResponse({
+        ...existing,
         auditReviewDocument,
         completedAt,
       });
 
       // Count completed modules
-      const completedSnapshot = await moduleResponsesCollection
-        .where('sessionId', '==', sessionId)
-        .where('completedAt', '!=', null)
-        .get();
-
-      const completedCount = completedSnapshot.size;
+      const completedResponses = await getCompletedModuleResponses(sessionId);
+      const completedCount = completedResponses.length;
       const currentModule = Math.min(Math.max(moduleNum + 1, 0), 4);
 
       // Update session
-      await sessionsCollection.doc(sessionId).update({
+      await updateSession(sessionId, {
         currentModule,
         completionStatus: completedCount,
         updatedAt: new Date().toISOString(),

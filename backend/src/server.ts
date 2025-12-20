@@ -5,8 +5,8 @@ import path from 'path';
 import modulesRoutes from './routes/modules';
 import aiRoutes from './routes/ai';
 import documentsRoutes from './routes/documents';
-// Import Firestore to initialize (will use emulator if available, or real Firestore)
-import './db/firestore';
+// Import Supabase to initialize
+import './db/supabase';
 
 dotenv.config();
 

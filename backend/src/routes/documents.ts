@@ -3,12 +3,12 @@ import {
   getCompletedModuleResponses,
   getFinalDocument,
   saveFinalDocument,
-} from '../db/firestore';
+} from '../db/supabase';
 import {
   generateCombinedOverview,
   generateActionPlan,
 } from '../services/anthropicService';
-import type { ModuleResponse } from '../db/firestore';
+import type { ModuleResponse } from '../db/supabase';
 
 const router = Router();
 
