@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
-import * as express from 'express';
-import * as cors from 'cors';
+import express from 'express';
+import cors from 'cors';
 import modulesRoutes from './routes/modules';
 import aiRoutes from './routes/ai';
 import documentsRoutes from './routes/documents';
@@ -16,7 +16,7 @@ app.use('/modules', modulesRoutes);
 app.use('/ai', aiRoutes);
 app.use('/documents', documentsRoutes);
 
-app.get('/health', (req, res) => {
+app.get('/health', (req: express.Request, res: express.Response) => {
   res.json({ status: 'ok' });
 });
 
