@@ -1,79 +1,47 @@
-# Fix for 500 Internal Server Error
+# Fix 500 Internal Server Error
 
-## Current Status
+## The Problem
 
-✅ **Backend is working** - Tested directly on port 3000, returns 200 OK
-✅ **Database is initialized** - SQLite database created in `backend/data/`
-✅ **Proxy is configured** - Vite proxy forwards `/api/*` to backend
+The backend is returning a 500 error when trying to create a session. This is likely because Firestore isn't properly initialized.
 
-## What I Fixed
+## For Local Development
 
-1. ✅ **Added better error logging** - Backend now logs detailed error information
-2. ✅ **Verified database setup** - Database tables are created correctly
-3. ✅ **Tested API endpoint** - Direct API call works successfully
+You need Firestore to be available. You have two options:
 
-## Next Steps
+### Option 1: Use Firebase Emulator (Recommended)
 
-### 1. Restart Your Servers
-
-**Stop all running servers** (Ctrl+C in terminal where `npm run dev` is running), then:
-
+**Terminal 1 - Start Emulator:**
 ```bash
-# From project root
+cd "/Users/michaelhill/Documents/GitHub/Homeruns Strategy Lab"
+firebase emulators:start --only firestore
+```
+
+**Terminal 2 - Start Backend with Environment Variables:**
+```bash
+cd "/Users/michaelhill/Documents/GitHub/Homeruns Strategy Lab/backend"
+export FIRESTORE_EMULATOR_HOST=localhost:8080
+export GCLOUD_PROJECT=homerun-strategy-lab
 npm run dev
 ```
 
-This will restart both frontend and backend with the improved error logging.
+### Option 2: Use Real Firestore
 
-### 2. Try Creating a Session Again
+1. Get service account key from Firebase Console
+2. Set environment variable:
+   ```bash
+   export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account-key.json
+   export GCLOUD_PROJECT=homerun-strategy-lab
+   ```
+3. Start backend: `npm run dev`
 
-1. Go to http://localhost:3001
-2. Enter your name and email
-3. Click "Start Your Journey"
+## Check Backend Logs
 
-### 3. Check the Backend Logs
+Look at the terminal where your backend is running. You should see error messages that tell you exactly what's wrong. Common issues:
 
-If you still get a 500 error, check the **backend terminal** for:
-- Detailed error messages
-- Stack traces
-- Request/response logs
+- "Failed to initialize Firebase Admin" - Need emulator or credentials
+- "Firestore connection failed" - Firestore not available
+- Other errors will show what's failing
 
-The improved logging will show exactly what's failing.
+## Quick Fix
 
-## What the Error Logs Will Show
-
-The backend now logs:
-- ✅ Request received: `Session creation request: { body: ... }`
-- ✅ Success: `Session created successfully: { userId: ..., sessionId: ... }`
-- ❌ Errors: Full stack trace with details
-
-## Common Issues & Solutions
-
-### Issue: "Database locked" or SQLite errors
-**Solution**: Make sure only one backend instance is running
-
-### Issue: "Cannot find module" errors  
-**Solution**: Run `npm run install:all` again
-
-### Issue: Port already in use
-**Solution**: 
-```bash
-lsof -ti:3000 | xargs kill -9
-lsof -ti:3001 | xargs kill -9
-npm run dev
-```
-
-## Test the Backend Directly
-
-You can test if the backend is working:
-
-```bash
-curl -X POST http://localhost:3000/api/modules/session \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@test.com","name":"Test User"}'
-```
-
-Should return: `{"user":{...},"session":{...}}`
-
-If this works but the browser still gets 500, check the browser's Network tab for the actual error response.
-
+The fastest way is to start the Firebase emulator, then restart your backend with the environment variables set.

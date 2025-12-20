@@ -4,20 +4,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Get API key from environment (works in both local and Firebase Functions)
+// For Firebase Functions, use secrets: firebase functions:secrets:set ANTHROPIC_API_KEY
+// For local, use .env file with ANTHROPIC_API_KEY
 let apiKey = process.env.ANTHROPIC_API_KEY;
 
-// Try Firebase Functions config if not in env
 if (!apiKey) {
-  try {
-    const functions = require('firebase-functions');
-    apiKey = functions.config().anthropic?.api_key;
-  } catch (e) {
-    // Not in Firebase environment, that's okay
-  }
-}
-
-if (!apiKey) {
-  throw new Error('ANTHROPIC_API_KEY is not set in environment variables or Firebase config');
+  throw new Error('ANTHROPIC_API_KEY is not set. Set it with: firebase functions:secrets:set ANTHROPIC_API_KEY');
 }
 
 const anthropic = new Anthropic({ apiKey });
