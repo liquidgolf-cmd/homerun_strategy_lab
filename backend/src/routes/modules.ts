@@ -24,11 +24,22 @@ router.get('/session', verifyAuth, async (req, res) => {
 
     const userId = req.user.id;
     const userEmail = req.user.email;
+    const userName = req.user.name;
 
-    // Get or create user profile
-    // Note: User name will be null initially, can be updated later if needed
-    // The user is already verified to exist via JWT token in verifyAuth middleware
-    const userProfile = await getOrCreateUserProfile(userId, undefined);
+    // Verify user exists in auth.users by checking if we can create/get their profile
+    // This ensures the user exists before we try to create a session
+    let userProfile;
+    try {
+      userProfile = await getOrCreateUserProfile(userId, userName);
+    } catch (error: any) {
+      // If user profile creation fails, the user might not exist in auth.users
+      console.error('Error creating user profile:', error);
+      // Check if it's a foreign key constraint error
+      if (error.code === '23503' || error.message?.includes('foreign key constraint')) {
+        return res.status(401).json({ error: 'User not found in authentication system. Please sign in again.' });
+      }
+      throw error; // Re-throw other errors
+    }
 
     // Check if active session exists
     let session = await getLatestSessionForUser(userId);

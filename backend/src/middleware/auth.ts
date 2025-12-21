@@ -23,6 +23,7 @@ declare global {
       user?: {
         id: string;
         email: string;
+        name?: string;
       };
     }
   }
@@ -55,6 +56,7 @@ export async function verifyAuth(req: Request, res: Response, next: NextFunction
     req.user = {
       id: user.id,
       email: user.email || '',
+      name: user.user_metadata?.full_name || user.user_metadata?.name || undefined,
     };
 
     next();
