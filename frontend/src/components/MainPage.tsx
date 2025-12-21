@@ -13,9 +13,10 @@ export default function MainPage() {
 
   // When user is authenticated, get or create app session
   useEffect(() => {
-    if (user && authSession && !appSession) {
+    if (user && authSession && !appSession && !loading) {
       loadAppSession();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authSession]);
 
   const loadAppSession = async () => {
@@ -23,8 +24,15 @@ export default function MainPage() {
     
     setLoading(true);
     try {
+      console.log('Loading app session...');
       const data = await apiService.getSession();
-      setAppSession(data);
+      console.log('Session data received:', data);
+      if (data && data.session) {
+        setAppSession(data);
+        console.log('App session set successfully');
+      } else {
+        console.error('Session data missing session object:', data);
+      }
     } catch (error: any) {
       console.error('Error loading session:', error);
       console.error('Error details:', {
@@ -32,6 +40,7 @@ export default function MainPage() {
         response: error.response?.data,
         status: error.response?.status,
         url: error.config?.url,
+        baseURL: error.config?.baseURL,
       });
       // If error, user might not be fully set up, but that's OK
       // Show error to user for debugging
