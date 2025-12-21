@@ -24,9 +24,16 @@ const api = axios.create({
 
 // Add auth token to all requests
 api.interceptors.request.use(async (config) => {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session?.access_token) {
-    config.headers.Authorization = `Bearer ${session.access_token}`;
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) {
+      config.headers.Authorization = `Bearer ${session.access_token}`;
+      console.log('API request with auth token:', config.url);
+    } else {
+      console.warn('No auth token available for API request:', config.url);
+    }
+  } catch (error) {
+    console.error('Error getting auth session for API request:', error);
   }
   return config;
 });
@@ -60,7 +67,9 @@ export interface ModuleResponse {
 export const apiService = {
   // Session management - Get or create session (requires auth)
   getSession: async () => {
+    console.log('Calling getSession API:', getApiBaseURL() + '/modules/session');
     const response = await api.get<{ user: User; session: Session }>('/modules/session');
+    console.log('getSession API response:', response.data);
     return response.data;
   },
 
