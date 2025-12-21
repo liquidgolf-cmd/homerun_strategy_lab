@@ -63,18 +63,22 @@ ALTER TABLE final_documents ENABLE ROW LEVEL SECURITY;
 -- When using service role key, RLS is bypassed, but it's good to have policies set
 
 -- User profiles policies (allow all for now)
+DROP POLICY IF EXISTS "Allow all operations on user_profiles" ON user_profiles;
 CREATE POLICY "Allow all operations on user_profiles" ON user_profiles
   FOR ALL USING (true) WITH CHECK (true);
 
 -- Sessions policies
+DROP POLICY IF EXISTS "Allow all operations on sessions" ON sessions;
 CREATE POLICY "Allow all operations on sessions" ON sessions
   FOR ALL USING (true) WITH CHECK (true);
 
 -- Module responses policies
+DROP POLICY IF EXISTS "Allow all operations on module_responses" ON module_responses;
 CREATE POLICY "Allow all operations on module_responses" ON module_responses
   FOR ALL USING (true) WITH CHECK (true);
 
 -- Final documents policies
+DROP POLICY IF EXISTS "Allow all operations on final_documents" ON final_documents;
 CREATE POLICY "Allow all operations on final_documents" ON final_documents
   FOR ALL USING (true) WITH CHECK (true);
 
