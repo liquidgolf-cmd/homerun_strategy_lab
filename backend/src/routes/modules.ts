@@ -37,8 +37,14 @@ router.get('/session', verifyAuth, async (req, res) => {
       auth: { autoRefreshToken: false, persistSession: false },
     });
     
-    const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(userId);
-    const userName = authUser?.user?.user_metadata?.full_name || authUser?.user?.user_metadata?.name || null;
+    const { data: authUser, error: authUserError } = await supabaseAdmin.auth.admin.getUserById(userId);
+    
+    if (authUserError || !authUser?.user) {
+      console.error('Error fetching user from auth.users:', authUserError);
+      return res.status(401).json({ error: 'User not found in authentication system' });
+    }
+
+    const userName = authUser.user.user_metadata?.full_name || authUser.user.user_metadata?.name || null;
 
     const userProfile = await getOrCreateUserProfile(userId, userName || undefined);
 
