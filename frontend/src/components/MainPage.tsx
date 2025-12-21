@@ -44,13 +44,13 @@ export default function MainPage() {
   };
 
   const handleContinue = () => {
-    if (appSession) {
-      navigate(`/module/${appSession.session.currentModule}`);
+    if (appSession?.session) {
+      navigate(`/module/${appSession.session.currentModule || 0}`);
     }
   };
 
   const handleModuleClick = (moduleNumber: number) => {
-    if (appSession && moduleNumber <= appSession.session.currentModule) {
+    if (appSession?.session && moduleNumber <= (appSession.session.currentModule || 0)) {
       navigate(`/module/${moduleNumber}`);
     }
   };
@@ -141,16 +141,16 @@ export default function MainPage() {
                   Sign Out
                 </button>
               </div>
-              {appSession ? (
+              {appSession?.session ? (
                 <>
                   <p className="text-secondary mb-6">
-                    Progress: {appSession.session.completionStatus} of 5 modules completed
+                    Progress: {appSession.session.completionStatus || 0} of 5 modules completed
                   </p>
                   <button
                     onClick={handleContinue}
                     className="bg-primary text-white py-3 px-6 rounded-md font-medium hover:bg-primary-dark transition-colors"
                   >
-                    Continue to Module {appSession.session.currentModule}
+                    Continue to Module {appSession.session.currentModule || 0}
                   </button>
                 </>
               ) : (
@@ -159,7 +159,7 @@ export default function MainPage() {
             </div>
 
             {/* Module List */}
-            {appSession && (
+            {appSession?.session && (
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 {[
                   { num: 0, title: 'Current Reality', subtitle: 'At Bat' },
@@ -168,8 +168,8 @@ export default function MainPage() {
                   { num: 3, title: 'Delivery Path', subtitle: '3rd Base' },
                   { num: 4, title: '90-Day Plan', subtitle: 'Home' },
                 ].map((module) => {
-                  const isAvailable = appSession.session.currentModule >= module.num;
-                  const isCompleted = appSession.session.completionStatus > module.num;
+                  const isAvailable = (appSession.session.currentModule || 0) >= module.num;
+                  const isCompleted = (appSession.session.completionStatus || 0) > module.num;
                 return (
                   <button
                     key={module.num}
