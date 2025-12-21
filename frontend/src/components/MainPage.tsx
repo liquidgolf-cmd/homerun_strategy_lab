@@ -27,7 +27,19 @@ export default function MainPage() {
       setAppSession(data);
     } catch (error: any) {
       console.error('Error loading session:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: error.config?.url,
+      });
       // If error, user might not be fully set up, but that's OK
+      // Show error to user for debugging
+      if (error.response?.status === 401) {
+        console.error('Authentication error - token may be invalid');
+      } else if (error.response?.status === 404 || error.code === 'ERR_NETWORK') {
+        console.error('Backend not found or not accessible - check VITE_API_URL');
+      }
     } finally {
       setLoading(false);
     }
