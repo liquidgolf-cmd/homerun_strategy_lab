@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { createClient } from '@supabase/supabase-js';
 import { verifyAuth } from '../middleware/auth';
 import {
   getOrCreateUserProfile,
@@ -27,26 +26,9 @@ router.get('/session', verifyAuth, async (req, res) => {
     const userEmail = req.user.email;
 
     // Get or create user profile
-    // Get user metadata from auth.users if needed (name from Google profile)
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!supabaseUrl || !supabaseServiceRoleKey) {
-      throw new Error('Supabase credentials not configured');
-    }
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
-      auth: { autoRefreshToken: false, persistSession: false },
-    });
-    
-    const { data: authUser, error: authUserError } = await supabaseAdmin.auth.admin.getUserById(userId);
-    
-    if (authUserError || !authUser?.user) {
-      console.error('Error fetching user from auth.users:', authUserError);
-      return res.status(401).json({ error: 'User not found in authentication system' });
-    }
-
-    const userName = authUser.user.user_metadata?.full_name || authUser.user.user_metadata?.name || null;
-
-    const userProfile = await getOrCreateUserProfile(userId, userName || undefined);
+    // Note: User name will be null initially, can be updated later if needed
+    // The user is already verified to exist via JWT token in verifyAuth middleware
+    const userProfile = await getOrCreateUserProfile(userId, undefined);
 
     // Check if active session exists
     let session = await getLatestSessionForUser(userId);
