@@ -67,7 +67,10 @@ export interface ModuleResponse {
 export const apiService = {
   // Session management - Get or create session (requires auth)
   getSession: async () => {
-    console.log('Calling getSession API:', getApiBaseURL() + '/modules/session');
+    const baseURL = getApiBaseURL();
+    console.log('VITE_API_URL from env:', import.meta.env.VITE_API_URL);
+    console.log('Base URL being used:', baseURL);
+    console.log('Full URL will be:', baseURL + '/modules/session');
     const response = await api.get<{ user: User; session: Session }>('/modules/session');
     console.log('getSession API response:', response.data);
     return response.data;
