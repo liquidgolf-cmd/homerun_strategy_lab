@@ -74,6 +74,7 @@ export default function AIChatInterface({
   const [loading, setLoading] = useState(false);
   const { ttsEnabled, speakText } = useTTS();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const hasSpokenInitialMessage = useRef(false);
 
   // Scroll chat container to top on initial load
   useEffect(() => {
@@ -83,6 +84,33 @@ export default function AIChatInterface({
     }
   }, []); // Run once on mount
 
+  // Speak initial message on mount (only once)
+  useEffect(() => {
+    if (ttsEnabled && messages.length > 0 && !hasSpokenInitialMessage.current) {
+      const initialMessage = messages[0];
+      if (initialMessage.role === 'assistant') {
+        hasSpokenInitialMessage.current = true;
+        // Use requestAnimationFrame to ensure DOM is ready, then speak immediately
+        requestAnimationFrame(() => {
+          const textToSpeak = initialMessage.content
+            .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+            .replace(/\*(.*?)\*/g, '$1') // Remove italic
+            .replace(/#{1,6}\s/g, '') // Remove markdown headers
+            .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove markdown links
+            .replace(/`([^`]+)`/g, '$1') // Remove inline code
+            .trim();
+          
+          if (textToSpeak) {
+            // Start speaking immediately (no delay)
+            speakText(textToSpeak).catch((error: any) => {
+              console.error('Error speaking initial text:', error);
+            });
+          }
+        });
+      }
+    }
+  }, [ttsEnabled, messages, speakText]); // Include dependencies to trigger when component mounts
+
   // Scroll to bottom when new messages are added
   useEffect(() => {
     if (messages.length > 1) {
@@ -91,13 +119,14 @@ export default function AIChatInterface({
     }
   }, [messages]);
 
-  // Handle text-to-speech for assistant messages (including initial message)
+  // Handle text-to-speech for new assistant messages (excluding initial message which is handled separately)
   useEffect(() => {
-    if (ttsEnabled && messages.length > 0) {
+    // Skip if this is the initial message (handled by separate useEffect)
+    if (hasSpokenInitialMessage.current && ttsEnabled && messages.length > 1) {
       const lastMessage = messages[messages.length - 1];
       // Only speak assistant messages
       if (lastMessage.role === 'assistant') {
-        // Strip markdown formatting for cleaner speech and speak immediately
+        // Speak immediately for new messages
         const textToSpeak = lastMessage.content
           .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
           .replace(/\*(.*?)\*/g, '$1') // Remove italic
@@ -107,7 +136,7 @@ export default function AIChatInterface({
           .trim();
         
         if (textToSpeak) {
-          // Start speaking immediately without delay
+          // Start speaking immediately
           speakText(textToSpeak).catch((error: any) => {
             console.error('Error speaking text:', error);
           });
