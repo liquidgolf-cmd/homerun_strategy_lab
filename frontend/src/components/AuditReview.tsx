@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import html2pdf from 'html2pdf.js';
-import { marked } from 'marked';
 
 interface AuditReviewProps {
   moduleNumber: number;
@@ -22,56 +21,74 @@ export default function AuditReview({
   const navigate = useNavigate();
   const pdfContentRef = useRef<HTMLDivElement>(null);
 
-  const handleDownloadPDF = async () => {
-    // Convert markdown to HTML
-    const htmlContent = await marked(auditReview);
+  const handleDownloadPDF = () => {
+    if (!pdfContentRef.current) return;
+
+    // Use the actual rendered content from the DOM
+    const sourceElement = pdfContentRef.current;
     
-    // Create styled HTML with inline styles for all elements
-    const styledHtml = htmlContent
-      .replace(/<h1>/g, '<h1 style="font-size: 32px; font-weight: bold; color: #0f4761; margin-top: 32px; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 12px;">')
-      .replace(/<h2>/g, '<h2 style="font-size: 24px; font-weight: bold; color: #0f4761; margin-top: 32px; margin-bottom: 16px;">')
-      .replace(/<h3>/g, '<h3 style="font-size: 20px; font-weight: bold; color: #111827; margin-top: 24px; margin-bottom: 12px;">')
-      .replace(/<p>/g, '<p style="margin-bottom: 16px; color: #374151; line-height: 1.75;">')
-      .replace(/<ul>/g, '<ul style="margin-left: 24px; margin-bottom: 16px; padding-left: 0;">')
-      .replace(/<ol>/g, '<ol style="margin-left: 24px; margin-bottom: 16px; padding-left: 0;">')
-      .replace(/<li>/g, '<li style="margin-bottom: 8px; color: #374151;">')
-      .replace(/<strong>/g, '<strong style="font-weight: 600; color: #111827;">')
-      .replace(/<code>/g, '<code style="background-color: #f3f4f6; color: #0f4761; padding: 2px 6px; border-radius: 4px; font-size: 14px;">')
-      .replace(/<blockquote>/g, '<blockquote style="border-left: 4px solid #0f4761; padding-left: 16px; margin-left: 0; margin-top: 16px; margin-bottom: 16px; font-style: italic; color: #4b5563;">');
-    
-    // Create a container for PDF generation
+    // Create a container for PDF with header
     const pdfContainer = document.createElement('div');
-    pdfContainer.style.width = '816px'; // 8.5in in pixels
+    pdfContainer.style.width = '816px';
     pdfContainer.style.padding = '40px';
     pdfContainer.style.backgroundColor = '#ffffff';
-    pdfContainer.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
-    pdfContainer.style.fontSize = '16px';
-    pdfContainer.style.lineHeight = '1.75';
-    pdfContainer.style.color = '#374151';
-    pdfContainer.style.position = 'fixed';
-    pdfContainer.style.top = '-9999px';
+    pdfContainer.style.position = 'absolute';
     pdfContainer.style.left = '0';
-    pdfContainer.style.zIndex = '99999';
+    pdfContainer.style.top = '0';
     
-    // Add header and content
-    pdfContainer.innerHTML = `
-      <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #0f4761;">
-        <h1 style="font-size: 28px; font-weight: bold; color: #0f4761; margin-bottom: 8px; margin-top: 0;">${moduleTitle}</h1>
-        <p style="font-size: 14px; color: #666; margin: 4px 0;">Module ${moduleNumber} Audit Review</p>
-        <p style="font-size: 14px; color: #666; margin: 4px 0;">${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-      </div>
-      <div style="max-width: 100%;">
-        ${styledHtml}
-      </div>
+    // Add header
+    const header = document.createElement('div');
+    header.style.marginBottom = '30px';
+    header.style.paddingBottom = '20px';
+    header.style.borderBottom = '3px solid #0f4761';
+    header.innerHTML = `
+      <h1 style="font-size: 28px; font-weight: bold; color: #0f4761; margin-bottom: 8px; margin-top: 0;">${moduleTitle}</h1>
+      <p style="font-size: 14px; color: #666; margin: 4px 0;">Module ${moduleNumber} Audit Review</p>
+      <p style="font-size: 14px; color: #666; margin: 4px 0;">${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
     `;
+    pdfContainer.appendChild(header);
     
+    // Deep clone the source element with all its computed styles
+    const clone = sourceElement.cloneNode(true) as HTMLElement;
+    
+    // Apply inline styles based on computed styles
+    const applyInlineStyles = (element: HTMLElement) => {
+      const computed = window.getComputedStyle(element);
+      
+      // Copy important styles
+      element.style.color = computed.color;
+      element.style.fontSize = computed.fontSize;
+      element.style.fontFamily = computed.fontFamily;
+      element.style.fontWeight = computed.fontWeight;
+      element.style.lineHeight = computed.lineHeight;
+      element.style.margin = computed.margin;
+      element.style.marginTop = computed.marginTop;
+      element.style.marginBottom = computed.marginBottom;
+      element.style.marginLeft = computed.marginLeft;
+      element.style.marginRight = computed.marginRight;
+      element.style.padding = computed.padding;
+      element.style.backgroundColor = computed.backgroundColor;
+      element.style.maxWidth = 'none';
+      element.style.width = '100%';
+      
+      // Process all children
+      Array.from(element.children).forEach(child => {
+        applyInlineStyles(child as HTMLElement);
+      });
+    };
+    
+    applyInlineStyles(clone);
+    pdfContainer.appendChild(clone);
+    
+    // Add to body temporarily (visible but off-screen)
+    pdfContainer.style.top = `${window.scrollY - 10000}px`;
     document.body.appendChild(pdfContainer);
     
-    // Wait for rendering, then generate PDF
+    // Force a reflow to ensure rendering
+    pdfContainer.offsetHeight;
+    
+    // Generate PDF
     setTimeout(() => {
-      console.log('PDF container height:', pdfContainer.scrollHeight);
-      console.log('PDF container content:', pdfContainer.innerHTML.substring(0, 200));
-      
       const opt = {
         margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
         filename: `module-${moduleNumber}-audit-review.pdf`,
@@ -79,7 +96,7 @@ export default function AuditReview({
         html2canvas: { 
           scale: 2, 
           useCORS: true, 
-          logging: true,
+          logging: false,
           allowTaint: true,
           backgroundColor: '#ffffff',
         },
@@ -91,7 +108,6 @@ export default function AuditReview({
         .from(pdfContainer)
         .save()
         .then(() => {
-          console.log('PDF generated successfully');
           // Clean up
           if (document.body.contains(pdfContainer)) {
             document.body.removeChild(pdfContainer);
@@ -104,7 +120,7 @@ export default function AuditReview({
             document.body.removeChild(pdfContainer);
           }
         });
-    }, 1000);
+    }, 500);
   };
 
 
