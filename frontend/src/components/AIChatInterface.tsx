@@ -41,6 +41,17 @@ export default function AIChatInterface({
       ];
     }
     
+    // Module 2 specific initial question
+    if (config.number === 2) {
+      return [
+        {
+          role: 'assistant' as const,
+          content: `Hello! I'm here to help you complete ${config.title}. Now that we know who you're really for, let's talk about what they actually want. What does your ideal customer want to achieve? What outcomes are they looking for?`,
+          timestamp: new Date().toISOString(),
+        },
+      ];
+    }
+    
     // Default initial message for other modules
     return [
       {
