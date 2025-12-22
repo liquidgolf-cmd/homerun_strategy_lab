@@ -40,6 +40,18 @@ export default function FinalSummary() {
     // MVP: Final documents not available yet (need all modules)
     // This component is disabled in MVP
     console.log('Final documents not available in MVP');
+    
+    // Verify that all modules are actually completed
+    if (session?.session) {
+      const completionStatus = session.session.completionStatus || 0;
+      if (completionStatus < 5) {
+        // Not all modules completed - redirect to current module
+        console.log(`Only ${completionStatus} modules completed, redirecting to module ${session.session.currentModule}`);
+        navigate(`/module/${session.session.currentModule || 0}`);
+        return;
+      }
+    }
+    
     setLoading(false);
   };
 
