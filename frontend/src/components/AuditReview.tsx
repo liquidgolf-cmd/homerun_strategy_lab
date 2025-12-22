@@ -80,14 +80,18 @@ export default function AuditReview({
     applyInlineStyles(clone);
     pdfContainer.appendChild(clone);
     
-    // Add to body temporarily (visible but off-screen)
-    pdfContainer.style.top = `${window.scrollY - 10000}px`;
+    // Add to body - position at top of viewport but make it small
+    pdfContainer.style.top = '0';
+    pdfContainer.style.height = 'auto';
+    pdfContainer.style.overflow = 'visible';
     document.body.appendChild(pdfContainer);
     
     // Force a reflow to ensure rendering
-    pdfContainer.offsetHeight;
+    const height = pdfContainer.offsetHeight;
+    console.log('PDF container height:', height);
+    console.log('PDF container has content:', pdfContainer.textContent?.length || 0, 'characters');
     
-    // Generate PDF
+    // Generate PDF after a short delay to ensure rendering
     setTimeout(() => {
       const opt = {
         margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
