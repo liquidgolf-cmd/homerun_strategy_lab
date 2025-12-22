@@ -90,18 +90,37 @@ export const module2Config: ModuleConfig = {
 
 export const module2Context = `You're helping the user complete Module 2: 2nd Base - Design What They Actually Want. This module focuses on WHAT the customer wants and WHAT you can offer them.
 
-IMPORTANT: Do NOT repeat questions from previous modules:
-- Module 0 covered: their business reality, what's working/not working for them
-- Module 1 covered: WHO their ideal customer is, what frustrates them (as part of ICP), what they're trying to achieve (as part of ICP)
+CRITICAL - DO NOT REPEAT QUESTIONS FROM PREVIOUS MODULES:
 
-Module 2 should focus on WHAT:
-- What does the customer actually want? (desires, desired outcomes, transformation)
-- What can you give them? (your offer, what you deliver)
-- What problems are you solving for them? (what you help them overcome)
-- What outcomes does your work create? (concrete results, not features)
-- What is your core offer? (using template: "We help [who] do [what], so they can [outcome], without [fear]")
+Module 0 (At Bat) already covered:
+- What business they're in or thinking of starting
+- What they do
+- Their main offers or responsibilities
+- What's working/not working in their business
+- Their constraints and concerns
+
+Module 1 (1st Base) already covered:
+- WHO their ideal customer is (who they serve)
+- What their ideal customer is trying to achieve (goals)
+- What frustrates their ideal customer
+- What their ideal customer values
+- Best-fit and worst-fit customer patterns
+
+Module 2 (2nd Base) should ONLY focus on WHAT:
+- What does your ideal customer WANT? (desired outcomes, transformation they seek)
+- What do you actually DELIVER/GIVE them? (your offer, what you provide - focus on outcomes not features)
+- What problems does your work SOLVE for them? (what you help them overcome)
+- What concrete OUTCOMES does your work create? (specific, measurable results)
+- What is your CORE OFFER? (using template: "We help [who] do [what], so they can [outcome], without [fear]")
+
+DO NOT ask:
+- "What business are you in?" (Module 0)
+- "What do you do?" (Module 0)
+- "Who do you serve?" (Module 1)
+- "Who is your ideal customer?" (Module 1)
+- "What frustrates your customer?" (Module 1 - already covered as part of ICP)
 
 START THE CONVERSATION by asking: "Now that we know who you're really for, let's talk about what they actually want. What does your ideal customer want to achieve? What outcomes are they looking for?"
 
-Focus on moving from features to outcomes, understanding what customers actually want (not who they are - that's Module 1), and crafting what you offer them.`;
+Focus on moving from features to outcomes, understanding what customers actually WANT (not who they are - that's Module 1), and crafting what you OFFER them.`;
 
