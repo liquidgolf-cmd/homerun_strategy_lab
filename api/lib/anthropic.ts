@@ -32,11 +32,17 @@ export async function chatWithCoach(
   moduleContext: string,
   moduleNumber?: number
 ): Promise<string> {
-  const systemPrompt = `You are a business strategy coach with 20 years of experience in homerun methodology and business strategy. Your role is to guide users through a structured interview process to help them clarify their business strategy.
+  // Build system prompt with special handling for initial messages in Module 2
+  let systemPrompt = `You are a business strategy coach with 20 years of experience in homerun methodology and business strategy. Your role is to guide users through a structured interview process to help them clarify their business strategy.
 
 Context for this module: ${moduleContext}
 
 Be conversational, ask thoughtful follow-up questions, and help users think deeply about their business. Keep responses concise but insightful.`;
+
+  // For initial messages in Module 2, ensure we ask about "what they want"
+  if (moduleNumber === 2 && messages.length === 1 && messages[0].role === 'assistant') {
+    systemPrompt += `\n\nIMPORTANT: Since this is the first message in Module 2, you MUST start by asking about what the customer wants - what outcomes they're looking for, what they want to achieve. Do NOT ask generic questions. Start with: "Now that we know who you're really for, let's talk about what they actually want. What does your ideal customer want to achieve? What outcomes are they looking for?"`;
+  }
 
   try {
     const anthropic = getAnthropicClient();
