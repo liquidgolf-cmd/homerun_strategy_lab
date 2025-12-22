@@ -135,12 +135,18 @@ export default function AIChatInterface({
   }, [messages, ttsEnabled]);
 
   const handleTtsToggle = () => {
+    // Stop any ongoing speech first
+    stopSpeaking();
+    currentUtteranceRef.current = null;
+    
     const newTtsEnabled = !ttsEnabled;
     setTtsEnabled(newTtsEnabled);
-    if (!newTtsEnabled) {
-      stopSpeaking();
-      currentUtteranceRef.current = null;
-    }
+    
+    // Announce the toggle state clearly
+    setTimeout(() => {
+      const announcement = newTtsEnabled ? 'Text to speech on' : 'Text to speech off';
+      speakText(announcement);
+    }, 100); // Small delay to ensure state is updated
   };
 
   const handleSend = async () => {
@@ -200,15 +206,16 @@ export default function AIChatInterface({
           <h2 className="text-2xl font-bold text-primary">{config.title}</h2>
           <div className="flex items-center gap-4">
             {/* Text-to-Speech Toggle */}
-            <label className="flex items-center gap-2 cursor-pointer">
+            <div className="flex items-center gap-2">
               <span className="text-sm text-gray-700">Text-to-Speech</span>
               <button
                 type="button"
                 onClick={handleTtsToggle}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                   ttsEnabled ? 'bg-primary' : 'bg-gray-300'
                 }`}
-                aria-label="Toggle text-to-speech"
+                aria-label={ttsEnabled ? 'Text to speech on, click to turn off' : 'Text to speech off, click to turn on'}
+                aria-pressed={ttsEnabled}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -216,10 +223,11 @@ export default function AIChatInterface({
                   }`}
                 />
               </button>
-            </label>
+            </div>
             <button
               onClick={onSwitchToForm}
               className="text-sm text-primary hover:underline"
+              aria-label="Switch to form view"
             >
               Switch to Form
             </button>
