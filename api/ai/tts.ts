@@ -70,13 +70,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // - en-US-Standard-C (female, standard)
     // See https://cloud.google.com/text-to-speech/docs/voices for full list
     const voiceName = process.env.GOOGLE_TTS_VOICE_NAME || 'en-US-Neural2-D';
-    const ssmlGender = process.env.GOOGLE_TTS_VOICE_GENDER || 'NEUTRAL';
+    
+    // Determine gender from voice name if not explicitly set
+    // Most voices ending in D, J, B are male; F, C are typically female
+    let ssmlGender: 'MALE' | 'FEMALE';
+    if (process.env.GOOGLE_TTS_VOICE_GENDER) {
+      const envGender = process.env.GOOGLE_TTS_VOICE_GENDER.toUpperCase();
+      if (envGender === 'MALE' || envGender === 'FEMALE') {
+        ssmlGender = envGender as 'MALE' | 'FEMALE';
+      } else {
+        // If invalid, auto-detect from voice name
+        ssmlGender = voiceName.includes('-F') || voiceName.includes('-C') ? 'FEMALE' : 'MALE';
+      }
+    } else {
+      // Auto-detect gender from voice name
+      // Voices ending in -F or -C are typically female, others are male
+      ssmlGender = voiceName.includes('-F') || voiceName.includes('-C') ? 'FEMALE' : 'MALE';
+    }
     
     const [response] = await client.synthesizeSpeech({
       input: { text },
       voice: {
         languageCode: 'en-US',
-        ssmlGender: ssmlGender as 'NEUTRAL' | 'MALE' | 'FEMALE',
+        ssmlGender: ssmlGender,
         name: voiceName,
       },
       audioConfig: {

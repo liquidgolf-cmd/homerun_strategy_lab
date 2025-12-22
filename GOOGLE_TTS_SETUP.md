@@ -78,7 +78,7 @@ Add to Vercel (Settings > Environment Variables):
 |--------------|-------------|----------|---------|
 | `GOOGLE_TTS_CREDENTIALS` | Full JSON content of service account credentials (minified) | Yes | `{"type":"service_account","project_id":"..."}` |
 | `GOOGLE_TTS_VOICE_NAME` | Voice name (optional, defaults to `en-US-Neural2-D`) | No | `en-US-Neural2-F` (female) or `en-US-Neural2-J` (expressive male) |
-| `GOOGLE_TTS_VOICE_GENDER` | Voice gender (optional, defaults to `NEUTRAL`) | No | `MALE`, `FEMALE`, or `NEUTRAL` |
+| `GOOGLE_TTS_VOICE_GENDER` | Voice gender (optional, auto-detected from voice name) | No | `MALE` or `FEMALE` (Note: `NEUTRAL` is not supported by Google Cloud TTS) |
 | `GOOGLE_TTS_SPEAKING_RATE` | Speaking rate (optional, defaults to `1.0`, range 0.25-4.0) | No | `1.0` (normal) or `1.2` (faster) |
 | `GOOGLE_TTS_PITCH` | Voice pitch (optional, defaults to `0.0`, range -20.0 to 20.0) | No | `0.0` (normal) or `5.0` (higher) |
 | `GOOGLE_TTS_VOLUME` | Volume gain in dB (optional, defaults to `0.0`) | No | `0.0` (normal) or `5.0` (louder) |
