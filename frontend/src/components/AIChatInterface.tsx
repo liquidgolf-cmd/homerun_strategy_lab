@@ -97,25 +97,21 @@ export default function AIChatInterface({
       const lastMessage = messages[messages.length - 1];
       // Only speak assistant messages
       if (lastMessage.role === 'assistant') {
-        // Small delay to ensure the message is fully rendered
-        const timeoutId = setTimeout(() => {
-          // Strip markdown formatting for cleaner speech
-          const textToSpeak = lastMessage.content
-            .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
-            .replace(/\*(.*?)\*/g, '$1') // Remove italic
-            .replace(/#{1,6}\s/g, '') // Remove markdown headers
-            .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove markdown links
-            .replace(/`([^`]+)`/g, '$1') // Remove inline code
-            .trim();
-          
-          if (textToSpeak) {
-            speakText(textToSpeak).catch((error: any) => {
-              console.error('Error speaking text:', error);
-            });
-          }
-        }, 100); // Small delay to ensure message is rendered
+        // Strip markdown formatting for cleaner speech and speak immediately
+        const textToSpeak = lastMessage.content
+          .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+          .replace(/\*(.*?)\*/g, '$1') // Remove italic
+          .replace(/#{1,6}\s/g, '') // Remove markdown headers
+          .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove markdown links
+          .replace(/`([^`]+)`/g, '$1') // Remove inline code
+          .trim();
         
-        return () => clearTimeout(timeoutId);
+        if (textToSpeak) {
+          // Start speaking immediately without delay
+          speakText(textToSpeak).catch((error: any) => {
+            console.error('Error speaking text:', error);
+          });
+        }
       }
     }
   }, [messages, ttsEnabled, speakText]);
@@ -188,17 +184,17 @@ export default function AIChatInterface({
       <div className="bg-white rounded-lg shadow-lg p-6 mb-4 flex-shrink-0">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-primary">{config.title}</h2>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={handleResetConversation}
-              className="text-sm text-gray-600 hover:text-primary transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               aria-label="Reset conversation"
             >
               Reset Conversation
             </button>
             <button
               onClick={onSwitchToForm}
-              className="text-sm text-primary hover:underline"
+              className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               aria-label="Switch to form view"
             >
               Switch to Form
