@@ -155,9 +155,13 @@ export default function AIChatInterface({
     const newTtsEnabled = !ttsEnabled;
     setTtsEnabled(newTtsEnabled);
     
-    // Immediately announce the toggle state (don't wait for state update)
-    const announcement = newTtsEnabled ? 'Text to speech on' : 'Text to speech off';
-    speakText(announcement);
+    // Announce the toggle state after a brief delay to ensure speechSynthesis is ready
+    setTimeout(() => {
+      const announcement = newTtsEnabled ? 'Text to speech on' : 'Text to speech off';
+      // Cancel any pending speech before speaking
+      stopSpeaking();
+      speakText(announcement);
+    }, 50);
   };
 
   const handleSend = async () => {
@@ -225,7 +229,7 @@ export default function AIChatInterface({
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                   ttsEnabled ? 'bg-primary' : 'bg-gray-300'
                 }`}
-                aria-label={ttsEnabled ? 'Text to speech on, click to turn off' : 'Text to speech off, click to turn on'}
+                aria-label={ttsEnabled ? 'Text to speech on' : 'Text to speech off'}
                 aria-pressed={ttsEnabled}
                 aria-live="polite"
               >
