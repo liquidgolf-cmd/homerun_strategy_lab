@@ -24,16 +24,54 @@ export default function AuditReview({
   const handleDownloadPDF = () => {
     if (!pdfContentRef.current) return;
 
-    const element = pdfContentRef.current;
+    // Create a temporary container with header for PDF
+    const pdfContainer = document.createElement('div');
+    pdfContainer.style.padding = '40px';
+    pdfContainer.style.backgroundColor = '#ffffff';
+    
+    // Add header
+    const header = document.createElement('div');
+    header.style.marginBottom = '30px';
+    header.style.paddingBottom = '20px';
+    header.style.borderBottom = '3px solid #0f4761';
+    header.innerHTML = `
+      <h1 style="font-size: 28px; font-weight: bold; color: #0f4761; margin-bottom: 8px;">${moduleTitle}</h1>
+      <p style="font-size: 14px; color: #666; margin: 4px 0;">Module ${moduleNumber} Audit Review</p>
+      <p style="font-size: 14px; color: #666; margin: 4px 0;">${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+    `;
+    pdfContainer.appendChild(header);
+    
+    // Clone the content
+    const contentClone = pdfContentRef.current.cloneNode(true) as HTMLElement;
+    // Remove the hidden header div if it exists
+    const hiddenHeader = contentClone.querySelector('.print\\:block.hidden');
+    if (hiddenHeader) {
+      hiddenHeader.remove();
+    }
+    pdfContainer.appendChild(contentClone);
+    
+    // Temporarily add to document for rendering
+    pdfContainer.style.position = 'absolute';
+    pdfContainer.style.left = '-9999px';
+    pdfContainer.style.width = '8.5in';
+    document.body.appendChild(pdfContainer);
+
     const opt = {
       margin: [0.5, 0.5, 0.5, 0.5],
       filename: `module-${moduleNumber}-audit-review.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
     };
 
-    html2pdf().set(opt).from(element).save();
+    html2pdf()
+      .set(opt)
+      .from(pdfContainer)
+      .save()
+      .then(() => {
+        // Clean up
+        document.body.removeChild(pdfContainer);
+      });
   };
 
   const handleDownloadMarkdown = () => {
