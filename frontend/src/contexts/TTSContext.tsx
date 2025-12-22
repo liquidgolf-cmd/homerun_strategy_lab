@@ -12,7 +12,20 @@ const TTSContext = createContext<TTSContextType | undefined>(undefined);
 
 let currentAudio: HTMLAudioElement | null = null;
 
-// Text-to-speech utility using Google Cloud TTS API
+// Fallback to browser's Web Speech API if Google TTS fails
+const speakWithBrowserTTS = (text: string): void => {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    utterance.lang = 'en-US';
+    window.speechSynthesis.speak(utterance);
+  }
+};
+
+// Text-to-speech utility using Google Cloud TTS API with fallback to browser TTS
 const speakTextImpl = async (text: string): Promise<void> => {
   try {
     // Stop any ongoing audio
@@ -21,44 +34,48 @@ const speakTextImpl = async (text: string): Promise<void> => {
       currentAudio = null;
     }
 
-    console.log('[TTS] Calling Google Cloud TTS API for text:', text.substring(0, 50) + (text.length > 50 ? '...' : ''));
-    // Call Google TTS API
-    const audioDataUrl = await apiService.textToSpeech(text);
+    console.log('[TTS] Attempting Google Cloud TTS for text:', text.substring(0, 50) + (text.length > 50 ? '...' : ''));
     
-    if (!audioDataUrl) {
-      console.error('[TTS] API returned empty audio data URL');
-      throw new Error('TTS API returned empty audio data');
+    try {
+      // Try Google Cloud TTS API first
+      const audioDataUrl = await apiService.textToSpeech(text);
+      
+      if (!audioDataUrl) {
+        throw new Error('TTS API returned empty audio data');
+      }
+      
+      console.log('[TTS] Received audio data from Google Cloud TTS');
+      
+      // Create audio element and play
+      const audio = new Audio(audioDataUrl);
+      currentAudio = audio;
+      
+      audio.onended = () => {
+        console.log('[TTS] Audio playback completed');
+        currentAudio = null;
+      };
+      
+      audio.onerror = (error) => {
+        console.error('[TTS] Audio playback error:', error);
+        currentAudio = null;
+        // Fallback to browser TTS on playback error
+        console.log('[TTS] Falling back to browser TTS');
+        speakWithBrowserTTS(text);
+      };
+      
+      await audio.play();
+      console.log('[TTS] Google Cloud TTS audio playing');
+      return;
+    } catch (apiError: any) {
+      // If Google TTS API fails, fallback to browser TTS
+      console.warn('[TTS] Google Cloud TTS failed, using browser fallback:', apiError?.response?.data?.error || apiError?.message);
+      console.log('[TTS] Using browser built-in TTS as fallback');
+      speakWithBrowserTTS(text);
     }
-    
-    console.log('[TTS] Received audio data URL, length:', audioDataUrl.length);
-    
-    // Create audio element and play
-    const audio = new Audio(audioDataUrl);
-    currentAudio = audio;
-    
-    audio.onended = () => {
-      console.log('[TTS] Audio playback completed');
-      currentAudio = null;
-    };
-    
-    audio.onerror = (error) => {
-      console.error('[TTS] Audio playback error:', error);
-      currentAudio = null;
-    };
-    
-    console.log('[TTS] Starting audio playback...');
-    await audio.play();
-    console.log('[TTS] Audio playback started successfully');
   } catch (error: any) {
-    console.error('[TTS] Error in speakTextImpl:', error);
-    console.error('[TTS] Error details:', {
-      message: error?.message,
-      response: error?.response?.data,
-      status: error?.response?.status,
-    });
-    currentAudio = null;
-    // Don't throw - just log the error so the UI doesn't break
-    // Users can check console for error details
+    console.error('[TTS] Unexpected error:', error);
+    // Final fallback to browser TTS
+    speakWithBrowserTTS(text);
   }
 };
 
@@ -66,6 +83,10 @@ const stopSpeakingImpl = () => {
   if (currentAudio) {
     currentAudio.pause();
     currentAudio = null;
+  }
+  // Also stop browser TTS if it's running
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
   }
 };
 
