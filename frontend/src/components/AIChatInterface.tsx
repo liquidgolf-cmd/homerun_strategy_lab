@@ -166,18 +166,39 @@ export default function AIChatInterface({
     }
   };
 
+  const handleResetConversation = () => {
+    if (window.confirm('Are you sure you want to reset this conversation? This will clear all messages and start over.')) {
+      // Reset to initial message
+      const initialMessage = getInitialMessage();
+      setMessages(initialMessage);
+      // Clear saved transcript
+      onSave({
+        aiTranscript: initialMessage.map((m) => ({ role: m.role, content: m.content })),
+      });
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto flex flex-col h-[calc(100vh-2rem)] md:h-auto">
       <div className="bg-white rounded-lg shadow-lg p-6 mb-4 flex-shrink-0">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-primary">{config.title}</h2>
-          <button
-            onClick={onSwitchToForm}
-            className="text-sm text-primary hover:underline"
-            aria-label="Switch to form view"
-          >
-            Switch to Form
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleResetConversation}
+              className="text-sm text-gray-600 hover:text-primary transition-colors"
+              aria-label="Reset conversation"
+            >
+              Reset Conversation
+            </button>
+            <button
+              onClick={onSwitchToForm}
+              className="text-sm text-primary hover:underline"
+              aria-label="Switch to form view"
+            >
+              Switch to Form
+            </button>
+          </div>
         </div>
         <p className="text-secondary">{config.description}</p>
       </div>
