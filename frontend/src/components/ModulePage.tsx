@@ -75,12 +75,20 @@ export default function ModulePage() {
       } else if (response.inputMethod) {
         setInputMethod(response.inputMethod);
         setViewState('input');
+      } else {
+        // No response exists yet - show landing page
+        setViewState('landing');
+        setInputMethod(null);
       }
     } catch (error: any) {
       if (error.response?.status !== 404) {
         console.error('Error loading module response:', error);
       }
-      // 404 is expected if no response exists yet
+      // 404 is expected if no response exists yet - show landing page
+      setModuleResponse(null);
+      setViewState('landing');
+      setInputMethod(null);
+      setAuditReview('');
     }
   };
 
