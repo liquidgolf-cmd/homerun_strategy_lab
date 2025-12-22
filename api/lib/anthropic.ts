@@ -32,16 +32,27 @@ export async function chatWithCoach(
   moduleContext: string,
   moduleNumber?: number
 ): Promise<string> {
-  // Build system prompt with special handling for initial messages in Module 2
+  // Build system prompt with special handling for Module 2
   let systemPrompt = `You are a business strategy coach with 20 years of experience in homerun methodology and business strategy. Your role is to guide users through a structured interview process to help them clarify their business strategy.
 
 Context for this module: ${moduleContext}
 
-Be conversational, ask thoughtful follow-up questions, and help users think deeply about their business. Keep responses concise but insightful.`;
+CRITICAL INSTRUCTIONS:
+- Follow the module context EXACTLY
+- Do NOT ask questions that were already covered in previous modules
+- Keep responses concise but insightful (2-4 sentences typically)
+- Ask one focused question at a time
+- Be conversational and encouraging`;
 
-  // For initial messages in Module 2, ensure we ask about "what they want"
-  if (moduleNumber === 2 && messages.length === 1 && messages[0].role === 'assistant') {
-    systemPrompt += `\n\nIMPORTANT: Since this is the first message in Module 2, you MUST start by asking about what the customer wants - what outcomes they're looking for, what they want to achieve. Do NOT ask generic questions. Start with: "Now that we know who you're really for, let's talk about what they actually want. What does your ideal customer want to achieve? What outcomes are they looking for?"`;
+  // For Module 2, reinforce not repeating previous modules
+  if (moduleNumber === 2) {
+    systemPrompt += `\n\nSPECIAL INSTRUCTIONS FOR MODULE 2:
+- DO NOT ask "What business are you in?" or "What do you do?" - these were covered in Module 0
+- DO NOT ask "Who do you serve?" or "Who is your ideal customer?" - this was covered in Module 1
+- DO NOT ask "What frustrates your customer?" - this was covered in Module 1 as part of the Ideal Customer Profile
+- DO NOT ask "What are you trying to achieve?" about the business owner - this is about the customer
+- ONLY ask about WHAT: what the customer wants, what you deliver, what outcomes you create, what your core offer is
+- If the user mentions something from a previous module, acknowledge it briefly but redirect to Module 2's focus on WHAT`;
   }
 
   try {
