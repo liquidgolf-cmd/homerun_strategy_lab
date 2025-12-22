@@ -40,14 +40,29 @@ You have two options:
 
 #### Option A: JSON Content as Environment Variable (Recommended for Vercel)
 
-1. Open the downloaded JSON file
-2. Copy the entire contents
-3. In Vercel project settings:
+1. Open the downloaded JSON file (e.g., `google-tts-credentials.json`)
+2. **IMPORTANT**: The JSON must be minified (all on one line, no line breaks) for Vercel's environment variables
+3. You have two options:
+   
+   **Option A1: Minify JSON manually**
+   - Remove all line breaks and extra spaces
+   - The JSON should look like: `{"type":"service_account","project_id":"your-project",...}` (all on one line)
+   - Or use an online JSON minifier: https://jsonformatter.org/json-minify
+   
+   **Option A2: Use command line (if you have the file locally)**
+   ```bash
+   cat google-tts-credentials.json | jq -c .
+   ```
+   This will output minified JSON that you can copy
+   
+4. In Vercel project settings:
    - Go to Settings > Environment Variables
-   - Add new variable:
-     - **Name**: `GOOGLE_TTS_CREDENTIALS`
-     - **Value**: Paste the entire JSON content (as a single line, or Vercel will handle multi-line)
-     - **Environment**: Production, Preview, Development (as needed)
+   - Click "Add New"
+   - **Name**: `GOOGLE_TTS_CREDENTIALS`
+   - **Value**: Paste the minified JSON (must be all on one line with no extra spaces/line breaks)
+   - **Environment**: Select Production, Preview, and/or Development (check all you need)
+   - Click "Save"
+5. **Redeploy** your application after adding the environment variable
 
 #### Option B: Service Account File Path (Not recommended for Vercel serverless)
 
