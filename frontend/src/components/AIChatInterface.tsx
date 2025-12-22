@@ -86,6 +86,7 @@ export default function AIChatInterface({
   const [ttsEnabled, setTtsEnabled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const isTogglingRef = useRef(false); // Track if we're in a toggle action
 
   // Scroll chat container to top on initial load
   useEffect(() => {
@@ -105,6 +106,12 @@ export default function AIChatInterface({
 
   // Handle text-to-speech for assistant messages
   useEffect(() => {
+    // Skip if we're in the middle of a toggle action
+    if (isTogglingRef.current) {
+      isTogglingRef.current = false; // Reset the flag
+      return;
+    }
+
     if (ttsEnabled && messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
       // Only speak assistant messages
@@ -134,7 +141,13 @@ export default function AIChatInterface({
     };
   }, [messages, ttsEnabled]);
 
-  const handleTtsToggle = () => {
+  const handleTtsToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Set flag to prevent useEffect from interfering
+    isTogglingRef.current = true;
+    
     // Stop any ongoing speech first
     stopSpeaking();
     currentUtteranceRef.current = null;
@@ -142,11 +155,9 @@ export default function AIChatInterface({
     const newTtsEnabled = !ttsEnabled;
     setTtsEnabled(newTtsEnabled);
     
-    // Announce the toggle state clearly
-    setTimeout(() => {
-      const announcement = newTtsEnabled ? 'Text to speech on' : 'Text to speech off';
-      speakText(announcement);
-    }, 100); // Small delay to ensure state is updated
+    // Immediately announce the toggle state (don't wait for state update)
+    const announcement = newTtsEnabled ? 'Text to speech on' : 'Text to speech off';
+    speakText(announcement);
   };
 
   const handleSend = async () => {
@@ -207,7 +218,7 @@ export default function AIChatInterface({
           <div className="flex items-center gap-4">
             {/* Text-to-Speech Toggle */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-700">Text-to-Speech</span>
+              <span className="text-sm text-gray-700" aria-hidden="true">Text-to-Speech</span>
               <button
                 type="button"
                 onClick={handleTtsToggle}
@@ -216,11 +227,13 @@ export default function AIChatInterface({
                 }`}
                 aria-label={ttsEnabled ? 'Text to speech on, click to turn off' : 'Text to speech off, click to turn on'}
                 aria-pressed={ttsEnabled}
+                aria-live="polite"
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
                     ttsEnabled ? 'translate-x-6' : 'translate-x-1'
                   }`}
+                  aria-hidden="true"
                 />
               </button>
             </div>
