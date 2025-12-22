@@ -29,13 +29,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const response = await chatWithCoach(messages, moduleContext);
     return res.json({ message: response });
   } catch (error: any) {
-    console.error('Error in chat:', error);
+    console.error('Error in chat endpoint:', error);
+    console.error('Error stack:', error.stack);
 
     if (error.message === 'No authorization token provided' || error.message === 'Invalid or expired token') {
       return res.status(401).json({ error: error.message });
     }
 
-    return res.status(500).json({ error: error.message || 'Error generating chat response' });
+    // Include the original error message for debugging
+    const errorMessage = error.message || 'Error generating chat response';
+    return res.status(500).json({ 
+      error: `Failed to generate chat response: ${errorMessage}`,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+    });
   }
 }
 

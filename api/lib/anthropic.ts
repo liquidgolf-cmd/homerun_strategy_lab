@@ -4,13 +4,18 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 
-const apiKey = process.env.ANTHROPIC_API_KEY;
+let anthropicClient: Anthropic | undefined;
 
-if (!apiKey) {
-  throw new Error('ANTHROPIC_API_KEY is not set. Set it as an environment variable.');
+function getAnthropicClient(): Anthropic {
+  if (!anthropicClient) {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      throw new Error('ANTHROPIC_API_KEY is not set. Please set it in Vercel environment variables.');
+    }
+    anthropicClient = new Anthropic({ apiKey });
+  }
+  return anthropicClient;
 }
-
-const anthropic = new Anthropic({ apiKey });
 
 /**
  * Chat with AI coach
@@ -26,17 +31,36 @@ Context for this module: ${moduleContext}
 Be conversational, ask thoughtful follow-up questions, and help users think deeply about their business. Keep responses concise but insightful.`;
 
   try {
+    const anthropic = getAnthropicClient();
     const response = await anthropic.messages.create({
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 1024,
       system: systemPrompt,
-      messages: messages as any,
+      messages: messages.map(msg => ({
+        role: msg.role,
+        content: msg.content,
+      })),
     });
 
     return response.content[0].type === 'text' ? response.content[0].text : '';
   } catch (error: any) {
     console.error('Anthropic API error:', error);
-    throw new Error(`Failed to generate chat response: ${error.message}`);
+    console.error('Error details:', {
+      status: error.status,
+      statusText: error.statusText,
+      message: error.message,
+      error: error.error,
+    });
+    
+    // Provide more helpful error messages
+    if (error.status === 401 || error.status === 403) {
+      throw new Error('Invalid Anthropic API key. Please check your ANTHROPIC_API_KEY environment variable.');
+    }
+    if (error.status === 404) {
+      throw new Error('Anthropic API endpoint or model not found. Please check the model name and API version.');
+    }
+    
+    throw new Error(`Failed to generate chat response: ${error.message || error.status || 'Unknown error'}`);
   }
 }
 
@@ -63,6 +87,7 @@ export async function generateAuditReview(
   const fullPrompt = `${auditPrompt}\n\n${userData}\n\nPlease generate a comprehensive audit review document based on the above information.`;
 
   try {
+    const anthropic = getAnthropicClient();
     const response = await anthropic.messages.create({
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 4096,
@@ -77,7 +102,22 @@ export async function generateAuditReview(
     return response.content[0].type === 'text' ? response.content[0].text : '';
   } catch (error: any) {
     console.error('Anthropic API error:', error);
-    throw new Error(`Failed to generate audit review: ${error.message}`);
+    console.error('Error details:', {
+      status: error.status,
+      statusText: error.statusText,
+      message: error.message,
+      error: error.error,
+    });
+    
+    // Provide more helpful error messages
+    if (error.status === 401 || error.status === 403) {
+      throw new Error('Invalid Anthropic API key. Please check your ANTHROPIC_API_KEY environment variable.');
+    }
+    if (error.status === 404) {
+      throw new Error('Anthropic API endpoint or model not found. Please check the model name and API version.');
+    }
+    
+    throw new Error(`Failed to generate audit review: ${error.message || error.status || 'Unknown error'}`);
   }
 }
 
