@@ -15,6 +15,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
       const response = await getModuleResponse(user.id, 1);
       if (!response) {
+        // Return 404 but don't throw - this is expected for new modules
         return res.status(404).json({ error: 'Module 1 response not found' });
       }
       return res.json(response);
