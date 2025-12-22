@@ -49,6 +49,11 @@ export default function ModulePage() {
     }
   }, [session, moduleNum]);
 
+  // Scroll to top when module number changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [moduleNum]);
+
   const loadSession = async () => {
     try {
       const data = await apiService.getSession();
