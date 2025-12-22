@@ -2,6 +2,34 @@ import { useState, useRef, useEffect } from 'react';
 import { apiService } from '../services/api';
 import type { ModuleConfig } from '../types';
 
+// Text-to-speech utility using Web Speech API (Google TTS)
+const speakText = (text: string, onEnd?: () => void) => {
+  if ('speechSynthesis' in window) {
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    utterance.lang = 'en-US';
+    
+    if (onEnd) {
+      utterance.onend = onEnd;
+    }
+    
+    window.speechSynthesis.speak(utterance);
+    return utterance;
+  }
+  return null;
+};
+
+const stopSpeaking = () => {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+};
+
 interface AIChatInterfaceProps {
   config: ModuleConfig;
   moduleContext: string;
@@ -55,7 +83,9 @@ export default function AIChatInterface({
   >(getInitialMessage());
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [ttsEnabled, setTtsEnabled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   // Scroll chat container to top on initial load
   useEffect(() => {
@@ -72,6 +102,46 @@ export default function AIChatInterface({
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  // Handle text-to-speech for assistant messages
+  useEffect(() => {
+    if (ttsEnabled && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      // Only speak assistant messages
+      if (lastMessage.role === 'assistant') {
+        // Strip markdown formatting for cleaner speech
+        const textToSpeak = lastMessage.content
+          .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+          .replace(/\*(.*?)\*/g, '$1') // Remove italic
+          .replace(/#{1,6}\s/g, '') // Remove markdown headers
+          .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove markdown links
+          .replace(/`([^`]+)`/g, '$1') // Remove inline code
+          .trim();
+        
+        if (textToSpeak) {
+          currentUtteranceRef.current = speakText(textToSpeak);
+        }
+      }
+    } else if (!ttsEnabled) {
+      // Stop speaking when TTS is disabled
+      stopSpeaking();
+      currentUtteranceRef.current = null;
+    }
+
+    // Cleanup: stop speech when component unmounts
+    return () => {
+      stopSpeaking();
+    };
+  }, [messages, ttsEnabled]);
+
+  const handleTtsToggle = () => {
+    const newTtsEnabled = !ttsEnabled;
+    setTtsEnabled(newTtsEnabled);
+    if (!newTtsEnabled) {
+      stopSpeaking();
+      currentUtteranceRef.current = null;
+    }
+  };
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
@@ -128,12 +198,32 @@ export default function AIChatInterface({
       <div className="bg-white rounded-lg shadow-lg p-6 mb-4 flex-shrink-0">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-primary">{config.title}</h2>
-          <button
-            onClick={onSwitchToForm}
-            className="text-sm text-primary hover:underline"
-          >
-            Switch to Form
-          </button>
+          <div className="flex items-center gap-4">
+            {/* Text-to-Speech Toggle */}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <span className="text-sm text-gray-700">Text-to-Speech</span>
+              <button
+                type="button"
+                onClick={handleTtsToggle}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  ttsEnabled ? 'bg-primary' : 'bg-gray-300'
+                }`}
+                aria-label="Toggle text-to-speech"
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    ttsEnabled ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </label>
+            <button
+              onClick={onSwitchToForm}
+              className="text-sm text-primary hover:underline"
+            >
+              Switch to Form
+            </button>
+          </div>
         </div>
         <p className="text-secondary">{config.description}</p>
       </div>
