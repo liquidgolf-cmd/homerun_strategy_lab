@@ -38,13 +38,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   } catch (error: any) {
     console.error('Error getting/creating session:', error);
+    console.error('Error stack:', error.stack);
     
     if (error.message === 'No authorization token provided' || error.message === 'Invalid or expired token') {
       return res.status(401).json({ error: error.message });
     }
 
+    // Provide more helpful error messages
+    let errorMessage = 'Internal server error';
+    if (error.message?.includes('SUPABASE_URL') || error.message?.includes('SUPABASE_SERVICE_ROLE_KEY')) {
+      errorMessage = 'Server configuration error: Missing Supabase credentials';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
     res.status(500).json({
-      error: error.message || 'Internal server error',
+      error: errorMessage,
       details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
   }
