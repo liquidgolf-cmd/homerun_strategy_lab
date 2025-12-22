@@ -7,14 +7,31 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-// Check will be done when functions are called, not at module load
-// This allows us to return proper error responses
+// Create Supabase client lazily
+let supabaseClient: ReturnType<typeof createClient> | null = null;
 
-// Create Supabase client with service role key (bypasses RLS)
-export const supabase = createClient(supabaseUrl, supabaseKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
+function getSupabaseClient() {
+  if (!supabaseClient) {
+    if (!supabaseUrl || !supabaseKey) {
+      const missing = [];
+      if (!supabaseUrl) missing.push('SUPABASE_URL');
+      if (!supabaseKey) missing.push('SUPABASE_SERVICE_ROLE_KEY');
+      throw new Error(`Missing environment variables: ${missing.join(', ')}. Please set them in Vercel dashboard.`);
+    }
+    supabaseClient = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
+  }
+  return supabaseClient;
+}
+
+// Export getter function instead of direct client
+export const supabase = new Proxy({} as ReturnType<typeof createClient>, {
+  get(_target, prop) {
+    return getSupabaseClient()[prop as keyof ReturnType<typeof createClient>];
   },
 });
 
