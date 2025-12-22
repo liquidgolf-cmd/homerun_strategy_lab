@@ -26,7 +26,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Module context is required' });
     }
 
-    const response = await chatWithCoach(messages, moduleContext);
+    const response = await chatWithCoach(messages, moduleContext, moduleNumber);
     return res.json({ message: response });
   } catch (error: any) {
     console.error('Error in chat endpoint:', error);
