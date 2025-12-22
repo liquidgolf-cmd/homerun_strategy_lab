@@ -5,7 +5,6 @@ import { apiService } from '../services/api';
 import { supabase } from '../lib/supabase';
 import VideoEmbed from './VideoEmbed';
 import { introConfig } from '../config/intro';
-import logo from '../assets/LoamStrategy4Logo.png';
 
 export default function MainPage() {
   const navigate = useNavigate();
@@ -174,13 +173,13 @@ export default function MainPage() {
 
         {/* Intro Video */}
         {introConfig.videoUrl && (
-          <div className="mb-12 max-w-4xl mx-auto">
+          <div className="mb-6 md:mb-12 max-w-4xl mx-auto">
             <VideoEmbed videoUrl={introConfig.videoUrl} />
           </div>
         )}
 
         {/* Instructional Content */}
-        <div className="max-w-4xl mx-auto mb-12 space-y-6">
+        <div className="max-w-4xl mx-auto mb-6 md:mb-12 space-y-4 md:space-y-6">
           {/* What You'll See */}
           <div className="bg-white rounded-lg shadow-lg p-8">
             <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatYoullSee.title}</h2>

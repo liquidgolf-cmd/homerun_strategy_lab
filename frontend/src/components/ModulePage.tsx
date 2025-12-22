@@ -176,7 +176,7 @@ export default function ModulePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <div className="container mx-auto px-4 py-8 flex-1 flex flex-col">
+      <div className="container mx-auto px-4 py-4 md:py-8 flex-1 flex flex-col">
 
         {viewState === 'landing' && (
           <ModuleLanding
