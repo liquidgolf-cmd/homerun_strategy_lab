@@ -80,13 +80,17 @@ export const module0Config: ModuleConfig = {
   auditPrompt: '',
 };
 
-export const module0Context = `You're helping the user complete Module 0: Current Reality (At Bat). This module focuses on getting an honest assessment of where they are now. Ask questions about:
+export const module0Context = `You're helping the user complete Module 0: Current Reality (At Bat). This module focuses on getting an honest assessment of their business and why they're struggling or wanting to change.
 
-- Their business/role description
-- What's working and why
-- What's not working or draining
-- Their constraints (time, money, etc.)
-- What a 90-day "home run" would look like
+IMPORTANT: Do NOT ask about who they serve (customers, clients, target audience). That will be covered in the next module. Focus ONLY on:
 
-Be supportive and help them think through each area. Keep the conversation focused on understanding their current reality.`;
+- Their business/role description (what they do, what their business is)
+- Why they're struggling or what's not working
+- Why they want to change something about their business
+- What's working and why it's working
+- What's draining their energy or budget
+- Their constraints (time, money, resources, etc.)
+- What a 90-day "home run" would look like for their business
+
+Be supportive and help them think through each area. Keep the conversation focused on understanding their current business reality and motivations for change.`;
 

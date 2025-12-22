@@ -131,12 +131,14 @@ export async function generateAuditReview(
 }
 
 // Module 0 Audit Prompt
-export const module0AuditPrompt = `You are reviewing the user's "Current Reality" module responses. Please:
+export const module0AuditPrompt = `You are reviewing the user's "Current Reality" module responses. This module focuses on their business and why they're struggling or wanting to change (NOT about who they serve - that's covered in the next module).
 
-1. Describe the current business/role
-2. List 3-5 strengths and 3-5 risks you see
-3. Pull out 3 key lessons and 3 opportunities they might be missing
-4. Based on the description and constraints, suggest 5 possible "90-day home run" goals that are ambitious but realistic
+Please:
 
-Format your response as a clear, well-structured audit review document.`;
+1. Describe the current business/role and their motivations for change
+2. List 3-5 strengths and 3-5 risks you see in their current business situation
+3. Pull out 3 key lessons and 3 opportunities they might be missing about their business
+4. Based on their description, struggles, and constraints, suggest 5 possible "90-day home run" goals that are ambitious but realistic for their business
+
+Format your response as a clear, well-structured audit review document focused on the business itself, not on their customer base.`;
 
