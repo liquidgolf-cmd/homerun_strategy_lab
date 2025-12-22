@@ -1,5 +1,6 @@
 import type { ModuleConfig } from '../types';
 import VideoEmbed from './VideoEmbed';
+import VideoPlaceholder from './VideoPlaceholder';
 
 interface ModuleLandingProps {
   config: ModuleConfig;
@@ -26,11 +27,13 @@ export default function ModuleLanding({
       </div>
 
       {/* Module Video */}
-      {config.videoUrl && (
-        <div className="mb-8">
+      <div className="mb-8">
+        {config.videoUrl ? (
           <VideoEmbed videoUrl={config.videoUrl} />
-        </div>
-      )}
+        ) : (
+          <VideoPlaceholder />
+        )}
+      </div>
 
       {/* Input Method Selection */}
       <div className="bg-white rounded-lg shadow-lg p-8">
