@@ -43,10 +43,6 @@ export default function FinalSummary() {
     setLoading(false);
   };
 
-  const handleGenerate = async () => {
-    // MVP: Final documents not available yet (need all modules)
-    alert('Final documents generation will be available after all modules are complete (coming soon in MVP)');
-  };
 
 
   if (loading || authLoading) {
