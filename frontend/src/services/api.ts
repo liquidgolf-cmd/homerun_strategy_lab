@@ -32,7 +32,10 @@ api.interceptors.request.use(async (config) => {
 api.interceptors.response.use((response) => {
   return response;
 }, (error) => {
-  console.error(`API response error from ${error.config?.url}:`, error.response?.data || error.message);
+  // Don't log 404 errors - they're expected when resources don't exist yet
+  if (error.response?.status !== 404) {
+    console.error(`API response error from ${error.config?.url}:`, error.response?.data || error.message);
+  }
   return Promise.reject(error);
 });
 
