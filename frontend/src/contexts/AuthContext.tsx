@@ -53,27 +53,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     if (error) {
       console.error('Error signing in with email:', error);
-      throw error;
+      // Provide user-friendly error messages
+      if (error.message.includes('Invalid login credentials')) {
+        throw new Error('Invalid email or password. Please check your credentials and try again.');
+      } else if (error.message.includes('Email not confirmed')) {
+        throw new Error('Please check your email and confirm your account before signing in.');
+      } else {
+        throw new Error(error.message || 'Error signing in. Please try again.');
+      }
+    }
+    if (!data.session) {
+      throw new Error('Sign in successful but no session was created. Please try again.');
     }
   };
 
   const signUpWithEmail = async (email: string, password: string, name?: string) => {
-    const { error } = await supabase.auth.signUp({
+    if (password.length < 6) {
+      throw new Error('Password must be at least 6 characters long.');
+    }
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: name ? { full_name: name } : undefined,
+        emailRedirectTo: `${window.location.origin}/`,
       },
     });
     if (error) {
       console.error('Error signing up with email:', error);
-      throw error;
+      // Provide user-friendly error messages
+      if (error.message.includes('already registered')) {
+        throw new Error('An account with this email already exists. Please sign in instead.');
+      } else if (error.message.includes('Password')) {
+        throw new Error('Password does not meet requirements. Please use a stronger password.');
+      } else {
+        throw new Error(error.message || 'Error signing up. Please try again.');
+      }
+    }
+    // Note: Supabase may require email confirmation, so session might be null
+    if (!data.session && !data.user) {
+      throw new Error('Sign up failed. Please try again.');
     }
   };
 

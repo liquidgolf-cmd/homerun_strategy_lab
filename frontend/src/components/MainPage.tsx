@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
+import { supabase } from '../lib/supabase';
 import VideoPlaceholder from './VideoPlaceholder';
 import logo from '../assets/LoamStrategy4Logo.png';
 
@@ -73,11 +74,18 @@ export default function MainPage() {
 
   const handleSignInWithEmail = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password) {
+      setAuthError('Please enter both email and password.');
+      return;
+    }
     try {
       setAuthError(null);
       setAuthLoadingState(true);
       await signInWithEmail(email, password);
       // After sign-in, the useEffect will call loadAppSession
+      // Clear form on success
+      setEmail('');
+      setPassword('');
     } catch (error: any) {
       console.error('Error signing in with email:', error);
       setAuthError(error.message || 'Error signing in. Please check your email and password.');
@@ -88,12 +96,30 @@ export default function MainPage() {
 
   const handleSignUpWithEmail = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password) {
+      setAuthError('Please enter both email and password.');
+      return;
+    }
+    if (password.length < 6) {
+      setAuthError('Password must be at least 6 characters long.');
+      return;
+    }
     try {
       setAuthError(null);
       setAuthLoadingState(true);
       await signUpWithEmail(email, password, name || undefined);
-      setAuthError('Sign up successful! Please check your email to verify your account.');
-      // Note: Supabase requires email confirmation by default, so user will need to verify
+      // Check if we got a session (email confirmation might be disabled)
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // Email confirmation disabled - user is signed in
+        setAuthError(null);
+        setEmail('');
+        setPassword('');
+        setName('');
+      } else {
+        // Email confirmation required
+        setAuthError('Sign up successful! Please check your email to verify your account before signing in.');
+      }
     } catch (error: any) {
       console.error('Error signing up with email:', error);
       setAuthError(error.message || 'Error signing up. Please try again.');
