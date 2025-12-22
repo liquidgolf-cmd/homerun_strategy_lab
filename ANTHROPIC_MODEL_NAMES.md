@@ -2,19 +2,13 @@
 
 If you're getting 404 errors with the Anthropic API, the model name might be incorrect. Here are the correct model identifiers to try:
 
-## Current Model Options
+## Current Model Options (Anthropic Recommended)
 
-### Claude 3.5 Sonnet (Recommended - Best Balance)
-- `claude-3-5-sonnet-20241022` (full version)
-- `claude-3-5-sonnet` (simplified, may auto-resolve to latest)
+### Claude Sonnet 4 (Recommended - Best Balance)
+- `claude-sonnet-4-20250514` - **DEFAULT** - Best balance of intelligence and speed
 
-### Claude 3 Opus (Most Capable)
-- `claude-3-opus-20240229` (full version)
-- `claude-3-opus` (simplified)
-
-### Claude 3 Haiku (Fastest, Most Cost-Effective)
-- `claude-3-haiku-20240307` (full version)
-- `claude-3-haiku` (simplified)
+### Claude Haiku 4.5 (Faster/Cheaper)
+- `claude-haiku-4-5-20251001` - Faster and more cost-effective responses
 
 ## How to Change the Model
 
@@ -22,26 +16,27 @@ If you're getting 404 errors with the Anthropic API, the model name might be inc
 
 1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
 2. Add or update:
-   - `ANTHROPIC_CHAT_MODEL` = `claude-3-5-sonnet-20241022` (for chat)
-   - `ANTHROPIC_AUDIT_MODEL` = `claude-3-5-sonnet-20241022` (for audit reviews)
+   - `ANTHROPIC_CHAT_MODEL` = `claude-sonnet-4-20250514` (recommended - best balance)
+   - `ANTHROPIC_AUDIT_MODEL` = `claude-sonnet-4-20250514` (recommended - best balance)
+   - OR use `claude-haiku-4-5-20251001` for faster/cheaper responses
 3. Redeploy your application
 
-### Option 2: Test Different Model Names
+### Option 2: Use Faster/Cheaper Model
 
-If `claude-3-5-sonnet` doesn't work, try:
-- `claude-3-5-sonnet-20241022` (full version with date)
-- Check Anthropic's latest documentation for current model names
+For faster and more cost-effective responses, use Haiku:
+- `ANTHROPIC_CHAT_MODEL` = `claude-haiku-4-5-20251001`
+- `ANTHROPIC_AUDIT_MODEL` = `claude-haiku-4-5-20251001`
 
 ## Troubleshooting
 
 **404 Error:**
 - The model name might be incorrect
 - Your API key might not have access to that model
-- Try a different model name from the list above
+- Make sure you're using the exact model name: `claude-sonnet-4-20250514` or `claude-haiku-4-5-20251001`
 
 **Check Available Models:**
 You can test which models your API key has access to by checking the Anthropic console or trying different model names.
 
 **Current Default:**
-The code now defaults to `claude-3-5-sonnet` (without date suffix). If this doesn't work, set `ANTHROPIC_CHAT_MODEL` and `ANTHROPIC_AUDIT_MODEL` environment variables with the full model name including the date.
+The code now defaults to `claude-sonnet-4-20250514` (Anthropic's recommended model for best balance of intelligence and speed). This is the correct model name as of Anthropic's latest recommendations.
 

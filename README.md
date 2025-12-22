@@ -161,8 +161,8 @@ All endpoints require authentication (Bearer token in Authorization header).
 - `SUPABASE_URL` - Your Supabase project URL
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key (for server-side operations)
 - `ANTHROPIC_API_KEY` - Anthropic API key
-- `ANTHROPIC_CHAT_MODEL` - (Optional) Anthropic model for chat. Default: `claude-3-5-sonnet-20241022`. Options: `claude-3-5-sonnet-20241022`, `claude-3-opus-20240229`, `claude-3-haiku-20240307`
-- `ANTHROPIC_AUDIT_MODEL` - (Optional) Anthropic model for audit reviews. Default: `claude-3-5-sonnet-20241022`. Options: `claude-3-5-sonnet-20241022`, `claude-3-opus-20240229`, `claude-3-haiku-20240307`
+- `ANTHROPIC_CHAT_MODEL` - (Optional) Anthropic model for chat. Default: `claude-sonnet-4-20250514` (recommended). Options: `claude-sonnet-4-20250514`, `claude-haiku-4-5-20251001`
+- `ANTHROPIC_AUDIT_MODEL` - (Optional) Anthropic model for audit reviews. Default: `claude-sonnet-4-20250514` (recommended). Options: `claude-sonnet-4-20250514`, `claude-haiku-4-5-20251001`
 
 ### Frontend Environment Variables (Build-time)
 

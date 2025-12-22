@@ -18,11 +18,11 @@ function getAnthropicClient(): Anthropic {
 }
 
 // Model configuration - can be overridden via environment variable
-// Try simpler model names first - Anthropic SDK may auto-resolve to latest version
-// Options: 'claude-3-5-sonnet', 'claude-3-opus', 'claude-3-haiku'
-// Full versions: 'claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307'
-const CHAT_MODEL = process.env.ANTHROPIC_CHAT_MODEL || 'claude-3-5-sonnet';
-const AUDIT_MODEL = process.env.ANTHROPIC_AUDIT_MODEL || 'claude-3-5-sonnet';
+// Anthropic recommendations:
+// - claude-sonnet-4-20250514 (best balance of intelligence and speed) - DEFAULT
+// - claude-haiku-4-5-20251001 (faster/cheaper responses)
+const CHAT_MODEL = process.env.ANTHROPIC_CHAT_MODEL || 'claude-sonnet-4-20250514';
+const AUDIT_MODEL = process.env.ANTHROPIC_AUDIT_MODEL || 'claude-sonnet-4-20250514';
 
 /**
  * Chat with AI coach
