@@ -65,13 +65,41 @@ export default function AuditReview({
     pdf.line(margin, yPosition, pageWidth - margin, yPosition);
     yPosition += 0.2;
     
+    // Function to clean text - remove HTML entities and normalize special characters
+    const cleanText = (text: string): string => {
+      // Create a temporary element to decode HTML entities
+      const temp = document.createElement('div');
+      temp.innerHTML = text;
+      let cleaned = temp.textContent || temp.innerText || text;
+      
+      // Remove any remaining HTML tags or entities
+      cleaned = cleaned.replace(/<[^>]*>/g, '');
+      cleaned = cleaned.replace(/&[#\w]+;/g, (entity) => {
+        const temp2 = document.createElement('div');
+        temp2.innerHTML = entity;
+        return temp2.textContent || entity;
+      });
+      
+      // Remove zero-width and other problematic Unicode characters
+      cleaned = cleaned.replace(/[\u200B-\u200D\uFEFF]/g, '');
+      
+      // Normalize whitespace
+      cleaned = cleaned.replace(/\s+/g, ' ').trim();
+      
+      return cleaned;
+    };
+    
     // Function to add text with word wrapping
     const addText = (text: string, fontSize: number, isBold: boolean = false, color: number[] = [55, 65, 81]) => {
+      // Clean the text first
+      const cleanedText = cleanText(text);
+      if (!cleanedText) return;
+      
       pdf.setFontSize(fontSize);
       pdf.setTextColor(color[0], color[1], color[2]);
       pdf.setFont('helvetica', isBold ? 'bold' : 'normal');
       
-      const lines = pdf.splitTextToSize(text, contentWidth);
+      const lines = pdf.splitTextToSize(cleanedText, contentWidth);
       
       for (let i = 0; i < lines.length; i++) {
         if (yPosition + 0.2 > maxHeight) {
