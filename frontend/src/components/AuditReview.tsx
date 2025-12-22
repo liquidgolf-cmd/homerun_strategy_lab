@@ -228,6 +228,17 @@ export default function AuditReview({
           yPosition += 0.05;
         }
         // If no alt text, skip the image silently
+      } else if (tagName === 'svg') {
+        // Handle SVG icons - use aria-label, title, or skip
+        const svgElement = element as SVGElement;
+        const title = svgElement.querySelector('title');
+        const ariaLabel = svgElement.getAttribute('aria-label');
+        const titleText = title?.textContent || ariaLabel || '';
+        if (titleText) {
+          addText(`[${titleText}]`, 12, false, [100, 100, 100]);
+          yPosition += 0.05;
+        }
+        // If no title/aria-label, skip the SVG silently
       } else if (tagName === 'blockquote') {
         const text = element.textContent?.trim() || '';
         if (text) {
