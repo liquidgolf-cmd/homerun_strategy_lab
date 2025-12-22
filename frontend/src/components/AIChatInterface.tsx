@@ -112,8 +112,8 @@ export default function AIChatInterface({
   };
 
   return (
-    <div className="max-w-4xl mx-auto flex flex-col h-screen md:h-auto">
-      <div className="bg-white rounded-lg shadow-lg p-6 mb-4">
+    <div className="max-w-4xl mx-auto flex flex-col h-[calc(100vh-2rem)] md:h-auto">
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-4 flex-shrink-0">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-primary">{config.title}</h2>
           <button
@@ -127,7 +127,7 @@ export default function AIChatInterface({
       </div>
 
       {/* Chat Messages */}
-      <div className="bg-white rounded-lg shadow-lg p-6 mb-4 flex-1 overflow-y-auto" style={{ minHeight: '500px', maxHeight: 'calc(100vh - 400px)' }}>
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-4 flex-1 overflow-y-auto min-h-0">
         <div className="space-y-4">
           {messages.map((message, index) => (
             <div
@@ -161,7 +161,7 @@ export default function AIChatInterface({
       </div>
 
       {/* Input Area - Fixed at bottom on mobile */}
-      <div className="bg-white rounded-lg shadow-lg p-4 sticky bottom-0 md:relative">
+      <div className="bg-white rounded-lg shadow-lg p-4 flex-shrink-0">
         {/* Mobile: Textarea above buttons */}
         <div className="flex flex-col md:flex-row md:space-x-4 space-y-3 md:space-y-0">
           <textarea
