@@ -5,7 +5,6 @@ import type { ModuleConfig } from '../types';
 interface AIChatInterfaceProps {
   config: ModuleConfig;
   moduleContext: string;
-  moduleNumber: number;
   existingTranscript: Array<{ role: string; content: string; timestamp?: string }>;
   onSave: (data: { aiTranscript: Array<{ role: string; content: string }> }) => void;
   onComplete: () => void;
@@ -15,7 +14,6 @@ interface AIChatInterfaceProps {
 export default function AIChatInterface({
   config,
   moduleContext,
-  moduleNumber,
   existingTranscript,
   onSave,
   onComplete,

@@ -165,7 +165,6 @@ export default function ModulePage() {
           <AIChatInterface
             config={config}
             moduleContext={moduleContext}
-            moduleNumber={moduleNum}
             existingTranscript={moduleResponse?.aiTranscript || []}
             onSave={handleDataSave}
             onComplete={handleGenerateAudit}
