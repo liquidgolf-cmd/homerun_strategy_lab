@@ -19,23 +19,40 @@ export default function AIChatInterface({
   onComplete,
   onSwitchToForm,
 }: AIChatInterfaceProps) {
+  // Get initial message based on module
+  const getInitialMessage = () => {
+    if (existingTranscript.length > 0) {
+      return existingTranscript.map((m) => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+        timestamp: m.timestamp || new Date().toISOString(),
+      }));
+    }
+    
+    // Module 1 specific initial question
+    if (config.number === 1) {
+      return [
+        {
+          role: 'assistant' as const,
+          content: `Hello! I'm here to help you complete ${config.title}. Can you describe your ideal customer/client/user? Who are you really serving?`,
+          timestamp: new Date().toISOString(),
+        },
+      ];
+    }
+    
+    // Default initial message for other modules
+    return [
+      {
+        role: 'assistant' as const,
+        content: `Hello! I'm here to help you complete ${config.title}. I'll ask you some questions to understand your current situation. Let's start - can you tell me a bit about where you are right now with ${config.title.toLowerCase()}?`,
+        timestamp: new Date().toISOString(),
+      },
+    ];
+  };
+
   const [messages, setMessages] = useState<
     Array<{ role: 'user' | 'assistant'; content: string; timestamp: string }>
-  >(
-    existingTranscript.length > 0
-      ? existingTranscript.map((m) => ({
-          role: m.role as 'user' | 'assistant',
-          content: m.content,
-          timestamp: m.timestamp || new Date().toISOString(),
-        }))
-      : [
-          {
-            role: 'assistant',
-            content: `Hello! I'm here to help you complete ${config.title}. I'll ask you some questions to understand your current situation. Let's start - can you tell me a bit about where you are right now with ${config.title.toLowerCase()}?`,
-            timestamp: new Date().toISOString(),
-          },
-        ]
-  );
+  >(getInitialMessage());
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
