@@ -70,22 +70,24 @@ export default function AuditReview({
     const replaceIconsWithText = (text: string): string => {
       let replaced = text;
       
-      // Green circles/checkmarks - use simple checkmark that jsPDF supports
-      replaced = replaced.replace(/🟢|✅|✔|☑/g, '[OK]');
-      replaced = replaced.replace(/✓/g, '✓'); // Keep simple checkmark if supported
+      // Green circles/checkmarks (for patterns) - use ASCII text label
+      replaced = replaced.replace(/🟢|✅|✔|☑|✓/g, '[OK]');
       
-      // Red circles/warnings - use X or warning symbol
-      replaced = replaced.replace(/🔴|❌|✗|✘/g, '[X]');
+      // Red circles/warnings (for red flags) - use ASCII text label
+      replaced = replaced.replace(/🔴|❌|✗|✘|✕/g, '[X]');
       replaced = replaced.replace(/⚠|⚠️/g, '[!]');
       
-      // Lightbulbs/ideas - use text label
-      replaced = replaced.replace(/💡|💭|💬/g, '[IDEA]');
+      // Lightbulbs/ideas (for insights) - use ASCII text label
+      replaced = replaced.replace(/💡|💭|💬|💡️/g, '[IDEA]');
       
-      // Targets/goals - use arrow
+      // Targets/goals (for strategies) - use ASCII text label
       replaced = replaced.replace(/🎯|📍|🔖/g, '[GOAL]');
       
-      // Stars - use asterisk
+      // Stars - use asterisk (widely supported)
       replaced = replaced.replace(/⭐|🌟|✨/g, '*');
+      
+      // Circles (colored circles that might be used as icons) - use bullet
+      replaced = replaced.replace(/⚫|⚪|🔵|🟡|🟠|🟣/g, '•');
       
       // Arrows - replace with ASCII equivalents
       replaced = replaced.replace(/→/g, '->');
@@ -96,10 +98,11 @@ export default function AuditReview({
       replaced = replaced.replace(/⇐/g, '<=');
       
       // Remove any remaining emoji-like characters (high Unicode ranges)
-      // But preserve common symbols like bullet points, dashes, etc.
+      // This catches emojis that might not be in the specific patterns above
       replaced = replaced.replace(/[\u{1F300}-\u{1F9FF}]/gu, '[ICON]');
       replaced = replaced.replace(/[\u{2600}-\u{26FF}]/gu, '[SYMBOL]');
       replaced = replaced.replace(/[\u{2700}-\u{27BF}]/gu, '[SYMBOL]');
+      replaced = replaced.replace(/[\u{1F000}-\u{1F02F}]/gu, '[SYMBOL]'); // Additional symbol range
       
       return replaced;
     };
