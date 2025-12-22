@@ -2,31 +2,46 @@ import { useState, useRef, useEffect } from 'react';
 import { apiService } from '../services/api';
 import type { ModuleConfig } from '../types';
 
-// Text-to-speech utility using Web Speech API (Google TTS)
-const speakText = (text: string, onEnd?: () => void) => {
-  if ('speechSynthesis' in window) {
-    // Cancel any ongoing speech
-    window.speechSynthesis.cancel();
+// Text-to-speech utility using Google Cloud TTS API
+let currentAudio: HTMLAudioElement | null = null;
+
+const speakText = async (text: string, onEnd?: () => void) => {
+  try {
+    // Stop any ongoing audio
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+
+    // Call Google TTS API
+    const audioDataUrl = await apiService.textToSpeech(text);
     
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
-    utterance.lang = 'en-US';
+    // Create audio element and play
+    const audio = new Audio(audioDataUrl);
+    currentAudio = audio;
     
     if (onEnd) {
-      utterance.onend = onEnd;
+      audio.onended = onEnd;
     }
     
-    window.speechSynthesis.speak(utterance);
-    return utterance;
+    audio.onerror = (error) => {
+      console.error('Audio playback error:', error);
+      currentAudio = null;
+    };
+    
+    await audio.play();
+    return audio;
+  } catch (error) {
+    console.error('TTS Error:', error);
+    currentAudio = null;
+    return null;
   }
-  return null;
 };
 
 const stopSpeaking = () => {
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
   }
 };
 
@@ -85,7 +100,6 @@ export default function AIChatInterface({
   const [loading, setLoading] = useState(false);
   const [ttsEnabled, setTtsEnabled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const isTogglingRef = useRef(false); // Track if we're in a toggle action
 
   // Scroll chat container to top on initial load
@@ -126,13 +140,14 @@ export default function AIChatInterface({
           .trim();
         
         if (textToSpeak) {
-          currentUtteranceRef.current = speakText(textToSpeak);
+          speakText(textToSpeak).catch((error) => {
+            console.error('Error speaking text:', error);
+          });
         }
       }
     } else if (!ttsEnabled) {
       // Stop speaking when TTS is disabled
       stopSpeaking();
-      currentUtteranceRef.current = null;
     }
 
     // Cleanup: stop speech when component unmounts
@@ -141,7 +156,7 @@ export default function AIChatInterface({
     };
   }, [messages, ttsEnabled]);
 
-  const handleTtsToggle = (e: React.MouseEvent) => {
+  const handleTtsToggle = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -150,18 +165,17 @@ export default function AIChatInterface({
     
     // Stop any ongoing speech first
     stopSpeaking();
-    currentUtteranceRef.current = null;
     
     const newTtsEnabled = !ttsEnabled;
     setTtsEnabled(newTtsEnabled);
     
-    // Announce the toggle state after a brief delay to ensure speechSynthesis is ready
-    setTimeout(() => {
-      const announcement = newTtsEnabled ? 'Text to speech on' : 'Text to speech off';
-      // Cancel any pending speech before speaking
-      stopSpeaking();
-      speakText(announcement);
-    }, 50);
+    // Announce the toggle state
+    const announcement = newTtsEnabled ? 'Text to speech on' : 'Text to speech off';
+    try {
+      await speakText(announcement);
+    } catch (error) {
+      console.error('Error announcing toggle state:', error);
+    }
   };
 
   const handleSend = async () => {
@@ -222,22 +236,19 @@ export default function AIChatInterface({
           <div className="flex items-center gap-4">
             {/* Text-to-Speech Toggle */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-700" aria-hidden="true">Text-to-Speech</span>
+              <span className="text-sm text-gray-700">Text-to-Speech</span>
               <button
                 type="button"
                 onClick={handleTtsToggle}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                   ttsEnabled ? 'bg-primary' : 'bg-gray-300'
                 }`}
-                aria-label={ttsEnabled ? 'Text to speech on' : 'Text to speech off'}
                 aria-pressed={ttsEnabled}
-                aria-live="polite"
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
                     ttsEnabled ? 'translate-x-6' : 'translate-x-1'
                   }`}
-                  aria-hidden="true"
                 />
               </button>
             </div>

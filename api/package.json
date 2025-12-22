@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.3",
+    "@google-cloud/text-to-speech": "^6.4.0",
     "@supabase/supabase-js": "^2.89.0",
     "@vercel/node": "^3.0.11"
   },

@@ -111,6 +111,14 @@ export const apiService = {
     return response.data.message;
   },
 
+  // Text-to-Speech using Google Cloud TTS
+  textToSpeech: async (text: string): Promise<string> => {
+    const response = await api.post<{ audioDataUrl: string }>('/ai/tts', {
+      text,
+    });
+    return response.data.audioDataUrl;
+  },
+
   generateAuditReview: async (
     moduleNumber: number,
     aiTranscript?: Array<{ role: string; content: string }>,
