@@ -102,8 +102,11 @@ export const module1Config: ModuleConfig = {
   auditPrompt: '',
 };
 
-export const module1Context = `You're helping the user complete Module 1: 1st Base - Define Who You're Really For. This module focuses on identifying their ideal customer profile. Ask questions about:
+export const module1Context = `You're helping the user complete Module 1: 1st Base - Define Who You're Really For. This module focuses on identifying their ideal customer profile.
 
+START THE CONVERSATION by asking: "Can you describe your ideal customer/client/user? Who are you really serving?"
+
+Then, guide the conversation to explore:
 - Their best-fit customers (who they are, why they're great, what results they got)
 - Their worst-fit customers (what made them draining or difficult)
 - Patterns among both groups
