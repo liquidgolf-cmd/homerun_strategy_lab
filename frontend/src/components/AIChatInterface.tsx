@@ -86,26 +86,31 @@ export default function AIChatInterface({
     }
   }, [messages]);
 
-  // Handle text-to-speech for assistant messages
+  // Handle text-to-speech for assistant messages (including initial message)
   useEffect(() => {
     if (ttsEnabled && messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
       // Only speak assistant messages
       if (lastMessage.role === 'assistant') {
-        // Strip markdown formatting for cleaner speech
-        const textToSpeak = lastMessage.content
-          .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
-          .replace(/\*(.*?)\*/g, '$1') // Remove italic
-          .replace(/#{1,6}\s/g, '') // Remove markdown headers
-          .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove markdown links
-          .replace(/`([^`]+)`/g, '$1') // Remove inline code
-          .trim();
+        // Small delay to ensure the message is fully rendered
+        const timeoutId = setTimeout(() => {
+          // Strip markdown formatting for cleaner speech
+          const textToSpeak = lastMessage.content
+            .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+            .replace(/\*(.*?)\*/g, '$1') // Remove italic
+            .replace(/#{1,6}\s/g, '') // Remove markdown headers
+            .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove markdown links
+            .replace(/`([^`]+)`/g, '$1') // Remove inline code
+            .trim();
+          
+          if (textToSpeak) {
+            speakText(textToSpeak).catch((error: any) => {
+              console.error('Error speaking text:', error);
+            });
+          }
+        }, 100); // Small delay to ensure message is rendered
         
-        if (textToSpeak) {
-          speakText(textToSpeak).catch((error: any) => {
-            console.error('Error speaking text:', error);
-          });
-        }
+        return () => clearTimeout(timeoutId);
       }
     }
   }, [messages, ttsEnabled, speakText]);

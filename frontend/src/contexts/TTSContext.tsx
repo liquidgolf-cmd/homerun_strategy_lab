@@ -91,7 +91,7 @@ const stopSpeakingImpl = () => {
 };
 
 export function TTSProvider({ children }: { children: ReactNode }) {
-  const [ttsEnabled, setTtsEnabled] = useState(false);
+  const [ttsEnabled, setTtsEnabled] = useState(true); // TTS enabled by default
 
   const toggleTTS = async () => {
     // Stop any ongoing speech first

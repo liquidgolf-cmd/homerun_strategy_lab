@@ -16,7 +16,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Verify authentication
     await verifyAuth(req);
 
-    const { messages, moduleContext } = req.body;
+    const { messages, moduleContext, moduleNumber } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: 'Messages array is required' });

@@ -54,6 +54,7 @@ export default function AppHeader() {
                   }`}
                 />
               </button>
+              <span className="text-xs text-gray-600 font-medium">{ttsEnabled ? 'ON' : 'OFF'}</span>
             </div>
           </div>
           {/* Bottom Row: Logo and Title */}
@@ -119,6 +120,7 @@ export default function AppHeader() {
                 }`}
               />
             </button>
+            <span className="text-xs text-gray-600 font-medium">{ttsEnabled ? 'ON' : 'OFF'}</span>
           </div>
         </div>
       </div>

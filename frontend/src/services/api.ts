@@ -107,11 +107,13 @@ export const apiService = {
   // AI Interactions
   chat: async (
     messages: Array<{ role: 'user' | 'assistant'; content: string }>,
-    moduleContext: string
+    moduleContext: string,
+    moduleNumber?: number
   ) => {
     const response = await api.post<{ message: string }>('/ai/chat', {
       messages,
       moduleContext,
+      moduleNumber,
     });
     return response.data.message;
   },

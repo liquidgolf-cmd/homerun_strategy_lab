@@ -29,7 +29,8 @@ const AUDIT_MODEL = process.env.ANTHROPIC_AUDIT_MODEL || 'claude-sonnet-4-202505
  */
 export async function chatWithCoach(
   messages: Array<{ role: 'user' | 'assistant'; content: string }>,
-  moduleContext: string
+  moduleContext: string,
+  moduleNumber?: number
 ): Promise<string> {
   const systemPrompt = `You are a business strategy coach with 20 years of experience in homerun methodology and business strategy. Your role is to guide users through a structured interview process to help them clarify their business strategy.
 
