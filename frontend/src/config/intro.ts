@@ -2,7 +2,7 @@ export const introConfig = {
   videoUrl: '', // Add your intro video URL here (YouTube, Vimeo, or direct video URL)
   
   hero: {
-    title: 'Welcome to Homeruns Strategy Lab',
+    title: 'Welcome to Homerun Strategy Lab',
     subtitle: 'A structured approach to clarifying your business strategy',
   },
   

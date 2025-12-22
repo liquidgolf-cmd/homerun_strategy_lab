@@ -64,7 +64,7 @@ export default function FinalSummary() {
           <div className="bg-white rounded-lg shadow-lg p-8 mb-8 text-center">
             <h1 className="text-4xl font-bold text-primary mb-4">Congratulations!</h1>
             <p className="text-xl text-secondary">
-              You've completed all 5 modules of the Homeruns Strategy Lab
+              You've completed all 5 modules of the Homerun Strategy Lab
             </p>
           </div>
 

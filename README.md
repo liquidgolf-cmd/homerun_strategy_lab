@@ -1,6 +1,6 @@
-# Homeruns Strategy Lab - MVP
+# Homerun Strategy Lab - MVP
 
-A simplified MVP version of the Homeruns Strategy Lab online course featuring **Module 0: Current Reality** only. Built with Vercel serverless functions for easy deployment.
+A simplified MVP version of the Homerun Strategy Lab online course featuring **Module 0: Current Reality** only. Built with Vercel serverless functions for easy deployment.
 
 ## Features (MVP)
 
