@@ -24,10 +24,20 @@ export default function AuditReview({
   const handleDownloadPDF = () => {
     if (!pdfContentRef.current) return;
 
-    // Create a temporary container with header for PDF
+    // Use the actual visible element instead of cloning
+    // Temporarily move it to a container for PDF generation
+    const originalParent = pdfContentRef.current.parentElement;
+    const originalDisplay = pdfContentRef.current.style.display;
+    
+    // Create a temporary container
     const pdfContainer = document.createElement('div');
+    pdfContainer.style.width = '816px'; // 8.5in in pixels
     pdfContainer.style.padding = '40px';
     pdfContainer.style.backgroundColor = '#ffffff';
+    pdfContainer.style.position = 'fixed';
+    pdfContainer.style.top = '0';
+    pdfContainer.style.left = '0';
+    pdfContainer.style.zIndex = '99999';
     
     // Add header
     const header = document.createElement('div');
@@ -35,43 +45,59 @@ export default function AuditReview({
     header.style.paddingBottom = '20px';
     header.style.borderBottom = '3px solid #0f4761';
     header.innerHTML = `
-      <h1 style="font-size: 28px; font-weight: bold; color: #0f4761; margin-bottom: 8px;">${moduleTitle}</h1>
+      <h1 style="font-size: 28px; font-weight: bold; color: #0f4761; margin-bottom: 8px; margin-top: 0;">${moduleTitle}</h1>
       <p style="font-size: 14px; color: #666; margin: 4px 0;">Module ${moduleNumber} Audit Review</p>
       <p style="font-size: 14px; color: #666; margin: 4px 0;">${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
     `;
     pdfContainer.appendChild(header);
     
-    // Clone the content
+    // Clone the element with its innerHTML
     const contentClone = pdfContentRef.current.cloneNode(true) as HTMLElement;
-    // Remove the hidden header div if it exists
-    const hiddenHeader = contentClone.querySelector('.print\\:block.hidden');
-    if (hiddenHeader) {
-      hiddenHeader.remove();
-    }
+    contentClone.style.maxWidth = 'none';
+    contentClone.style.width = '100%';
+    contentClone.style.margin = '0';
+    contentClone.style.padding = '0';
     pdfContainer.appendChild(contentClone);
     
-    // Temporarily add to document for rendering
-    pdfContainer.style.position = 'absolute';
-    pdfContainer.style.left = '-9999px';
-    pdfContainer.style.width = '8.5in';
     document.body.appendChild(pdfContainer);
+    
+    // Scroll container into view (even if off-screen) to ensure rendering
+    pdfContainer.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+    
+    // Wait for rendering
+    setTimeout(() => {
+      const opt = {
+        margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
+        filename: `module-${moduleNumber}-audit-review.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true, 
+          logging: false,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+        },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const },
+      };
 
-    const opt = {
-      margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
-      filename: `module-${moduleNumber}-audit-review.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const },
-    };
-
-    html2pdf()
-      .set(opt)
-      .from(pdfContainer)
-      .save()
-      .then(() => {
-        // Clean up
-        document.body.removeChild(pdfContainer);
-      });
+      html2pdf()
+        .set(opt)
+        .from(pdfContainer)
+        .save()
+        .then(() => {
+          // Clean up
+          if (document.body.contains(pdfContainer)) {
+            document.body.removeChild(pdfContainer);
+          }
+        })
+        .catch((error) => {
+          console.error('PDF generation error:', error);
+          // Clean up on error
+          if (document.body.contains(pdfContainer)) {
+            document.body.removeChild(pdfContainer);
+          }
+        });
+    }, 500);
   };
 
 
