@@ -39,32 +39,15 @@ const speakTextImpl = async (text: string): Promise<void> => {
 
     console.log('[TTS] Attempting Google Cloud TTS for text:', text.substring(0, 50) + (text.length > 50 ? '...' : ''));
     
-    // Start speaking immediately with browser TTS while Google TTS loads
-    // This provides instant feedback and reduces perceived delay
-    let browserTTSUsed = false;
-    
     try {
-      // Start browser TTS immediately for instant feedback
-      speakWithBrowserTTS(text);
-      browserTTSUsed = true;
-      
-      // Try Google Cloud TTS API in parallel (will replace browser TTS if successful)
-      const audioDataUrlPromise = apiService.textToSpeech(text);
-      
-      // Wait for Google TTS response
-      const audioDataUrl = await audioDataUrlPromise;
+      // Try Google Cloud TTS API first (no browser TTS interruption)
+      const audioDataUrl = await apiService.textToSpeech(text);
       
       if (!audioDataUrl) {
         throw new Error('TTS API returned empty audio data');
       }
       
-      // Stop browser TTS since we have Google TTS ready
-      if (browserTTSUsed) {
-        window.speechSynthesis.cancel();
-        browserTTSUsed = false;
-      }
-      
-      console.log('[TTS] Received audio data from Google Cloud TTS, replacing browser TTS');
+      console.log('[TTS] Received audio data from Google Cloud TTS');
       
       // Create audio element and play
       const audio = new Audio(audioDataUrl);
@@ -87,23 +70,14 @@ const speakTextImpl = async (text: string): Promise<void> => {
       console.log('[TTS] Google Cloud TTS audio playing');
       return;
     } catch (apiError: any) {
-      // If Google TTS API fails, browser TTS is already speaking, so just log
-      if (!browserTTSUsed) {
-        console.warn('[TTS] Google Cloud TTS failed, using browser fallback:', apiError?.response?.data?.error || apiError?.message);
-        console.log('[TTS] Using browser built-in TTS as fallback');
-        speakWithBrowserTTS(text);
-      } else {
-        // Browser TTS already started, just log the error
-        console.warn('[TTS] Google Cloud TTS failed, continuing with browser TTS:', apiError?.response?.data?.error || apiError?.message);
-      }
+      // If Google TTS API fails, fallback to browser TTS
+      console.warn('[TTS] Google Cloud TTS failed, using browser fallback:', apiError?.response?.data?.error || apiError?.message);
+      console.log('[TTS] Using browser built-in TTS as fallback');
+      speakWithBrowserTTS(text);
     }
   } catch (error: any) {
     console.error('[TTS] Unexpected error:', error);
     // Final fallback to browser TTS
-    if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
-      // Already speaking with browser TTS
-      return;
-    }
     speakWithBrowserTTS(text);
   }
 };
