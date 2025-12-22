@@ -20,16 +20,8 @@ export default function AIChatInterface({
   onComplete,
   onSwitchToForm,
 }: AIChatInterfaceProps) {
-  // Get initial message based on module
-  const getInitialMessage = () => {
-    if (existingTranscript.length > 0) {
-      return existingTranscript.map((m) => ({
-        role: m.role as 'user' | 'assistant',
-        content: m.content,
-        timestamp: m.timestamp || new Date().toISOString(),
-      }));
-    }
-    
+  // Get fresh initial message (without checking existing transcript)
+  const getFreshInitialMessage = () => {
     // Module 1 specific initial question
     if (config.number === 1) {
       return [
@@ -60,6 +52,19 @@ export default function AIChatInterface({
         timestamp: new Date().toISOString(),
       },
     ];
+  };
+
+  // Get initial message based on module (loads existing transcript if available)
+  const getInitialMessage = () => {
+    if (existingTranscript.length > 0) {
+      return existingTranscript.map((m) => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+        timestamp: m.timestamp || new Date().toISOString(),
+      }));
+    }
+    
+    return getFreshInitialMessage();
   };
 
   const [messages, setMessages] = useState<
@@ -168,12 +173,12 @@ export default function AIChatInterface({
 
   const handleResetConversation = () => {
     if (window.confirm('Are you sure you want to reset this conversation? This will clear all messages and start over.')) {
-      // Reset to initial message
-      const initialMessage = getInitialMessage();
-      setMessages(initialMessage);
-      // Clear saved transcript
+      // Reset to fresh initial message (ignore existing transcript)
+      const freshInitialMessage = getFreshInitialMessage();
+      setMessages(freshInitialMessage);
+      // Clear saved transcript - save only the fresh initial message
       onSave({
-        aiTranscript: initialMessage.map((m) => ({ role: m.role, content: m.content })),
+        aiTranscript: freshInitialMessage.map((m) => ({ role: m.role, content: m.content })),
       });
     }
   };
