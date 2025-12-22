@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
-import html2pdf from 'html2pdf.js';
+import { marked } from 'marked';
+import { jsPDF } from 'jspdf';
 
 interface AuditReviewProps {
   moduleNumber: number;
@@ -21,110 +22,211 @@ export default function AuditReview({
   const navigate = useNavigate();
   const pdfContentRef = useRef<HTMLDivElement>(null);
 
-  const handleDownloadPDF = () => {
-    if (!pdfContentRef.current) return;
-
-    // Use the actual rendered content from the DOM
-    const sourceElement = pdfContentRef.current;
+  const handleDownloadPDF = async () => {
+    // Convert markdown to HTML first
+    const htmlContent = await marked(auditReview);
     
-    // Create a container for PDF with header
-    const pdfContainer = document.createElement('div');
-    pdfContainer.style.width = '816px';
-    pdfContainer.style.padding = '40px';
-    pdfContainer.style.backgroundColor = '#ffffff';
-    pdfContainer.style.position = 'absolute';
-    pdfContainer.style.left = '0';
-    pdfContainer.style.top = '0';
+    // Create a temporary div to parse and style the HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    
+    // Create PDF
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'in',
+      format: 'letter'
+    });
+    
+    const pageWidth = 8.5;
+    const pageHeight = 11;
+    const margin = 0.5;
+    const contentWidth = pageWidth - (2 * margin);
+    const maxHeight = pageHeight - (2 * margin);
+    let yPosition = margin;
     
     // Add header
-    const header = document.createElement('div');
-    header.style.marginBottom = '30px';
-    header.style.paddingBottom = '20px';
-    header.style.borderBottom = '3px solid #0f4761';
-    header.innerHTML = `
-      <h1 style="font-size: 28px; font-weight: bold; color: #0f4761; margin-bottom: 8px; margin-top: 0;">${moduleTitle}</h1>
-      <p style="font-size: 14px; color: #666; margin: 4px 0;">Module ${moduleNumber} Audit Review</p>
-      <p style="font-size: 14px; color: #666; margin: 4px 0;">${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-    `;
-    pdfContainer.appendChild(header);
+    pdf.setFontSize(20);
+    pdf.setTextColor(15, 71, 97); // #0f4761
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(moduleTitle, margin, yPosition);
+    yPosition += 0.3;
     
-    // Deep clone the source element with all its computed styles
-    const clone = sourceElement.cloneNode(true) as HTMLElement;
+    pdf.setFontSize(10);
+    pdf.setTextColor(102, 102, 102); // #666
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(`Module ${moduleNumber} Audit Review`, margin, yPosition);
+    yPosition += 0.15;
+    pdf.text(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), margin, yPosition);
+    yPosition += 0.25;
     
-    // Apply inline styles based on computed styles
-    const applyInlineStyles = (element: HTMLElement) => {
-      const computed = window.getComputedStyle(element);
+    // Draw line
+    pdf.setDrawColor(15, 71, 97);
+    pdf.setLineWidth(0.01);
+    pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 0.2;
+    
+    // Function to add text with word wrapping
+    const addText = (text: string, fontSize: number, isBold: boolean = false, color: number[] = [55, 65, 81]) => {
+      pdf.setFontSize(fontSize);
+      pdf.setTextColor(color[0], color[1], color[2]);
+      pdf.setFont('helvetica', isBold ? 'bold' : 'normal');
       
-      // Copy important styles
-      element.style.color = computed.color;
-      element.style.fontSize = computed.fontSize;
-      element.style.fontFamily = computed.fontFamily;
-      element.style.fontWeight = computed.fontWeight;
-      element.style.lineHeight = computed.lineHeight;
-      element.style.margin = computed.margin;
-      element.style.marginTop = computed.marginTop;
-      element.style.marginBottom = computed.marginBottom;
-      element.style.marginLeft = computed.marginLeft;
-      element.style.marginRight = computed.marginRight;
-      element.style.padding = computed.padding;
-      element.style.backgroundColor = computed.backgroundColor;
-      element.style.maxWidth = 'none';
-      element.style.width = '100%';
+      const lines = pdf.splitTextToSize(text, contentWidth);
       
-      // Process all children
-      Array.from(element.children).forEach(child => {
-        applyInlineStyles(child as HTMLElement);
-      });
+      for (let i = 0; i < lines.length; i++) {
+        if (yPosition + 0.2 > maxHeight) {
+          pdf.addPage();
+          yPosition = margin;
+        }
+        pdf.text(lines[i], margin, yPosition);
+        yPosition += fontSize / 72 + 0.1;
+      }
     };
     
-    applyInlineStyles(clone);
-    pdfContainer.appendChild(clone);
-    
-    // Add to body - position at top of viewport but make it small
-    pdfContainer.style.top = '0';
-    pdfContainer.style.height = 'auto';
-    pdfContainer.style.overflow = 'visible';
-    document.body.appendChild(pdfContainer);
-    
-    // Force a reflow to ensure rendering
-    const height = pdfContainer.offsetHeight;
-    console.log('PDF container height:', height);
-    console.log('PDF container has content:', pdfContainer.textContent?.length || 0, 'characters');
-    
-    // Generate PDF after a short delay to ensure rendering
-    setTimeout(() => {
-      const opt = {
-        margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
-        filename: `module-${moduleNumber}-audit-review.pdf`,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { 
-          scale: 2, 
-          useCORS: true, 
-          logging: false,
-          allowTaint: true,
-          backgroundColor: '#ffffff',
-        },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const },
-      };
-
-      html2pdf()
-        .set(opt)
-        .from(pdfContainer)
-        .save()
-        .then(() => {
-          // Clean up
-          if (document.body.contains(pdfContainer)) {
-            document.body.removeChild(pdfContainer);
+    // Process HTML elements recursively
+    const processNode = (node: Node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent?.trim();
+        if (text) {
+          addText(text, 12, false);
+          yPosition += 0.05;
+        }
+        return;
+      }
+      
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+      
+      const element = node as Element;
+      const tagName = element.tagName.toLowerCase();
+      
+      if (tagName === 'h1') {
+        if (yPosition > margin + 0.3) yPosition += 0.2;
+        const text = element.textContent?.trim() || '';
+        if (text) {
+          addText(text, 18, true, [15, 71, 97]);
+          yPosition += 0.15;
+        }
+      } else if (tagName === 'h2') {
+        if (yPosition > margin + 0.3) yPosition += 0.15;
+        const text = element.textContent?.trim() || '';
+        if (text) {
+          addText(text, 16, true, [15, 71, 97]);
+          yPosition += 0.1;
+        }
+      } else if (tagName === 'h3') {
+        if (yPosition > margin + 0.3) yPosition += 0.1;
+        const text = element.textContent?.trim() || '';
+        if (text) {
+          addText(text, 14, true, [17, 24, 39]);
+          yPosition += 0.08;
+        }
+      } else if (tagName === 'p') {
+        const text = element.textContent?.trim() || '';
+        if (text) {
+          // Check for nested strong/bold tags
+          const hasStrong = element.querySelector('strong, b');
+          if (hasStrong) {
+            // Process paragraph text with formatting
+            let fullText = '';
+            element.childNodes.forEach(child => {
+              if (child.nodeType === Node.TEXT_NODE) {
+                fullText += child.textContent || '';
+              } else if (child.nodeType === Node.ELEMENT_NODE) {
+                const el = child as Element;
+                if (el.tagName.toLowerCase() === 'strong' || el.tagName.toLowerCase() === 'b') {
+                  fullText += el.textContent || '';
+                } else {
+                  fullText += el.textContent || '';
+                }
+              }
+            });
+            addText(fullText, 12, false);
+          } else {
+            addText(text, 12, false);
           }
-        })
-        .catch((error) => {
-          console.error('PDF generation error:', error);
-          // Clean up on error
-          if (document.body.contains(pdfContainer)) {
-            document.body.removeChild(pdfContainer);
+          yPosition += 0.08;
+        }
+      } else if (tagName === 'ul') {
+        const items = Array.from(element.querySelectorAll(':scope > li'));
+        items.forEach((item) => {
+          const text = item.textContent?.trim() || '';
+          if (text) {
+            addText('• ' + text, 12, false);
+            yPosition += 0.05;
           }
         });
-    }, 500);
+        yPosition += 0.05;
+      } else if (tagName === 'ol') {
+        const items = Array.from(element.querySelectorAll(':scope > li'));
+        items.forEach((item, index) => {
+          const text = item.textContent?.trim() || '';
+          if (text) {
+            addText(`${index + 1}. ${text}`, 12, false);
+            yPosition += 0.05;
+          }
+        });
+        yPosition += 0.05;
+      } else if (tagName === 'li') {
+        // Handled by parent ul/ol
+        return;
+      } else if (tagName === 'strong' || tagName === 'b') {
+        const text = element.textContent?.trim() || '';
+        if (text) {
+          addText(text, 12, true);
+        }
+      } else if (tagName === 'code') {
+        const text = element.textContent?.trim() || '';
+        if (text) {
+          pdf.setFontSize(10);
+          pdf.setTextColor(15, 71, 97);
+          pdf.setFont('courier', 'normal');
+          const lines = pdf.splitTextToSize(text, contentWidth - 0.2);
+          lines.forEach((line: string) => {
+            if (yPosition + 0.2 > maxHeight) {
+              pdf.addPage();
+              yPosition = margin;
+            }
+            pdf.text(line, margin + 0.1, yPosition);
+            yPosition += 0.15;
+          });
+        }
+      } else if (tagName === 'blockquote') {
+        const text = element.textContent?.trim() || '';
+        if (text) {
+          const startY = yPosition;
+          pdf.setDrawColor(15, 71, 97);
+          pdf.setLineWidth(0.02);
+          pdf.setTextColor(75, 85, 99);
+          pdf.setFont('helvetica', 'italic');
+          pdf.setFontSize(12);
+          const lines = pdf.splitTextToSize(text, contentWidth - 0.2);
+          lines.forEach((line: string) => {
+            if (yPosition + 0.2 > maxHeight) {
+              pdf.addPage();
+              yPosition = margin;
+            }
+            pdf.text(line, margin + 0.2, yPosition);
+            yPosition += 0.15;
+          });
+          pdf.line(margin, startY - 0.05, margin, yPosition - 0.05);
+          yPosition += 0.1;
+        }
+      } else {
+        // For container elements, process children
+        Array.from(element.childNodes).forEach(child => processNode(child));
+      }
+    };
+    
+    // Process all top-level elements
+    Array.from(tempDiv.childNodes).forEach(child => processNode(child));
+    
+    // If no structured content, add the text directly
+    if (tempDiv.children.length === 0 && tempDiv.textContent?.trim()) {
+      addText(tempDiv.textContent.trim(), 12, false);
+    }
+    
+    // Save PDF
+    pdf.save(`module-${moduleNumber}-audit-review.pdf`);
   };
 
 
