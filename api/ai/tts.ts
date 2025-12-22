@@ -61,18 +61,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const client = getTTSClient();
     
     // Request TTS synthesis
+    // Voice options: You can customize the voice here
+    // Popular options:
+    // - en-US-Neural2-D (male, default)
+    // - en-US-Neural2-F (female)
+    // - en-US-Neural2-J (male, more expressive)
+    // - en-US-Standard-B (male, standard)
+    // - en-US-Standard-C (female, standard)
+    // See https://cloud.google.com/text-to-speech/docs/voices for full list
+    const voiceName = process.env.GOOGLE_TTS_VOICE_NAME || 'en-US-Neural2-D';
+    const ssmlGender = process.env.GOOGLE_TTS_VOICE_GENDER || 'NEUTRAL';
+    
     const [response] = await client.synthesizeSpeech({
       input: { text },
       voice: {
         languageCode: 'en-US',
-        ssmlGender: 'NEUTRAL',
-        name: 'en-US-Neural2-D', // High-quality neural voice
+        ssmlGender: ssmlGender as 'NEUTRAL' | 'MALE' | 'FEMALE',
+        name: voiceName,
       },
       audioConfig: {
         audioEncoding: 'MP3',
-        speakingRate: 1.0,
-        pitch: 0.0,
-        volumeGainDb: 0.0,
+        speakingRate: parseFloat(process.env.GOOGLE_TTS_SPEAKING_RATE || '1.0'),
+        pitch: parseFloat(process.env.GOOGLE_TTS_PITCH || '0.0'),
+        volumeGainDb: parseFloat(process.env.GOOGLE_TTS_VOLUME || '0.0'),
       },
     });
 
