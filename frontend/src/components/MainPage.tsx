@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
 import { supabase } from '../lib/supabase';
-import VideoPlaceholder from './VideoPlaceholder';
+import VideoEmbed from './VideoEmbed';
+import { introConfig } from '../config/intro';
 import logo from '../assets/LoamStrategy4Logo.png';
 
 export default function MainPage() {
@@ -163,15 +164,38 @@ export default function MainPage() {
               className="h-16 mx-auto mb-4"
             />
           </div>
-          <h1 className="text-4xl font-bold text-primary mb-2">Homeruns Strategy Lab</h1>
+          <h1 className="text-4xl font-bold text-primary mb-2">{introConfig.hero.title}</h1>
           <p className="text-xl text-secondary">
-            A structured approach to clarifying your business strategy
+            {introConfig.hero.subtitle}
           </p>
         </header>
 
-        {/* Video Placeholder */}
-        <div className="mb-12 max-w-4xl mx-auto">
-          <VideoPlaceholder />
+        {/* Intro Video */}
+        {introConfig.videoUrl && (
+          <div className="mb-12 max-w-4xl mx-auto">
+            <VideoEmbed videoUrl={introConfig.videoUrl} />
+          </div>
+        )}
+
+        {/* Instructional Content */}
+        <div className="max-w-4xl mx-auto mb-12 space-y-6">
+          {/* What You'll See */}
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatYoullSee.title}</h2>
+            <p className="text-secondary leading-relaxed">{introConfig.whatYoullSee.content}</p>
+          </div>
+
+          {/* What You Need to Do */}
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatToDo.title}</h2>
+            <p className="text-secondary leading-relaxed">{introConfig.whatToDo.content}</p>
+          </div>
+
+          {/* What You Can Expect to Get */}
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatToExpect.title}</h2>
+            <p className="text-secondary leading-relaxed">{introConfig.whatToExpect.content}</p>
+          </div>
         </div>
 
         {/* Sign In / Session View */}
