@@ -156,20 +156,13 @@ export default function MainPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <header className="mb-8 text-center">
-          <div className="mb-4">
-            <img
-              src={logo}
-              alt="Loam Strategy"
-              className="h-16 mx-auto mb-4"
-            />
-          </div>
-          <h1 className="text-4xl font-bold text-primary mb-2">{introConfig.hero.title}</h1>
-          <p className="text-xl text-secondary">
+        {/* Hero Section */}
+        <div className="mb-6 md:mb-8 text-center">
+          <h1 className="text-2xl md:text-4xl font-bold text-primary mb-2">{introConfig.hero.title}</h1>
+          <p className="text-base md:text-xl text-secondary px-2">
             {introConfig.hero.subtitle}
           </p>
-        </header>
+        </div>
 
         {/* Intro Video */}
         {introConfig.videoUrl && (
