@@ -1,49 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { apiService } from '../services/api';
+import { useTTS } from '../contexts/TTSContext';
 import type { ModuleConfig } from '../types';
-
-// Text-to-speech utility using Google Cloud TTS API
-let currentAudio: HTMLAudioElement | null = null;
-
-const speakText = async (text: string, onEnd?: () => void) => {
-  try {
-    // Stop any ongoing audio
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio = null;
-    }
-
-    // Call Google TTS API
-    const audioDataUrl = await apiService.textToSpeech(text);
-    
-    // Create audio element and play
-    const audio = new Audio(audioDataUrl);
-    currentAudio = audio;
-    
-    if (onEnd) {
-      audio.onended = onEnd;
-    }
-    
-    audio.onerror = (error) => {
-      console.error('Audio playback error:', error);
-      currentAudio = null;
-    };
-    
-    await audio.play();
-    return audio;
-  } catch (error) {
-    console.error('TTS Error:', error);
-    currentAudio = null;
-    return null;
-  }
-};
-
-const stopSpeaking = () => {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio = null;
-  }
-};
 
 interface AIChatInterfaceProps {
   config: ModuleConfig;
@@ -98,9 +56,8 @@ export default function AIChatInterface({
   >(getInitialMessage());
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [ttsEnabled, setTtsEnabled] = useState(false);
+  const { ttsEnabled, speakText } = useTTS();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const isTogglingRef = useRef(false); // Track if we're in a toggle action
 
   // Scroll chat container to top on initial load
   useEffect(() => {
@@ -120,12 +77,6 @@ export default function AIChatInterface({
 
   // Handle text-to-speech for assistant messages
   useEffect(() => {
-    // Skip if we're in the middle of a toggle action
-    if (isTogglingRef.current) {
-      isTogglingRef.current = false; // Reset the flag
-      return;
-    }
-
     if (ttsEnabled && messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
       // Only speak assistant messages
@@ -140,43 +91,14 @@ export default function AIChatInterface({
           .trim();
         
         if (textToSpeak) {
-          speakText(textToSpeak).catch((error) => {
+          speakText(textToSpeak).catch((error: any) => {
             console.error('Error speaking text:', error);
           });
         }
       }
-    } else if (!ttsEnabled) {
-      // Stop speaking when TTS is disabled
-      stopSpeaking();
     }
+  }, [messages, ttsEnabled, speakText]);
 
-    // Cleanup: stop speech when component unmounts
-    return () => {
-      stopSpeaking();
-    };
-  }, [messages, ttsEnabled]);
-
-  const handleTtsToggle = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Set flag to prevent useEffect from interfering
-    isTogglingRef.current = true;
-    
-    // Stop any ongoing speech first
-    stopSpeaking();
-    
-    const newTtsEnabled = !ttsEnabled;
-    setTtsEnabled(newTtsEnabled);
-    
-    // Announce the toggle state
-    const announcement = newTtsEnabled ? 'Text to speech on' : 'Text to speech off';
-    try {
-      await speakText(announcement);
-    } catch (error) {
-      console.error('Error announcing toggle state:', error);
-    }
-  };
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
@@ -233,33 +155,13 @@ export default function AIChatInterface({
       <div className="bg-white rounded-lg shadow-lg p-6 mb-4 flex-shrink-0">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-primary">{config.title}</h2>
-          <div className="flex items-center gap-4">
-            {/* Text-to-Speech Toggle */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-700">Text-to-Speech</span>
-              <button
-                type="button"
-                onClick={handleTtsToggle}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                  ttsEnabled ? 'bg-primary' : 'bg-gray-300'
-                }`}
-                aria-pressed={ttsEnabled}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    ttsEnabled ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-            <button
-              onClick={onSwitchToForm}
-              className="text-sm text-primary hover:underline"
-              aria-label="Switch to form view"
-            >
-              Switch to Form
-            </button>
-          </div>
+          <button
+            onClick={onSwitchToForm}
+            className="text-sm text-primary hover:underline"
+            aria-label="Switch to form view"
+          >
+            Switch to Form
+          </button>
         </div>
         <p className="text-secondary">{config.description}</p>
       </div>
