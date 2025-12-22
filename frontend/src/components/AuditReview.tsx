@@ -66,23 +66,26 @@ export default function AuditReview({
     yPosition += 0.2;
     
     // Function to replace emoji/icons with text equivalents for PDF
+    // jsPDF has limited Unicode support, so we replace emojis with ASCII equivalents
     const replaceIconsWithText = (text: string): string => {
       let replaced = text;
       
-      // Green circles/checkmarks
-      replaced = replaced.replace(/🟢|✅|✓|✔|☑/g, '[✓]');
+      // Green circles/checkmarks - use simple checkmark that jsPDF supports
+      replaced = replaced.replace(/🟢|✅|✔|☑/g, '[OK]');
+      replaced = replaced.replace(/✓/g, '✓'); // Keep simple checkmark if supported
       
-      // Red circles/warnings
-      replaced = replaced.replace(/🔴|❌|✗|✘|⚠|⚠️/g, '[✗]');
+      // Red circles/warnings - use X or warning symbol
+      replaced = replaced.replace(/🔴|❌|✗|✘/g, '[X]');
+      replaced = replaced.replace(/⚠|⚠️/g, '[!]');
       
-      // Lightbulbs/ideas
-      replaced = replaced.replace(/💡|💭|💬/g, '[💡]');
+      // Lightbulbs/ideas - use text label
+      replaced = replaced.replace(/💡|💭|💬/g, '[IDEA]');
       
-      // Targets/goals
-      replaced = replaced.replace(/🎯|📍|🔖/g, '[→]');
+      // Targets/goals - use arrow
+      replaced = replaced.replace(/🎯|📍|🔖/g, '[GOAL]');
       
-      // Stars
-      replaced = replaced.replace(/⭐|🌟|✨/g, '[★]');
+      // Stars - use asterisk
+      replaced = replaced.replace(/⭐|🌟|✨/g, '*');
       
       // Arrows - replace with ASCII equivalents
       replaced = replaced.replace(/→/g, '->');
@@ -91,6 +94,12 @@ export default function AuditReview({
       replaced = replaced.replace(/↓/g, 'v');
       replaced = replaced.replace(/⇒/g, '=>');
       replaced = replaced.replace(/⇐/g, '<=');
+      
+      // Remove any remaining emoji-like characters (high Unicode ranges)
+      // But preserve common symbols like bullet points, dashes, etc.
+      replaced = replaced.replace(/[\u{1F300}-\u{1F9FF}]/gu, '[ICON]');
+      replaced = replaced.replace(/[\u{2600}-\u{26FF}]/gu, '[SYMBOL]');
+      replaced = replaced.replace(/[\u{2700}-\u{27BF}]/gu, '[SYMBOL]');
       
       return replaced;
     };
