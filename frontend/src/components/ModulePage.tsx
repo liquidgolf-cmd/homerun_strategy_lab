@@ -139,11 +139,17 @@ export default function ModulePage() {
 
   const handleNextModule = () => {
     // Navigate to next module or final summary
+    // Only go to summary if we're actually on the last module (module 4, which is the 5th module)
     if (moduleNum < 4) {
+      // Navigate to next module (moduleNum is 0-indexed, so moduleNum + 1 is the next module)
       navigate(`/module/${moduleNum + 1}`);
-    } else {
-      // Last module completed - go to final summary
+    } else if (moduleNum === 4) {
+      // Last module (module 4) completed - go to final summary
       navigate('/summary');
+    } else {
+      // Fallback: shouldn't happen, but navigate to home if somehow we're past module 4
+      console.warn(`Unexpected module number: ${moduleNum}, navigating to home`);
+      navigate('/');
     }
   };
 
