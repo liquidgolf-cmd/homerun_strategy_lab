@@ -39,42 +39,15 @@ export default function FinalSummary() {
   };
 
   const loadDocuments = async () => {
-    if (!session) return;
-
-    try {
-      // API now uses userId from JWT, no sessionId parameter needed
-      const docs = await apiService.getFinalDocuments();
-      setDocuments(docs);
-    } catch (error: any) {
-      if (error.response?.status === 404) {
-        // Documents not generated yet
-        setDocuments(null);
-      } else {
-        console.error('Error loading documents:', error);
-      }
-    } finally {
-      setLoading(false);
-    }
+    // MVP: Final documents not available yet (need all modules)
+    // This component is disabled in MVP
+    console.log('Final documents not available in MVP');
+    setLoading(false);
   };
 
   const handleGenerate = async () => {
-    if (!session) return;
-
-    setGenerating(true);
-    try {
-      // API now uses userId from JWT, no sessionId parameter needed
-      const docs = await apiService.generateFinalDocuments();
-      setDocuments({
-        combinedOverviewDocument: docs.combinedOverview,
-        actionPlanDocument: docs.actionPlan,
-        generatedAt: docs.generatedAt,
-      });
-    } catch (error) {
-      console.error('Error generating documents:', error);
-      alert('Error generating final documents. Please try again.');
-    } finally {
-      setGenerating(false);
-    }
+    // MVP: Final documents not available yet (need all modules)
+    alert('Final documents generation will be available after all modules are complete (coming soon in MVP)');
   };
 
   const handleDownload = (content: string, filename: string) => {
