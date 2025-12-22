@@ -57,8 +57,20 @@ export default function AIChatInterface({
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Scroll chat container to top on initial load
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const chatContainer = document.getElementById('chat-messages-container');
+    if (chatContainer) {
+      chatContainer.scrollTop = 0;
+    }
+  }, []); // Run once on mount
+
+  // Scroll to bottom when new messages are added
+  useEffect(() => {
+    if (messages.length > 1) {
+      // Only auto-scroll to bottom if there are multiple messages (user has responded)
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages]);
 
   const handleSend = async () => {
@@ -127,7 +139,16 @@ export default function AIChatInterface({
       </div>
 
       {/* Chat Messages */}
-      <div className="bg-white rounded-lg shadow-lg p-6 mb-4 flex-1 overflow-y-auto min-h-0">
+      <div 
+        id="chat-messages-container"
+        className="bg-white rounded-lg shadow-lg p-6 mb-4 flex-1 overflow-y-auto min-h-0"
+        ref={(el) => {
+          if (el && messages.length > 0 && messages[0].role === 'assistant') {
+            // Scroll to top when first message loads
+            el.scrollTop = 0;
+          }
+        }}
+      >
         <div className="space-y-4">
           {messages.map((message, index) => (
             <div
