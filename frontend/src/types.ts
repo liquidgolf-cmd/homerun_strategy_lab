@@ -48,6 +48,7 @@ export interface ModuleConfig {
   description: string;
   questions: Question[];
   auditPrompt: string;
+  videoUrl?: string; // Video URL for module introduction (YouTube, Vimeo, or direct video URL)
 }
 
 export interface Question {

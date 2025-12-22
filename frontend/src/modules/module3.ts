@@ -5,6 +5,7 @@ export const module3Config: ModuleConfig = {
   title: '3rd Base: Map How You\'ll Deliver It',
   description:
     "You know who you're for and what they want. Now we'll answer: How is this going to work? We'll turn your delivery process into a clear path with stages and identify essential assets.",
+  videoUrl: '', // Add Module 3 video URL here
   questions: [
     {
       id: 'rawProcess',

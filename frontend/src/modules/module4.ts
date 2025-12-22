@@ -5,6 +5,7 @@ export const module4Config: ModuleConfig = {
   title: 'Home: Build Your 90-Day Game Plan',
   description:
     "We're at Home. This is where we turn all the clarity you've created into a concrete 90-day plan. We'll choose one primary outcome, translate it into strategic projects, and design a weekly rhythm.",
+  videoUrl: '', // Add Module 4 video URL here
   questions: [
     {
       id: 'northStar',

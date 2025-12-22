@@ -5,6 +5,7 @@ export const module0Config: ModuleConfig = {
   title: 'Current Reality (At Bat)',
   description:
     "Let's start by getting honest about where you are and why this matters now. We'll explore what's working, what's not, and what a 'home run' would look like over the next 90 days.",
+  videoUrl: '', // Add Module 0 video URL here
   questions: [
     {
       id: 'businessDescription',

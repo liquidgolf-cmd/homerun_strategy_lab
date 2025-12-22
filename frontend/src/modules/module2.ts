@@ -5,6 +5,7 @@ export const module2Config: ModuleConfig = {
   title: '2nd Base: Design What They Actually Want',
   description:
     "Now that we know who you're really for, it's time to talk about what they actually want. We'll move from features to outcomes, mapping pains, desires, and creating your core offer statement.",
+  videoUrl: '', // Add Module 2 video URL here
   questions: [
     {
       id: 'pains',

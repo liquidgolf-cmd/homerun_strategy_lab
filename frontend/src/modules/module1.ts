@@ -5,6 +5,7 @@ export const module1Config: ModuleConfig = {
   title: '1st Base: Define Who You\'re Really For',
   description:
     "We're going to answer one deceptively simple question: Who are you really for? We'll look at your best-fit and worst-fit customers to identify patterns and create an Ideal Customer Profile.",
+  videoUrl: '', // Add Module 1 video URL here
   questions: [
     {
       id: 'bestCustomers',
