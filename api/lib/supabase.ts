@@ -7,9 +7,8 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set');
-}
+// Check will be done when functions are called, not at module load
+// This allows us to return proper error responses
 
 // Create Supabase client with service role key (bypasses RLS)
 export const supabase = createClient(supabaseUrl, supabaseKey, {
@@ -49,6 +48,13 @@ export async function getOrCreateUserSession(
   email: string,
   name?: string
 ): Promise<UserSession> {
+  // Check environment variables
+  if (!supabaseUrl || !supabaseKey) {
+    const missing = [];
+    if (!supabaseUrl) missing.push('SUPABASE_URL');
+    if (!supabaseKey) missing.push('SUPABASE_SERVICE_ROLE_KEY');
+    throw new Error(`Missing environment variables: ${missing.join(', ')}. Please set them in Vercel dashboard.`);
+  }
   // Try to get existing session
   const { data: existing, error: fetchError } = await supabase
     .from('user_sessions')
