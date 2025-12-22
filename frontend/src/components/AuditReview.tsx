@@ -23,8 +23,21 @@ export default function AuditReview({
   const pdfContentRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadPDF = async () => {
-    // Convert markdown to HTML with inline styles
+    // Convert markdown to HTML
     const htmlContent = await marked(auditReview);
+    
+    // Create styled HTML with inline styles for all elements
+    const styledHtml = htmlContent
+      .replace(/<h1>/g, '<h1 style="font-size: 32px; font-weight: bold; color: #0f4761; margin-top: 32px; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 12px;">')
+      .replace(/<h2>/g, '<h2 style="font-size: 24px; font-weight: bold; color: #0f4761; margin-top: 32px; margin-bottom: 16px;">')
+      .replace(/<h3>/g, '<h3 style="font-size: 20px; font-weight: bold; color: #111827; margin-top: 24px; margin-bottom: 12px;">')
+      .replace(/<p>/g, '<p style="margin-bottom: 16px; color: #374151; line-height: 1.75;">')
+      .replace(/<ul>/g, '<ul style="margin-left: 24px; margin-bottom: 16px; padding-left: 0;">')
+      .replace(/<ol>/g, '<ol style="margin-left: 24px; margin-bottom: 16px; padding-left: 0;">')
+      .replace(/<li>/g, '<li style="margin-bottom: 8px; color: #374151;">')
+      .replace(/<strong>/g, '<strong style="font-weight: 600; color: #111827;">')
+      .replace(/<code>/g, '<code style="background-color: #f3f4f6; color: #0f4761; padding: 2px 6px; border-radius: 4px; font-size: 14px;">')
+      .replace(/<blockquote>/g, '<blockquote style="border-left: 4px solid #0f4761; padding-left: 16px; margin-left: 0; margin-top: 16px; margin-bottom: 16px; font-style: italic; color: #4b5563;">');
     
     // Create a container for PDF generation
     const pdfContainer = document.createElement('div');
@@ -35,98 +48,30 @@ export default function AuditReview({
     pdfContainer.style.fontSize = '16px';
     pdfContainer.style.lineHeight = '1.75';
     pdfContainer.style.color = '#374151';
-    
-    // Add header
-    const header = document.createElement('div');
-    header.style.marginBottom = '30px';
-    header.style.paddingBottom = '20px';
-    header.style.borderBottom = '3px solid #0f4761';
-    header.innerHTML = `
-      <h1 style="font-size: 28px; font-weight: bold; color: #0f4761; margin-bottom: 8px; margin-top: 0;">${moduleTitle}</h1>
-      <p style="font-size: 14px; color: #666; margin: 4px 0;">Module ${moduleNumber} Audit Review</p>
-      <p style="font-size: 14px; color: #666; margin: 4px 0;">${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-    `;
-    pdfContainer.appendChild(header);
-    
-    // Add content with styled wrapper
-    const contentWrapper = document.createElement('div');
-    contentWrapper.innerHTML = htmlContent;
-    
-    // Apply styles to common markdown elements
-    const styleElement = (el: Element) => {
-      const tagName = el.tagName.toLowerCase();
-      const style = (el as HTMLElement).style;
-      
-      if (tagName === 'h1') {
-        style.fontSize = '32px';
-        style.fontWeight = 'bold';
-        style.color = '#0f4761';
-        style.marginTop = '32px';
-        style.marginBottom = '16px';
-        style.borderBottom = '1px solid #e5e7eb';
-        style.paddingBottom = '12px';
-      } else if (tagName === 'h2') {
-        style.fontSize = '24px';
-        style.fontWeight = 'bold';
-        style.color = '#0f4761';
-        style.marginTop = '32px';
-        style.marginBottom = '16px';
-      } else if (tagName === 'h3') {
-        style.fontSize = '20px';
-        style.fontWeight = 'bold';
-        style.color = '#111827';
-        style.marginTop = '24px';
-        style.marginBottom = '12px';
-      } else if (tagName === 'p') {
-        style.marginBottom = '16px';
-        style.color = '#374151';
-        style.lineHeight = '1.75';
-      } else if (tagName === 'ul' || tagName === 'ol') {
-        style.marginLeft = '24px';
-        style.marginBottom = '16px';
-        style.paddingLeft = '0';
-      } else if (tagName === 'li') {
-        style.marginBottom = '8px';
-        style.color = '#374151';
-      } else if (tagName === 'strong') {
-        style.fontWeight = '600';
-        style.color = '#111827';
-      } else if (tagName === 'code') {
-        style.backgroundColor = '#f3f4f6';
-        style.color = '#0f4761';
-        style.padding = '2px 6px';
-        style.borderRadius = '4px';
-        style.fontSize = '14px';
-      } else if (tagName === 'blockquote') {
-        style.borderLeft = '4px solid #0f4761';
-        style.paddingLeft = '16px';
-        style.marginLeft = '0';
-        style.marginTop = '16px';
-        style.marginBottom = '16px';
-        style.fontStyle = 'italic';
-        style.color = '#4b5563';
-      }
-      
-      // Process children
-      Array.from(el.children).forEach(child => styleElement(child));
-    };
-    
-    // Style all elements
-    Array.from(contentWrapper.children).forEach(child => styleElement(child));
-    // Also style nested elements
-    contentWrapper.querySelectorAll('*').forEach(el => styleElement(el));
-    
-    pdfContainer.appendChild(contentWrapper);
-    
-    // Position off-screen but visible for html2canvas
     pdfContainer.style.position = 'fixed';
-    pdfContainer.style.top = '0';
+    pdfContainer.style.top = '-9999px';
     pdfContainer.style.left = '0';
     pdfContainer.style.zIndex = '99999';
+    
+    // Add header and content
+    pdfContainer.innerHTML = `
+      <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #0f4761;">
+        <h1 style="font-size: 28px; font-weight: bold; color: #0f4761; margin-bottom: 8px; margin-top: 0;">${moduleTitle}</h1>
+        <p style="font-size: 14px; color: #666; margin: 4px 0;">Module ${moduleNumber} Audit Review</p>
+        <p style="font-size: 14px; color: #666; margin: 4px 0;">${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+      </div>
+      <div style="max-width: 100%;">
+        ${styledHtml}
+      </div>
+    `;
+    
     document.body.appendChild(pdfContainer);
     
-    // Wait for rendering
+    // Wait for rendering, then generate PDF
     setTimeout(() => {
+      console.log('PDF container height:', pdfContainer.scrollHeight);
+      console.log('PDF container content:', pdfContainer.innerHTML.substring(0, 200));
+      
       const opt = {
         margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
         filename: `module-${moduleNumber}-audit-review.pdf`,
@@ -134,7 +79,7 @@ export default function AuditReview({
         html2canvas: { 
           scale: 2, 
           useCORS: true, 
-          logging: false,
+          logging: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
         },
@@ -146,6 +91,7 @@ export default function AuditReview({
         .from(pdfContainer)
         .save()
         .then(() => {
+          console.log('PDF generated successfully');
           // Clean up
           if (document.body.contains(pdfContainer)) {
             document.body.removeChild(pdfContainer);
@@ -158,7 +104,7 @@ export default function AuditReview({
             document.body.removeChild(pdfContainer);
           }
         });
-    }, 500);
+    }, 1000);
   };
 
 
