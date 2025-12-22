@@ -218,6 +218,16 @@ export default function AuditReview({
             yPosition += 0.15;
           });
         }
+      } else if (tagName === 'img') {
+        // Handle images/icons - use alt text or skip
+        const imgElement = element as HTMLImageElement;
+        const altText = imgElement.alt || imgElement.title || '';
+        if (altText) {
+          // Add alt text as a replacement for the icon
+          addText(`[${altText}]`, 12, false, [100, 100, 100]);
+          yPosition += 0.05;
+        }
+        // If no alt text, skip the image silently
       } else if (tagName === 'blockquote') {
         const text = element.textContent?.trim() || '';
         if (text) {
