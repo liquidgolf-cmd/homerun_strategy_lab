@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import html2pdf from 'html2pdf.js';
+import { marked } from 'marked';
 
 interface AuditReviewProps {
   moduleNumber: number;
@@ -21,23 +22,19 @@ export default function AuditReview({
   const navigate = useNavigate();
   const pdfContentRef = useRef<HTMLDivElement>(null);
 
-  const handleDownloadPDF = () => {
-    if (!pdfContentRef.current) return;
-
-    // Use the actual visible element instead of cloning
-    // Temporarily move it to a container for PDF generation
-    const originalParent = pdfContentRef.current.parentElement;
-    const originalDisplay = pdfContentRef.current.style.display;
+  const handleDownloadPDF = async () => {
+    // Convert markdown to HTML with inline styles
+    const htmlContent = await marked(auditReview);
     
-    // Create a temporary container
+    // Create a container for PDF generation
     const pdfContainer = document.createElement('div');
     pdfContainer.style.width = '816px'; // 8.5in in pixels
     pdfContainer.style.padding = '40px';
     pdfContainer.style.backgroundColor = '#ffffff';
-    pdfContainer.style.position = 'fixed';
-    pdfContainer.style.top = '0';
-    pdfContainer.style.left = '0';
-    pdfContainer.style.zIndex = '99999';
+    pdfContainer.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+    pdfContainer.style.fontSize = '16px';
+    pdfContainer.style.lineHeight = '1.75';
+    pdfContainer.style.color = '#374151';
     
     // Add header
     const header = document.createElement('div');
@@ -51,18 +48,82 @@ export default function AuditReview({
     `;
     pdfContainer.appendChild(header);
     
-    // Clone the element with its innerHTML
-    const contentClone = pdfContentRef.current.cloneNode(true) as HTMLElement;
-    contentClone.style.maxWidth = 'none';
-    contentClone.style.width = '100%';
-    contentClone.style.margin = '0';
-    contentClone.style.padding = '0';
-    pdfContainer.appendChild(contentClone);
+    // Add content with styled wrapper
+    const contentWrapper = document.createElement('div');
+    contentWrapper.innerHTML = htmlContent;
     
+    // Apply styles to common markdown elements
+    const styleElement = (el: Element) => {
+      const tagName = el.tagName.toLowerCase();
+      const style = (el as HTMLElement).style;
+      
+      if (tagName === 'h1') {
+        style.fontSize = '32px';
+        style.fontWeight = 'bold';
+        style.color = '#0f4761';
+        style.marginTop = '32px';
+        style.marginBottom = '16px';
+        style.borderBottom = '1px solid #e5e7eb';
+        style.paddingBottom = '12px';
+      } else if (tagName === 'h2') {
+        style.fontSize = '24px';
+        style.fontWeight = 'bold';
+        style.color = '#0f4761';
+        style.marginTop = '32px';
+        style.marginBottom = '16px';
+      } else if (tagName === 'h3') {
+        style.fontSize = '20px';
+        style.fontWeight = 'bold';
+        style.color = '#111827';
+        style.marginTop = '24px';
+        style.marginBottom = '12px';
+      } else if (tagName === 'p') {
+        style.marginBottom = '16px';
+        style.color = '#374151';
+        style.lineHeight = '1.75';
+      } else if (tagName === 'ul' || tagName === 'ol') {
+        style.marginLeft = '24px';
+        style.marginBottom = '16px';
+        style.paddingLeft = '0';
+      } else if (tagName === 'li') {
+        style.marginBottom = '8px';
+        style.color = '#374151';
+      } else if (tagName === 'strong') {
+        style.fontWeight = '600';
+        style.color = '#111827';
+      } else if (tagName === 'code') {
+        style.backgroundColor = '#f3f4f6';
+        style.color = '#0f4761';
+        style.padding = '2px 6px';
+        style.borderRadius = '4px';
+        style.fontSize = '14px';
+      } else if (tagName === 'blockquote') {
+        style.borderLeft = '4px solid #0f4761';
+        style.paddingLeft = '16px';
+        style.marginLeft = '0';
+        style.marginTop = '16px';
+        style.marginBottom = '16px';
+        style.fontStyle = 'italic';
+        style.color = '#4b5563';
+      }
+      
+      // Process children
+      Array.from(el.children).forEach(child => styleElement(child));
+    };
+    
+    // Style all elements
+    Array.from(contentWrapper.children).forEach(child => styleElement(child));
+    // Also style nested elements
+    contentWrapper.querySelectorAll('*').forEach(el => styleElement(el));
+    
+    pdfContainer.appendChild(contentWrapper);
+    
+    // Position off-screen but visible for html2canvas
+    pdfContainer.style.position = 'fixed';
+    pdfContainer.style.top = '0';
+    pdfContainer.style.left = '0';
+    pdfContainer.style.zIndex = '99999';
     document.body.appendChild(pdfContainer);
-    
-    // Scroll container into view (even if off-screen) to ensure rendering
-    pdfContainer.scrollIntoView({ behavior: 'auto', block: 'nearest' });
     
     // Wait for rendering
     setTimeout(() => {
