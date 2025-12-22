@@ -17,6 +17,11 @@ function getAnthropicClient(): Anthropic {
   return anthropicClient;
 }
 
+// Model configuration - can be overridden via environment variable
+// Options: 'claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307'
+const CHAT_MODEL = process.env.ANTHROPIC_CHAT_MODEL || 'claude-3-5-sonnet-20241022';
+const AUDIT_MODEL = process.env.ANTHROPIC_AUDIT_MODEL || 'claude-3-5-sonnet-20241022';
+
 /**
  * Chat with AI coach
  */
@@ -33,7 +38,7 @@ Be conversational, ask thoughtful follow-up questions, and help users think deep
   try {
     const anthropic = getAnthropicClient();
     const response = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: CHAT_MODEL,
       max_tokens: 1024,
       system: systemPrompt,
       messages: messages.map(msg => ({
@@ -89,7 +94,7 @@ export async function generateAuditReview(
   try {
     const anthropic = getAnthropicClient();
     const response = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: AUDIT_MODEL,
       max_tokens: 4096,
       messages: [
         {
