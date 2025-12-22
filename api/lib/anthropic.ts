@@ -18,9 +18,11 @@ function getAnthropicClient(): Anthropic {
 }
 
 // Model configuration - can be overridden via environment variable
-// Options: 'claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307'
-const CHAT_MODEL = process.env.ANTHROPIC_CHAT_MODEL || 'claude-3-5-sonnet-20241022';
-const AUDIT_MODEL = process.env.ANTHROPIC_AUDIT_MODEL || 'claude-3-5-sonnet-20241022';
+// Try simpler model names first - Anthropic SDK may auto-resolve to latest version
+// Options: 'claude-3-5-sonnet', 'claude-3-opus', 'claude-3-haiku'
+// Full versions: 'claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307'
+const CHAT_MODEL = process.env.ANTHROPIC_CHAT_MODEL || 'claude-3-5-sonnet';
+const AUDIT_MODEL = process.env.ANTHROPIC_AUDIT_MODEL || 'claude-3-5-sonnet';
 
 /**
  * Chat with AI coach
@@ -55,6 +57,7 @@ Be conversational, ask thoughtful follow-up questions, and help users think deep
       statusText: error.statusText,
       message: error.message,
       error: error.error,
+      model: CHAT_MODEL,
     });
     
     // Provide more helpful error messages
@@ -62,7 +65,7 @@ Be conversational, ask thoughtful follow-up questions, and help users think deep
       throw new Error('Invalid Anthropic API key. Please check your ANTHROPIC_API_KEY environment variable.');
     }
     if (error.status === 404) {
-      throw new Error('Anthropic API endpoint or model not found. Please check the model name and API version.');
+      throw new Error(`Model "${CHAT_MODEL}" not found. Try setting ANTHROPIC_CHAT_MODEL to 'claude-3-5-sonnet-20241022' or another valid model name.`);
     }
     
     throw new Error(`Failed to generate chat response: ${error.message || error.status || 'Unknown error'}`);
@@ -112,6 +115,7 @@ export async function generateAuditReview(
       statusText: error.statusText,
       message: error.message,
       error: error.error,
+      model: AUDIT_MODEL,
     });
     
     // Provide more helpful error messages
@@ -119,7 +123,7 @@ export async function generateAuditReview(
       throw new Error('Invalid Anthropic API key. Please check your ANTHROPIC_API_KEY environment variable.');
     }
     if (error.status === 404) {
-      throw new Error('Anthropic API endpoint or model not found. Please check the model name and API version.');
+      throw new Error(`Model "${AUDIT_MODEL}" not found. Try setting ANTHROPIC_AUDIT_MODEL to 'claude-3-5-sonnet-20241022' or another valid model name.`);
     }
     
     throw new Error(`Failed to generate audit review: ${error.message || error.status || 'Unknown error'}`);
