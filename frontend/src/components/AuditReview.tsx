@@ -65,6 +65,36 @@ export default function AuditReview({
     pdf.line(margin, yPosition, pageWidth - margin, yPosition);
     yPosition += 0.2;
     
+    // Function to replace emoji/icons with text equivalents for PDF
+    const replaceIconsWithText = (text: string): string => {
+      let replaced = text;
+      
+      // Green circles/checkmarks
+      replaced = replaced.replace(/🟢|✅|✓|✔|☑/g, '[✓]');
+      
+      // Red circles/warnings
+      replaced = replaced.replace(/🔴|❌|✗|✘|⚠|⚠️/g, '[✗]');
+      
+      // Lightbulbs/ideas
+      replaced = replaced.replace(/💡|💭|💬/g, '[💡]');
+      
+      // Targets/goals
+      replaced = replaced.replace(/🎯|📍|🔖/g, '[→]');
+      
+      // Stars
+      replaced = replaced.replace(/⭐|🌟|✨/g, '[★]');
+      
+      // Arrows - replace with ASCII equivalents
+      replaced = replaced.replace(/→/g, '->');
+      replaced = replaced.replace(/←/g, '<-');
+      replaced = replaced.replace(/↑/g, '^');
+      replaced = replaced.replace(/↓/g, 'v');
+      replaced = replaced.replace(/⇒/g, '=>');
+      replaced = replaced.replace(/⇐/g, '<=');
+      
+      return replaced;
+    };
+    
     // Function to clean text - remove HTML entities and normalize special characters
     const cleanText = (text: string): string => {
       // Create a temporary element to decode HTML entities
@@ -72,21 +102,26 @@ export default function AuditReview({
       temp.innerHTML = text;
       let cleaned = temp.textContent || temp.innerText || text;
       
-      // Remove any remaining HTML tags or entities
+      // Remove any remaining HTML tags
       cleaned = cleaned.replace(/<[^>]*>/g, '');
+      
+      // Decode HTML entities
       cleaned = cleaned.replace(/&[#\w]+;/g, (entity) => {
         const temp2 = document.createElement('div');
         temp2.innerHTML = entity;
         return temp2.textContent || entity;
       });
       
+      // Replace icons/emojis with text equivalents
+      cleaned = replaceIconsWithText(cleaned);
+      
       // Remove zero-width and other problematic Unicode characters
       cleaned = cleaned.replace(/[\u200B-\u200D\uFEFF]/g, '');
       
-      // Normalize whitespace
-      cleaned = cleaned.replace(/\s+/g, ' ').trim();
+      // Normalize whitespace (preserve single spaces, normalize tabs)
+      cleaned = cleaned.replace(/[ \t]+/g, ' ');
       
-      return cleaned;
+      return cleaned.trim();
     };
     
     // Function to add text with word wrapping
