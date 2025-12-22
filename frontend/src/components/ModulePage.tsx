@@ -16,8 +16,8 @@ export default function ModulePage() {
   const { user, loading: authLoading } = useAuth();
   const moduleNum = parseInt(moduleNumber || '0');
   
-  // MVP: Only support Module 0
-  if (moduleNum !== 0) {
+  // Validate module number
+  if (isNaN(moduleNum) || moduleNum < 0 || moduleNum > 4) {
     navigate('/');
     return null;
   }
@@ -138,8 +138,13 @@ export default function ModulePage() {
   };
 
   const handleNextModule = () => {
-    // MVP: Only Module 0, so after review, go back to main page
-    navigate('/');
+    // Navigate to next module or final summary
+    if (moduleNum < 4) {
+      navigate(`/module/${moduleNum + 1}`);
+    } else {
+      // Last module completed - go to final summary
+      navigate('/summary');
+    }
   };
 
   if (loading && !session) {
@@ -194,7 +199,7 @@ export default function ModulePage() {
             moduleTitle={config.title}
             auditReview={auditReview}
             onNext={handleNextModule}
-            isLastModule={true}
+            isLastModule={moduleNum === 4}
           />
         )}
       </div>

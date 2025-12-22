@@ -136,7 +136,9 @@ export default function MainPage() {
   };
 
   const handleModuleClick = (moduleNumber: number) => {
-    if (appSession?.session && moduleNumber <= (appSession.session.currentModule || 0)) {
+    const currentModule = appSession?.session?.currentModule || 0;
+    // Allow access to current module or any completed module
+    if (appSession?.session && moduleNumber <= currentModule) {
       navigate(`/module/${moduleNumber}`);
     }
   };
@@ -403,17 +405,21 @@ export default function MainPage() {
               {appSession?.session ? (
                 <>
                   <p className="text-secondary mb-6">
-                    {appSession.session.completionStatus > 0 
-                      ? 'Module 0 completed! Review your audit document.'
+                    {appSession.session.completionStatus >= 5
+                      ? 'All modules completed! View your final summary.'
+                      : appSession.session.completionStatus > 0
+                      ? `Continue with Module ${appSession.session.currentModule}`
                       : 'Start with Module 0: Current Reality'}
                   </p>
                   <button
                     onClick={handleContinue}
                     className="bg-primary text-white py-3 px-6 rounded-md font-medium hover:bg-primary-dark transition-colors"
                   >
-                    {appSession.session.currentModule === 0 && appSession.session.completionStatus > 0
-                      ? 'Review Module 0'
-                      : 'Start Module 0'}
+                    {appSession.session.completionStatus >= 5
+                      ? 'View Final Summary'
+                      : appSession.session.completionStatus > appSession.session.currentModule
+                      ? `Review Module ${appSession.session.currentModule}`
+                      : `Start Module ${appSession.session.currentModule}`}
                   </button>
                 </>
               ) : (
@@ -421,18 +427,21 @@ export default function MainPage() {
               )}
             </div>
 
-            {/* Module List - MVP: Only Module 0 available */}
+            {/* Module List */}
             {appSession?.session && (
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 {[
-                  { num: 0, title: 'Current Reality', subtitle: 'At Bat', available: true },
-                  { num: 1, title: 'Ideal Customer', subtitle: '1st Base', available: false },
-                  { num: 2, title: 'Core Offer', subtitle: '2nd Base', available: false },
-                  { num: 3, title: 'Delivery Path', subtitle: '3rd Base', available: false },
-                  { num: 4, title: '90-Day Plan', subtitle: 'Home', available: false },
+                  { num: 0, title: 'Current Reality', subtitle: 'At Bat' },
+                  { num: 1, title: 'Ideal Customer', subtitle: '1st Base' },
+                  { num: 2, title: 'Core Offer', subtitle: '2nd Base' },
+                  { num: 3, title: 'Delivery Path', subtitle: '3rd Base' },
+                  { num: 4, title: '90-Day Plan', subtitle: 'Home' },
                 ].map((module) => {
-                  const isAvailable = module.available; // MVP: Only Module 0
-                  const isCompleted = module.num === 0 && (appSession.session.completionStatus || 0) > 0;
+                  const currentModule = appSession.session.currentModule || 0;
+                  const completionStatus = appSession.session.completionStatus || 0;
+                  // Module is available if it's the current module or a completed module
+                  const isAvailable = module.num <= currentModule;
+                  const isCompleted = module.num < completionStatus;
                 return (
                   <button
                     key={module.num}
@@ -440,7 +449,7 @@ export default function MainPage() {
                     disabled={!isAvailable}
                     className={`p-6 rounded-lg border-2 text-left transition-all ${
                       isCompleted
-                        ? 'bg-green-50 border-green-500'
+                        ? 'bg-green-50 border-green-500 hover:shadow-lg cursor-pointer'
                         : isAvailable
                         ? 'bg-white border-primary hover:shadow-lg cursor-pointer'
                         : 'bg-gray-100 border-gray-300 opacity-50 cursor-not-allowed'
@@ -452,10 +461,13 @@ export default function MainPage() {
                     <div className="font-bold text-lg mb-1">{module.title}</div>
                     <div className="text-sm text-secondary">{module.subtitle}</div>
                     {!isAvailable && (
-                      <div className="mt-2 text-gray-500 text-xs font-medium">Coming Soon</div>
+                      <div className="mt-2 text-gray-500 text-xs font-medium">Locked</div>
                     )}
                     {isCompleted && (
                       <div className="mt-2 text-green-600 text-sm font-medium">✓ Completed</div>
+                    )}
+                    {isAvailable && !isCompleted && module.num === currentModule && (
+                      <div className="mt-2 text-primary text-sm font-medium">Continue →</div>
                     )}
                   </button>
                 );

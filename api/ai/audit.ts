@@ -5,7 +5,7 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { verifyAuth } from '../auth/verify';
-import { generateAuditReview, module0AuditPrompt } from '../lib/anthropic';
+import { generateAuditReview, getAuditPrompt } from '../lib/anthropic';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -18,17 +18,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const { moduleNumber, aiTranscript, formData } = req.body;
 
-    // MVP: Only support Module 0
-    if (moduleNumber !== 0) {
-      return res.status(400).json({ error: 'Only Module 0 is supported in MVP' });
+    // Validate module number
+    if (typeof moduleNumber !== 'number' || moduleNumber < 0 || moduleNumber > 4) {
+      return res.status(400).json({ error: 'Invalid module number. Must be 0-4' });
     }
 
     if (!aiTranscript && !formData) {
       return res.status(400).json({ error: 'Either aiTranscript or formData is required' });
     }
 
-    // Generate audit review using Module 0 prompt
-    const review = await generateAuditReview(moduleNumber, module0AuditPrompt, {
+    // Get the appropriate audit prompt for this module
+    const auditPrompt = getAuditPrompt(moduleNumber);
+
+    // Generate audit review using module-specific prompt
+    const review = await generateAuditReview(moduleNumber, auditPrompt, {
       aiTranscript,
       formData,
     });

@@ -71,12 +71,12 @@ export const apiService = {
     return response.data;
   },
 
-  // Module 0 responses only (MVP)
+  // Get module response for any module (0-4)
   getModuleResponse: async (moduleNumber: number) => {
-    if (moduleNumber !== 0) {
-      throw new Error('Only Module 0 is supported in MVP');
+    if (moduleNumber < 0 || moduleNumber > 4) {
+      throw new Error('Invalid module number. Must be 0-4');
     }
-    const response = await api.get<ModuleResponse>('/modules/module0');
+    const response = await api.get<ModuleResponse>(`/modules/module${moduleNumber}`);
     return response.data;
   },
 
@@ -89,10 +89,10 @@ export const apiService = {
       auditReviewDocument?: string; // Optional - can save audit review with response
     }
   ) => {
-    if (moduleNumber !== 0) {
-      throw new Error('Only Module 0 is supported in MVP');
+    if (moduleNumber < 0 || moduleNumber > 4) {
+      throw new Error('Invalid module number. Must be 0-4');
     }
-    const response = await api.post('/modules/module0', {
+    const response = await api.post(`/modules/module${moduleNumber}`, {
       inputMethod,
       ...data,
     });
@@ -116,8 +116,8 @@ export const apiService = {
     aiTranscript?: Array<{ role: string; content: string }>,
     formData?: Record<string, any>
   ) => {
-    if (moduleNumber !== 0) {
-      throw new Error('Only Module 0 is supported in MVP');
+    if (moduleNumber < 0 || moduleNumber > 4) {
+      throw new Error('Invalid module number. Must be 0-4');
     }
     const response = await api.post<{ auditReview: string }>('/ai/audit', {
       moduleNumber,

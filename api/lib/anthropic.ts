@@ -130,7 +130,7 @@ export async function generateAuditReview(
   }
 }
 
-// Module 0 Audit Prompt
+// Module Audit Prompts
 export const module0AuditPrompt = `You are reviewing the user's "Current Reality" module responses. This module focuses on their business and why they're struggling or wanting to change (NOT about who they serve - that's covered in the next module).
 
 Please:
@@ -141,4 +141,73 @@ Please:
 4. Based on their description, struggles, and constraints, suggest 5 possible "90-day home run" goals that are ambitious but realistic for their business
 
 Format your response as a clear, well-structured audit review document focused on the business itself, not on their customer base.`;
+
+export const module1AuditPrompt = `You are reviewing the user's "1st Base: Define Who You're Really For" module responses. This module focuses on identifying their ideal customer profile.
+
+Please:
+
+1. Summarize their ideal customer profile based on their responses (who they are, what they want, what frustrates them, what they value)
+2. Identify 3-5 key patterns from their best-fit customers that should guide future targeting
+3. List 3-5 red flags or "no-go" traits from their worst-fit customers that should be avoided
+4. Highlight 3 insights about why certain customers were great fits and others weren't
+5. Suggest 3 ways they could better identify and attract their ideal customers
+
+Format your response as a clear, well-structured audit review document focused on customer clarity and targeting strategy.`;
+
+export const module2AuditPrompt = `You are reviewing the user's "2nd Base: Design What They Actually Want" module responses. This module focuses on understanding customer desires and crafting a core offer.
+
+Please:
+
+1. Summarize their customer's key pains, frustrations, and desires
+2. List 5-7 concrete outcomes they help create for customers
+3. Review and refine their core offer statement (We help [who] do [what], so they can [outcome], without [fear])
+4. Identify 3 opportunities where they could better articulate value from outcomes rather than features
+5. Suggest 2-3 ways to strengthen their offer statement based on the customer insights they provided
+
+Format your response as a clear, well-structured audit review document focused on offer clarity and value articulation.`;
+
+export const module3AuditPrompt = `You are reviewing the user's "3rd Base: Map How You'll Deliver It" module responses. This module focuses on turning their process into a clear delivery path.
+
+Please:
+
+1. Summarize their delivery process broken down into stages
+2. For each stage, highlight what's working well and what could be improved
+3. Identify the essential assets they've identified and suggest any additional assets that might be helpful
+4. Address the confusion points they mentioned - suggest ways to clarify or streamline these areas
+5. Propose 3-5 improvements to help them feel more organized and less rushed
+6. Suggest how they could better communicate the delivery path to customers
+
+Format your response as a clear, well-structured audit review document focused on process clarity and operational excellence.`;
+
+export const module4AuditPrompt = `You are reviewing the user's "Home: Build Your 90-Day Game Plan" module responses. This module focuses on creating a concrete 90-day action plan.
+
+Please:
+
+1. Summarize their 90-day North Star outcome and why it matters now
+2. Review each strategic project they've outlined - assess if they're realistic and well-defined
+3. For each project, suggest any missing steps or considerations
+4. Evaluate their weekly review rhythm - is it realistic and sufficient?
+5. Identify potential risks they mentioned and suggest mitigation strategies
+6. Recommend support or accountability structures that could help them stay on track
+7. Prioritize the projects if there are multiple - which should come first and why?
+
+Format your response as a clear, well-structured audit review document that serves as a strategic guide for their 90-day execution plan.`;
+
+// Helper function to get audit prompt by module number
+export function getAuditPrompt(moduleNumber: number): string {
+  switch (moduleNumber) {
+    case 0:
+      return module0AuditPrompt;
+    case 1:
+      return module1AuditPrompt;
+    case 2:
+      return module2AuditPrompt;
+    case 3:
+      return module3AuditPrompt;
+    case 4:
+      return module4AuditPrompt;
+    default:
+      throw new Error(`Invalid module number: ${moduleNumber}`);
+  }
+}
 
