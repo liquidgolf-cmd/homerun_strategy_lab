@@ -8,8 +8,8 @@ let ttsClient: TextToSpeechClient | null = null;
 function getTTSClient(): TextToSpeechClient {
   if (!ttsClient) {
     // Google Cloud TTS requires service account credentials
-    // Option 1: Use GOOGLE_APPLICATION_CREDENTIALS (service account JSON file path)
-    // Option 2: Use environment variable for service account JSON content
+    // Option 1: Use GOOGLE_TTS_CREDENTIALS (service account JSON content as string)
+    // Option 2: Use GOOGLE_APPLICATION_CREDENTIALS (service account JSON file path)
     const credentialsJson = process.env.GOOGLE_TTS_CREDENTIALS;
     const credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
     
@@ -19,9 +19,11 @@ function getTTSClient(): TextToSpeechClient {
         const credentials = JSON.parse(credentialsJson);
         ttsClient = new TextToSpeechClient({
           credentials: credentials,
+          projectId: credentials.project_id,
         });
-      } catch (error) {
-        throw new Error('GOOGLE_TTS_CREDENTIALS must be valid JSON');
+      } catch (error: any) {
+        console.error('Error parsing GOOGLE_TTS_CREDENTIALS:', error);
+        throw new Error(`GOOGLE_TTS_CREDENTIALS must be valid JSON: ${error.message}`);
       }
     } else if (credentialsPath) {
       // Use file path for service account
@@ -29,8 +31,13 @@ function getTTSClient(): TextToSpeechClient {
         keyFilename: credentialsPath,
       });
     } else {
-      // Try default credentials (for GCP environments)
-      ttsClient = new TextToSpeechClient();
+      // Try default credentials (for GCP environments like Cloud Run, App Engine)
+      try {
+        ttsClient = new TextToSpeechClient();
+      } catch (error: any) {
+        console.error('Failed to initialize TTS client:', error);
+        throw new Error('Google TTS not configured. Please set GOOGLE_TTS_CREDENTIALS or GOOGLE_APPLICATION_CREDENTIALS');
+      }
     }
   }
   return ttsClient;
@@ -80,16 +87,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({ audioDataUrl });
   } catch (error: any) {
     console.error('TTS Error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      status: error.status,
+      stack: error.stack,
+    });
     
-    if (error.message?.includes('GOOGLE_TTS_CREDENTIALS') || error.message?.includes('credentials')) {
-      return res.status(500).json({ error: 'TTS service not configured. Please set GOOGLE_TTS_CREDENTIALS or GOOGLE_APPLICATION_CREDENTIALS environment variable.' });
+    // Check for authentication/configuration errors
+    if (error.message?.includes('GOOGLE_TTS_CREDENTIALS') || 
+        error.message?.includes('credentials') ||
+        error.message?.includes('not configured') ||
+        error.code === 'ENOENT' ||
+        error.code === 'ENOTFOUND') {
+      return res.status(500).json({ 
+        error: 'TTS service not configured. Please set GOOGLE_TTS_CREDENTIALS environment variable in Vercel.',
+        details: error.message 
+      });
+    }
+    
+    // Check for API permission errors
+    if (error.code === 7 || error.message?.includes('PERMISSION_DENIED')) {
+      return res.status(500).json({ 
+        error: 'TTS API permission denied. Please check that the service account has Text-to-Speech API User role.',
+        details: error.message 
+      });
     }
     
     if (error.response?.status === 401) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    return res.status(500).json({ error: error.message || 'Internal server error' });
+    return res.status(500).json({ 
+      error: error.message || 'Internal server error',
+      details: error.code || 'Unknown error'
+    });
   }
 }
 

@@ -21,27 +21,44 @@ const speakTextImpl = async (text: string): Promise<void> => {
       currentAudio = null;
     }
 
+    console.log('[TTS] Calling Google Cloud TTS API for text:', text.substring(0, 50) + (text.length > 50 ? '...' : ''));
     // Call Google TTS API
     const audioDataUrl = await apiService.textToSpeech(text);
+    
+    if (!audioDataUrl) {
+      console.error('[TTS] API returned empty audio data URL');
+      throw new Error('TTS API returned empty audio data');
+    }
+    
+    console.log('[TTS] Received audio data URL, length:', audioDataUrl.length);
     
     // Create audio element and play
     const audio = new Audio(audioDataUrl);
     currentAudio = audio;
     
     audio.onended = () => {
+      console.log('[TTS] Audio playback completed');
       currentAudio = null;
     };
     
     audio.onerror = (error) => {
-      console.error('Audio playback error:', error);
+      console.error('[TTS] Audio playback error:', error);
       currentAudio = null;
     };
     
+    console.log('[TTS] Starting audio playback...');
     await audio.play();
-  } catch (error) {
-    console.error('TTS Error:', error);
+    console.log('[TTS] Audio playback started successfully');
+  } catch (error: any) {
+    console.error('[TTS] Error in speakTextImpl:', error);
+    console.error('[TTS] Error details:', {
+      message: error?.message,
+      response: error?.response?.data,
+      status: error?.response?.status,
+    });
     currentAudio = null;
-    throw error;
+    // Don't throw - just log the error so the UI doesn't break
+    // Users can check console for error details
   }
 };
 
@@ -61,14 +78,11 @@ export function TTSProvider({ children }: { children: ReactNode }) {
     
     const newTtsEnabled = !ttsEnabled;
     setTtsEnabled(newTtsEnabled);
+    console.log('[TTS] Toggle TTS:', newTtsEnabled ? 'ON' : 'OFF');
     
     // Announce the toggle state
     const announcement = newTtsEnabled ? 'Text to speech on' : 'Text to speech off';
-    try {
-      await speakTextImpl(announcement);
-    } catch (error) {
-      console.error('Error announcing toggle state:', error);
-    }
+    await speakTextImpl(announcement);
   };
 
   const speakText = async (text: string) => {
