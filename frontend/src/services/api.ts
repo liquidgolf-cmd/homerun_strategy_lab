@@ -1,17 +1,9 @@
 import axios from 'axios';
 import { supabase } from '../lib/supabase';
 
-// Use environment variable for API URL, fallback to relative path
+// Use relative path for API (Vercel will route /api/* to serverless functions)
 const getApiBaseURL = () => {
-  // If VITE_API_URL is set, use it (for Vercel deployment pointing to backend)
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
-  // In development, use relative path (proxied by Vite to backend)
-  if (import.meta.env.DEV) {
-    return '/api';
-  }
-  // In production, use relative path (assumes frontend and backend on same domain)
+  // Always use relative path - Vercel handles routing
   return '/api';
 };
 
@@ -28,18 +20,23 @@ api.interceptors.request.use(async (config) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.access_token) {
       config.headers.Authorization = `Bearer ${session.access_token}`;
-      console.log('API request with auth token:', config.url);
-    } else {
-      console.warn('No auth token available for API request:', config.url);
     }
   } catch (error) {
     console.error('Error getting auth session for API request:', error);
   }
   return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+api.interceptors.response.use((response) => {
+  return response;
+}, (error) => {
+  console.error(`API response error from ${error.config?.url}:`, error.response?.data || error.message);
+  return Promise.reject(error);
 });
 
 export interface Session {
-  id: string;
   userId: string;
   currentModule: number;
   completionStatus: number;
@@ -55,7 +52,7 @@ export interface User {
 
 export interface ModuleResponse {
   id: string;
-  sessionId: string;
+  userId: string;
   moduleNumber: number;
   inputMethod: 'ai' | 'form';
   aiTranscript?: Array<{ role: string; content: string; timestamp?: string }>;
@@ -67,64 +64,45 @@ export interface ModuleResponse {
 export const apiService = {
   // Session management - Get or create session (requires auth)
   getSession: async () => {
-    const baseURL = getApiBaseURL();
-    console.log('VITE_API_URL from env:', import.meta.env.VITE_API_URL);
-    console.log('Base URL being used:', baseURL);
-    console.log('Full URL will be:', baseURL + '/modules/session');
     const response = await api.get<{ user: User; session: Session }>('/modules/session');
-    console.log('getSession API response:', response.data);
     return response.data;
   },
 
-  // Get session by ID
-  getSessionById: async (sessionId: string) => {
-    const response = await api.get<Session>(`/modules/session/${sessionId}`);
-    return response.data;
-  },
-
-  // Module responses
-  getModuleResponse: async (sessionId: string, moduleNumber: number) => {
-    const response = await api.get<ModuleResponse>(
-      `/modules/session/${sessionId}/module/${moduleNumber}`
-    );
+  // Module 0 responses only (MVP)
+  getModuleResponse: async (moduleNumber: number) => {
+    if (moduleNumber !== 0) {
+      throw new Error('Only Module 0 is supported in MVP');
+    }
+    const response = await api.get<ModuleResponse>('/modules/module0');
     return response.data;
   },
 
   saveModuleResponse: async (
-    sessionId: string,
     moduleNumber: number,
     inputMethod: 'ai' | 'form',
     data: {
       aiTranscript?: Array<{ role: string; content: string }>;
       formData?: Record<string, any>;
+      auditReviewDocument?: string; // Optional - can save audit review with response
     }
   ) => {
-    const response = await api.post(`/modules/session/${sessionId}/module/${moduleNumber}`, {
+    if (moduleNumber !== 0) {
+      throw new Error('Only Module 0 is supported in MVP');
+    }
+    const response = await api.post('/modules/module0', {
       inputMethod,
       ...data,
     });
     return response.data;
   },
 
-  saveAuditReview: async (sessionId: string, moduleNumber: number, auditReview: string) => {
-    const response = await api.post(
-      `/modules/session/${sessionId}/module/${moduleNumber}/audit`,
-      {
-        auditReviewDocument: auditReview,
-      }
-    );
-    return response.data;
-  },
-
-  // AI chat
+  // AI Interactions
   chat: async (
     messages: Array<{ role: 'user' | 'assistant'; content: string }>,
-    moduleNumber: number,
     moduleContext: string
   ) => {
     const response = await api.post<{ message: string }>('/ai/chat', {
       messages,
-      moduleNumber,
       moduleContext,
     });
     return response.data.message;
@@ -135,31 +113,14 @@ export const apiService = {
     aiTranscript?: Array<{ role: string; content: string }>,
     formData?: Record<string, any>
   ) => {
-    const response = await api.post<{ auditReview: string }>('/ai/audit-review', {
+    if (moduleNumber !== 0) {
+      throw new Error('Only Module 0 is supported in MVP');
+    }
+    const response = await api.post<{ auditReview: string }>('/ai/audit', {
       moduleNumber,
       aiTranscript,
       formData,
     });
     return response.data.auditReview;
   },
-
-  // Final documents
-  generateFinalDocuments: async (sessionId: string) => {
-    const response = await api.post<{
-      combinedOverview: string;
-      actionPlan: string;
-      generatedAt: string;
-    }>(`/documents/session/${sessionId}/generate`);
-    return response.data;
-  },
-
-  getFinalDocuments: async (sessionId: string) => {
-    const response = await api.get<{
-      combinedOverviewDocument: string;
-      actionPlanDocument: string;
-      generatedAt: string;
-    }>(`/documents/session/${sessionId}`);
-    return response.data;
-  },
 };
-

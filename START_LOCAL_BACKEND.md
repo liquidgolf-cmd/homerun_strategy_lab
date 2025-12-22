@@ -54,3 +54,5 @@ cd "/Users/michaelhill/Documents/GitHub/Homeruns Strategy Lab" && firebase emula
 cd "/Users/michaelhill/Documents/GitHub/Homeruns Strategy Lab/backend" && FIRESTORE_EMULATOR_HOST=localhost:8080 GCLOUD_PROJECT=homerun-strategy-lab npm run dev
 ```
 
+
+

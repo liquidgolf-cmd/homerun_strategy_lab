@@ -146,3 +146,5 @@ Share:
 2. Screenshot of Supabase Redirect URLs configuration
 3. What happens when you click the sign-in button (does popup appear? does it close immediately?)
 
+
+

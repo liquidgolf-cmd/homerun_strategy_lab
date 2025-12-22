@@ -65,7 +65,7 @@ export default function AIChatInterface({
         content: m.content,
       }));
 
-      const response = await apiService.chat(conversationMessages, moduleNumber, moduleContext);
+      const response = await apiService.chat(conversationMessages, moduleContext);
 
       const assistantMessage = {
         role: 'assistant' as const,

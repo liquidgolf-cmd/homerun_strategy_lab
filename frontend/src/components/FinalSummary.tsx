@@ -1,17 +1,26 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
 
 export default function FinalSummary() {
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
   const [session, setSession] = useState<any>(null);
   const [documents, setDocuments] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
-    loadSession();
-  }, []);
+    if (!authLoading) {
+      if (!user) {
+        navigate('/');
+      } else {
+        loadSession();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, authLoading]);
 
   useEffect(() => {
     if (session) {
@@ -19,17 +28,12 @@ export default function FinalSummary() {
     }
   }, [session]);
 
-  const loadSession = () => {
-    const saved = localStorage.getItem('session');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setSession(parsed);
-      } catch (e) {
-        console.error('Error parsing session:', e);
-        navigate('/');
-      }
-    } else {
+  const loadSession = async () => {
+    try {
+      const data = await apiService.getSession();
+      setSession(data);
+    } catch (error) {
+      console.error('Error loading session:', error);
       navigate('/');
     }
   };
@@ -38,7 +42,8 @@ export default function FinalSummary() {
     if (!session) return;
 
     try {
-      const docs = await apiService.getFinalDocuments(session.session.id);
+      // API now uses userId from JWT, no sessionId parameter needed
+      const docs = await apiService.getFinalDocuments();
       setDocuments(docs);
     } catch (error: any) {
       if (error.response?.status === 404) {
@@ -57,7 +62,8 @@ export default function FinalSummary() {
 
     setGenerating(true);
     try {
-      const docs = await apiService.generateFinalDocuments(session.session.id);
+      // API now uses userId from JWT, no sessionId parameter needed
+      const docs = await apiService.generateFinalDocuments();
       setDocuments({
         combinedOverviewDocument: docs.combinedOverview,
         actionPlanDocument: docs.actionPlan,
@@ -83,7 +89,7 @@ export default function FinalSummary() {
     URL.revokeObjectURL(url);
   };
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -188,4 +194,3 @@ export default function FinalSummary() {
     </div>
   );
 }
-

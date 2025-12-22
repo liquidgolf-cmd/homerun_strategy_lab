@@ -10,3 +10,5 @@ Supabase uses PostgreSQL, which is a SQL database (unlike Firestore which is NoS
 
 Let me help you set this up!
 
+
+

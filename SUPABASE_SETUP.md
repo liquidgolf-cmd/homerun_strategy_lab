@@ -85,3 +85,5 @@ Your app now uses Supabase PostgreSQL instead of Firestore!
 - ✅ Better tooling for data management
 - ✅ Free tier available
 
+
+

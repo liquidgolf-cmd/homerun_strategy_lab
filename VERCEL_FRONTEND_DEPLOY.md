@@ -103,3 +103,5 @@ app.use(cors({
 - After changing `VITE_API_URL`, you need to redeploy the frontend
 - Check Vercel build logs to verify the variable is set
 
+
+

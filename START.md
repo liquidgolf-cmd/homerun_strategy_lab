@@ -83,3 +83,5 @@ These are usually from browser extensions and can be ignored if the app works.
 - Make sure you've created a session first (from main page)
 - Check localStorage in browser DevTools for 'session' key
 
+
+

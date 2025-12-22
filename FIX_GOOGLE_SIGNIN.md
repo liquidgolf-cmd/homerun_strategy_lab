@@ -117,3 +117,5 @@ So your callback URL should be:
 https://sjngcdxxtkvmjigoethp.supabase.co/auth/v1/callback
 ```
 
+
+

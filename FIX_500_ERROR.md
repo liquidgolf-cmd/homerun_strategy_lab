@@ -1,47 +1,75 @@
-# Fix 500 Internal Server Error
+# Fix: 500 Internal Server Error
 
-## The Problem
+## Progress Made! ✅
 
-The backend is returning a 500 error when trying to create a session. This is likely because Firestore isn't properly initialized.
-
-## For Local Development
-
-You need Firestore to be available. You have two options:
-
-### Option 1: Use Firebase Emulator (Recommended)
-
-**Terminal 1 - Start Emulator:**
-```bash
-cd "/Users/michaelhill/Documents/GitHub/Homeruns Strategy Lab"
-firebase emulators:start --only firestore
+The URL is now correct:
+```
+https://homerun-strategy-lab-production-1f3b.up.railway.app/api/modules/session
 ```
 
-**Terminal 2 - Start Backend with Environment Variables:**
-```bash
-cd "/Users/michaelhill/Documents/GitHub/Homeruns Strategy Lab/backend"
-export FIRESTORE_EMULATOR_HOST=localhost:8080
-export GCLOUD_PROJECT=homerun-strategy-lab
-npm run dev
-```
+But now we're getting a **500 Internal Server Error** from the backend. This means the backend is crashing or erroring when processing the request.
 
-### Option 2: Use Real Firestore
+## Step 1: Check Railway Backend Logs
 
-1. Get service account key from Firebase Console
-2. Set environment variable:
-   ```bash
-   export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account-key.json
-   export GCLOUD_PROJECT=homerun-strategy-lab
-   ```
-3. Start backend: `npm run dev`
+The backend is crashing. We need to see the error:
 
-## Check Backend Logs
+1. Go to **Railway Dashboard**: https://railway.app
+2. Click your project: **homerun-strategy-lab**
+3. Click your **service** (backend service)
+4. Go to **Deployments** tab
+5. Click on the **latest deployment** (the one that's running)
+6. Look at the **logs**
+7. Scroll to the **end** of the logs (most recent errors)
+8. Look for **error messages** - these will tell us what's wrong
 
-Look at the terminal where your backend is running. You should see error messages that tell you exactly what's wrong. Common issues:
+## Common Causes of 500 Errors
 
-- "Failed to initialize Firebase Admin" - Need emulator or credentials
-- "Firestore connection failed" - Firestore not available
-- Other errors will show what's failing
+### 1. Missing Environment Variables
 
-## Quick Fix
+Check Railway → Service → **Variables** tab. Make sure these are set:
+- ✅ `ANTHROPIC_API_KEY`
+- ✅ `SUPABASE_URL`
+- ✅ `SUPABASE_SERVICE_ROLE_KEY`
+- ✅ `NODE_ENV=production`
 
-The fastest way is to start the Firebase emulator, then restart your backend with the environment variables set.
+### 2. Database Connection Issues
+
+If you see errors about:
+- "Cannot connect to database"
+- "Supabase connection failed"
+- "Invalid credentials"
+
+Check that `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are correct.
+
+### 3. Authentication Middleware Errors
+
+If you see errors about:
+- "JWT verification failed"
+- "Invalid token"
+- "Missing authorization header"
+
+This might be a Supabase auth configuration issue.
+
+### 4. Code Errors
+
+Look for:
+- "Cannot find module..."
+- "TypeError: ..."
+- Any stack trace pointing to specific code
+
+## What to Look For
+
+In Railway logs, look for lines that say:
+- `Error:` (red text)
+- `ERROR:` (uppercase)
+- Stack traces
+- Any text in red or error-colored
+
+**Copy the error message** and share it so we can fix it!
+
+## Quick Checklist
+
+- [ ] Check Railway deployment logs for errors
+- [ ] Verify all environment variables are set
+- [ ] Check that backend server is running (logs show "Server running...")
+- [ ] Look for specific error messages in logs

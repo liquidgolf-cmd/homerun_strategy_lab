@@ -65,3 +65,5 @@ If you still get HTML responses:
 - Check browser console for the actual API URL being called
 - Verify Railway backend is running (check Deployment logs show "Server running")
 
+
+

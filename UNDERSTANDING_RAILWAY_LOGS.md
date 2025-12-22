@@ -72,3 +72,5 @@ This is what you'll use in Vercel's `VITE_API_URL`.
 - ✅ Railway provides a public URL to access it
 - ✅ You just need to find that public URL
 
+
+

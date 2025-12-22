@@ -46,3 +46,5 @@ If you see Content Security Policy errors, they're likely from a browser extensi
 2. **404 Error**: Frontend dev server not running (start with `npm run dev` in frontend folder)
 3. **CSP Errors**: Usually from browser extensions, can be ignored
 
+
+

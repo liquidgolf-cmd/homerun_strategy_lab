@@ -72,3 +72,5 @@ If you see HTML, there's still an issue with the backend.
 - [ ] Browser console shows correct API URL
 - [ ] API returns JSON instead of HTML
 
+
+

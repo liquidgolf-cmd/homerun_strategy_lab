@@ -1,0 +1,19 @@
+{
+  "name": "homeruns-strategy-lab-api",
+  "version": "1.0.0",
+  "description": "Vercel Serverless Functions API for Homeruns Strategy Lab",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.3",
+    "@supabase/supabase-js": "^2.89.0",
+    "@vercel/node": "^3.0.11"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3",
+    "vercel": "^50.1.3"
+  }
+}

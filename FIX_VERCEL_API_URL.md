@@ -92,3 +92,5 @@ If this works, your backend is fine - the issue is just the frontend URL config.
 - [ ] Browser console shows correct API URL with `/api/modules/session`
 - [ ] API returns JSON instead of HTML
 
+
+

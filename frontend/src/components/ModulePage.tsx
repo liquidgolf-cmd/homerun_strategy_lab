@@ -15,6 +15,13 @@ export default function ModulePage() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const moduleNum = parseInt(moduleNumber || '0');
+  
+  // MVP: Only support Module 0
+  if (moduleNum !== 0) {
+    navigate('/');
+    return null;
+  }
+  
   const config = moduleConfigs[moduleNum];
   const moduleContext = moduleContexts[moduleNum];
 
@@ -58,7 +65,8 @@ export default function ModulePage() {
     if (!session) return;
 
     try {
-      const response = await apiService.getModuleResponse(session.session.id, moduleNum);
+      // API now uses userId from JWT, no sessionId parameter needed
+      const response = await apiService.getModuleResponse(moduleNum);
       setModuleResponse(response);
 
       if (response.completedAt && response.auditReviewDocument) {
@@ -88,8 +96,8 @@ export default function ModulePage() {
     if (!session) return;
 
     try {
+      // API now uses userId from JWT, no sessionId parameter needed
       await apiService.saveModuleResponse(
-        session.session.id,
         moduleNum,
         inputMethod!,
         data
@@ -113,8 +121,12 @@ export default function ModulePage() {
       );
       setAuditReview(review);
 
-      // Save audit review
-      await apiService.saveAuditReview(session.session.id, moduleNum, review);
+      // Save audit review along with the response (merged API call)
+      await apiService.saveModuleResponse(moduleNum, inputMethod!, {
+        ...(moduleResponse.aiTranscript ? { aiTranscript: moduleResponse.aiTranscript } : {}),
+        ...(moduleResponse.formData ? { formData: moduleResponse.formData } : {}),
+        auditReviewDocument: review,
+      });
 
       setViewState('review');
     } catch (error) {
@@ -126,14 +138,8 @@ export default function ModulePage() {
   };
 
   const handleNextModule = () => {
-    if (moduleNum < 4) {
-      navigate(`/module/${moduleNum + 1}`);
-      setViewState('landing');
-      setInputMethod(null);
-    } else {
-      // All modules complete, go to summary
-      navigate('/summary');
-    }
+    // MVP: Only Module 0, so after review, go back to main page
+    navigate('/');
   };
 
   if (loading && !session) {
@@ -189,11 +195,10 @@ export default function ModulePage() {
             moduleTitle={config.title}
             auditReview={auditReview}
             onNext={handleNextModule}
-            isLastModule={moduleNum === 4}
+            isLastModule={true}
           />
         )}
       </div>
     </div>
   );
 }
-

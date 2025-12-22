@@ -14,3 +14,5 @@ curl -s -I http://localhost:3001 | head -1 || echo "❌ Frontend not running on 
 
 echo -e "\n\nDone!"
 
+
+

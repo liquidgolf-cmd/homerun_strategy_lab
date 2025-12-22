@@ -165,13 +165,17 @@ export default function MainPage() {
               {appSession?.session ? (
                 <>
                   <p className="text-secondary mb-6">
-                    Progress: {appSession.session.completionStatus || 0} of 5 modules completed
+                    {appSession.session.completionStatus > 0 
+                      ? 'Module 0 completed! Review your audit document.'
+                      : 'Start with Module 0: Current Reality'}
                   </p>
                   <button
                     onClick={handleContinue}
                     className="bg-primary text-white py-3 px-6 rounded-md font-medium hover:bg-primary-dark transition-colors"
                   >
-                    Continue to Module {appSession.session.currentModule || 0}
+                    {appSession.session.currentModule === 0 && appSession.session.completionStatus > 0
+                      ? 'Review Module 0'
+                      : 'Start Module 0'}
                   </button>
                 </>
               ) : (
@@ -179,22 +183,22 @@ export default function MainPage() {
               )}
             </div>
 
-            {/* Module List */}
+            {/* Module List - MVP: Only Module 0 available */}
             {appSession?.session && (
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 {[
-                  { num: 0, title: 'Current Reality', subtitle: 'At Bat' },
-                  { num: 1, title: 'Ideal Customer', subtitle: '1st Base' },
-                  { num: 2, title: 'Core Offer', subtitle: '2nd Base' },
-                  { num: 3, title: 'Delivery Path', subtitle: '3rd Base' },
-                  { num: 4, title: '90-Day Plan', subtitle: 'Home' },
+                  { num: 0, title: 'Current Reality', subtitle: 'At Bat', available: true },
+                  { num: 1, title: 'Ideal Customer', subtitle: '1st Base', available: false },
+                  { num: 2, title: 'Core Offer', subtitle: '2nd Base', available: false },
+                  { num: 3, title: 'Delivery Path', subtitle: '3rd Base', available: false },
+                  { num: 4, title: '90-Day Plan', subtitle: 'Home', available: false },
                 ].map((module) => {
-                  const isAvailable = (appSession.session.currentModule || 0) >= module.num;
-                  const isCompleted = (appSession.session.completionStatus || 0) > module.num;
+                  const isAvailable = module.available; // MVP: Only Module 0
+                  const isCompleted = module.num === 0 && (appSession.session.completionStatus || 0) > 0;
                 return (
                   <button
                     key={module.num}
-                    onClick={() => handleModuleClick(module.num)}
+                    onClick={() => isAvailable && handleModuleClick(module.num)}
                     disabled={!isAvailable}
                     className={`p-6 rounded-lg border-2 text-left transition-all ${
                       isCompleted
@@ -209,6 +213,9 @@ export default function MainPage() {
                     </div>
                     <div className="font-bold text-lg mb-1">{module.title}</div>
                     <div className="text-sm text-secondary">{module.subtitle}</div>
+                    {!isAvailable && (
+                      <div className="mt-2 text-gray-500 text-xs font-medium">Coming Soon</div>
+                    )}
                     {isCompleted && (
                       <div className="mt-2 text-green-600 text-sm font-medium">✓ Completed</div>
                     )}

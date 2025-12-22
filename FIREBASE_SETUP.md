@@ -202,3 +202,5 @@ If you prefer SQL:
 - Cloud Functions: Pay per invocation (generous free tier)
 - Firestore: Free tier available, pay for reads/writes
 
+
+

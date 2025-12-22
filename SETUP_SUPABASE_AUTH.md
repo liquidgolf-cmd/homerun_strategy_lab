@@ -107,3 +107,5 @@ After setup is complete:
 3. Deploy backend to Railway/Render with environment variables
 4. Update frontend `VITE_API_URL` in Vercel to point to backend
 
+
+

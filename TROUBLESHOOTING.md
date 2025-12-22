@@ -127,3 +127,5 @@ The database should auto-create on first run. Check `backend/data/db.sqlite` exi
 4. Verify both frontend and backend are running
 5. Try accessing `/api/health` directly in browser
 
+
+

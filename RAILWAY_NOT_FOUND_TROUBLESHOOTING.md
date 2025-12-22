@@ -136,3 +136,5 @@ After fixing the deployment:
 3. Should return: `{"status":"ok"}`
 4. Then update Vercel `VITE_API_URL` to point to this URL
 
+
+

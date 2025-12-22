@@ -107,3 +107,5 @@ https://homerun-strategy-lab-production-1f3b.up.railway.app/api/health
 
 If the health endpoint returns HTML, the backend server is definitely not running. Check Railway logs for the specific error message and share it.
 
+
+

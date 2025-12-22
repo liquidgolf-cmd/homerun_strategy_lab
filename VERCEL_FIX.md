@@ -46,3 +46,5 @@ However, **SQLite on Vercel is still problematic** because:
 
 **Recommendation**: Switch to PostgreSQL or deploy to Railway/Render for proper SQLite support.
 
+
+

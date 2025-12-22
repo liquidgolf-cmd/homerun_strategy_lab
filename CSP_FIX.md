@@ -39,3 +39,5 @@ The **real** error to focus on is the 404. Check:
 
 The CSP warnings are cosmetic and won't prevent the app from working.
 
+
+

@@ -1,64 +1,58 @@
-# Fix: Missing Supabase Environment Variables Error
+# Fix: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set
 
-## The Problem
+Your `.env` file has placeholder values. You need to replace them with your actual Supabase credentials.
 
-You're seeing: `Missing Supabase environment variables. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY`
+## Step 1: Get Your Supabase Credentials
 
-## Two Issues to Fix
+1. Go to **Supabase Dashboard**: https://app.supabase.com
+2. Select your project
+3. Go to **Settings** (gear icon) → **API**
+4. Copy these values:
 
-### Issue 1: Wrong Key Type
+   - **Project URL** → Use for `SUPABASE_URL`
+     - Example: `https://abcdefghijklmnop.supabase.co`
+   
+   - **service_role key** (under "Project API keys") → Use for `SUPABASE_SERVICE_ROLE_KEY`
+     - ⚠️ This is a long JWT token starting with `eyJ...`
+     - ⚠️ Keep this secret! Never commit it to git.
 
-You're currently using the **service_role** key in your `.env` file. The frontend MUST use the **anon/public** key.
+## Step 2: Update backend/.env File
 
-**How to tell the difference:**
-- **Service role key** (WRONG for frontend): Contains `"role":"service_role"` in the token
-- **Anon/public key** (CORRECT for frontend): Contains `"role":"anon"` or `"role":"public"` in the token
+Edit `backend/.env` and replace the placeholders with your actual values:
 
-**Where to get the correct key:**
-1. Go to Supabase Dashboard
-2. Click ⚙️ Settings → API
-3. Under "Project API keys", find the row that says **"anon"** and **"public"**
-4. Click the eye icon 👁️ to reveal it (if hidden)
-5. Copy that key (NOT the service_role one)
+```bash
+SUPABASE_URL=https://your-actual-project-id.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvdXItcHJvamVjdC1pZCIsInJvbGUiOiJzZXJ2aWNlX3JvbGUiLCJpYXQiOjE2NDUxOTIwMDAsImV4cCI6MTk2MDc2ODAwMH0.your-actual-key-here
+ANTHROPIC_API_KEY=sk-ant-your-actual-anthropic-key-here
+PORT=3000
+NODE_ENV=development
+ALLOWED_ORIGINS=http://localhost:3001,http://localhost:5173
+```
 
-### Issue 2: Dev Server Needs Restart
+**Important:**
+- Replace `https://your-actual-project-id.supabase.co` with your actual Supabase URL
+- Replace the entire `SUPABASE_SERVICE_ROLE_KEY` value with your actual service_role key
+- Replace `sk-ant-your-actual-anthropic-key-here` with your actual Anthropic API key
 
-Vite only reads environment variables when it starts. If you created or changed the `.env` file after starting the dev server, you need to restart it.
+## Step 3: Restart Backend Server
 
-## Steps to Fix
+After updating `.env`:
 
-1. **Get the correct anon key** (see above)
-
-2. **Update `frontend/.env`**:
-   - Open `frontend/.env`
-   - Replace `VITE_SUPABASE_ANON_KEY` with the **anon/public** key (not service_role)
-
-3. **Stop the dev server**:
-   - Press `Ctrl+C` in the terminal where it's running
-   - Or kill it: `pkill -f vite`
-
-4. **Restart the dev server**:
+1. Stop the backend server (Ctrl+C in the terminal)
+2. Start it again:
    ```bash
+   cd backend
    npm run dev
    ```
 
-5. **Refresh your browser** (hard refresh: Cmd+Shift+R or Ctrl+Shift+R)
+The error should be gone!
 
-## Quick Check
+## Quick Check: Verify Variables are Loaded
 
-Your `.env` file should look like this:
-
-```env
-VITE_SUPABASE_URL=https://sjngcdxxtkvmjigoethp.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJ... (this should be the anon key, NOT service_role)
+You can verify the variables are set by checking the terminal output when the server starts. You should see:
+```
+Server running on http://localhost:3000
+API available at http://localhost:3000/api
 ```
 
-The anon key should be DIFFERENT from your service_role key.
-
-## Security Note
-
-- ✅ **Frontend (.env)**: Use **anon/public** key (safe to expose)
-- ✅ **Backend (.env)**: Use **service_role** key (KEEP SECRET!)
-
-Never use the service_role key in frontend code!
-
+No errors about missing environment variables.

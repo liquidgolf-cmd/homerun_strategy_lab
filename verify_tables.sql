@@ -8,3 +8,5 @@ ORDER BY table_name;
 -- If you see 4 rows above, tables exist!
 -- If you see 0 rows, tables were not created
 
+
+
