@@ -64,7 +64,10 @@ Keep the guidance:
 - Focused on helping them think more deeply
 - Strictly within the module's context boundaries (don't venture into other module topics)
 
-If the user is providing thoughtful, specific answers, continue with normal questioning - do NOT over-guide.`;
+If the user is providing thoughtful, specific answers, continue with normal questioning - do NOT over-guide.
+
+COMPLETION REMINDER:
+When you have gathered sufficient information to create a comprehensive audit review (typically after asking 5-10 relevant questions and receiving detailed answers), remind the user: "You've provided great information! When you're ready, click the 'Complete & Review' button below to generate your audit review." Do this once when you feel you have enough information - don't repeat this reminder multiple times. Continue answering any follow-up questions they may have after the reminder.`;
 
   // For Module 2, reinforce not repeating previous modules and staying focused on WHAT
   if (moduleNumber === 2) {
@@ -200,7 +203,9 @@ Please:
 3. Pull out 3 key lessons and 3 opportunities they might be missing about their business
 4. Based on their description, struggles, and constraints, suggest 5 possible "90-day home run" goals that are ambitious but realistic for their business
 
-Format your response as a clear, well-structured audit review document focused on the business itself, not on their customer base.`;
+Format your response as a clear, well-structured audit review document focused on the business itself, not on their customer base.
+
+IMPORTANT: At the very end of your audit review document, add a brief reminder section that says: "Remember to click the 'Next Module' button below to submit your review and continue to the next module."`;
 
 export const module1AuditPrompt = `You are reviewing the user's "1st Base: Define Who You're Really For" module responses. This module focuses on identifying their ideal customer profile.
 
@@ -212,7 +217,9 @@ Please:
 4. Highlight 3 insights about why certain customers were great fits and others weren't
 5. Suggest 3 ways they could better identify and attract their ideal customers
 
-Format your response as a clear, well-structured audit review document focused on customer clarity and targeting strategy.`;
+Format your response as a clear, well-structured audit review document focused on customer clarity and targeting strategy.
+
+IMPORTANT: At the very end of your audit review document, add a brief reminder section that says: "Remember to click the 'Next Module' button below to submit your review and continue to the next module."`;
 
 export const module2AuditPrompt = `You are reviewing the user's "2nd Base: Design What They Actually Want" module responses. This module focuses on understanding customer desires and crafting a core offer.
 
@@ -224,7 +231,9 @@ Please:
 4. Identify 3 opportunities where they could better articulate value from outcomes rather than features
 5. Suggest 2-3 ways to strengthen their offer statement based on the customer insights they provided
 
-Format your response as a clear, well-structured audit review document focused on offer clarity and value articulation.`;
+Format your response as a clear, well-structured audit review document focused on offer clarity and value articulation.
+
+IMPORTANT: At the very end of your audit review document, add a brief reminder section that says: "Remember to click the 'Next Module' button below to submit your review and continue to the next module."`;
 
 export const module3AuditPrompt = `You are reviewing the user's "3rd Base: Map How You'll Deliver It" module responses. This module focuses on turning their process into a clear delivery path.
 
@@ -237,7 +246,9 @@ Please:
 5. Propose 3-5 improvements to help them feel more organized and less rushed
 6. Suggest how they could better communicate the delivery path to customers
 
-Format your response as a clear, well-structured audit review document focused on process clarity and operational excellence.`;
+Format your response as a clear, well-structured audit review document focused on process clarity and operational excellence.
+
+IMPORTANT: At the very end of your audit review document, add a brief reminder section that says: "Remember to click the 'Next Module' button below to submit your review and continue to the next module."`;
 
 export const module4AuditPrompt = `You are reviewing the user's "Home: Build Your 90-Day Game Plan" module responses. This module focuses on creating a concrete 90-day action plan.
 
@@ -251,7 +262,9 @@ Please:
 6. Recommend support or accountability structures that could help them stay on track
 7. Prioritize the projects if there are multiple - which should come first and why?
 
-Format your response as a clear, well-structured audit review document that serves as a strategic guide for their 90-day execution plan.`;
+Format your response as a clear, well-structured audit review document that serves as a strategic guide for their 90-day execution plan.
+
+IMPORTANT: At the very end of your audit review document, add a brief reminder section that says: "Remember to click the 'View Final Summary' button below to submit your review and view your complete strategy summary."`;
 
 // Helper function to get audit prompt by module number
 export function getAuditPrompt(moduleNumber: number): string {
