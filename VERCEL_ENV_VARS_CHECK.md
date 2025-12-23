@@ -60,3 +60,4 @@ By default, Supabase requires email confirmation for new sign-ups. You can:
    - Set up SMTP in Authentication → Settings
    - Or use Supabase's built-in email service
 
+

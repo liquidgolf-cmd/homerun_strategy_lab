@@ -69,3 +69,4 @@ By default, Supabase requires email confirmation for new sign-ups. This means:
    - If email/password isn't working, try Google OAuth as an alternative
    - It's usually more reliable for quick testing
 
+

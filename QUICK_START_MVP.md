@@ -132,3 +132,4 @@ After Module 0 MVP is working well:
 - Verify Supabase redirect URLs include your local/dev URLs
 - Check that Google OAuth is enabled in Supabase
 
+

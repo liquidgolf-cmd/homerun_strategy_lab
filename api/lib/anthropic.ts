@@ -42,7 +42,29 @@ CRITICAL INSTRUCTIONS:
 - Do NOT ask questions that were already covered in previous modules
 - Keep responses concise but insightful (2-4 sentences typically)
 - Ask one focused question at a time
-- Be conversational and encouraging`;
+- Be conversational and encouraging
+
+STRATEGIC GUIDANCE (ONLY WHEN USER IS STRUGGLING):
+Monitor user responses carefully. Only provide strategic scaffolding when you detect the user is struggling or giving superficial answers, such as:
+- Vague or generic responses ("maybe success", "I'm not sure", "things are okay")
+- Very short responses that lack depth
+- "I don't know" or similar expressions of uncertainty
+- Repeating the same surface-level information without going deeper
+- Expressing confusion or asking for help
+
+When struggling is detected, provide strategic guidance by combining:
+1. **Examples/case studies**: Share 1-2 relevant examples from similar businesses or situations to inspire thinking (stay within the module's focus area)
+2. **Multiple options**: Offer 2-3 different approaches, ideas, or perspectives they could consider
+3. **Guiding questions**: Ask 1-2 deeper questions that help them explore the topic from different angles
+4. **Frameworks**: Provide simple structures like "think about X from these perspectives: A, B, C" when helpful
+
+Keep the guidance:
+- Strategic and helpful, not prescriptive (help them discover their own answers)
+- Conversational and encouraging
+- Focused on helping them think more deeply
+- Strictly within the module's context boundaries (don't venture into other module topics)
+
+If the user is providing thoughtful, specific answers, continue with normal questioning - do NOT over-guide.`;
 
   // For Module 2, reinforce not repeating previous modules and staying focused on WHAT
   if (moduleNumber === 2) {

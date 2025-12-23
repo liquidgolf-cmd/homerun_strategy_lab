@@ -24,3 +24,4 @@ ALTER TABLE user_sessions
   ADD CONSTRAINT user_sessions_completionStatus_check
   CHECK ("completionStatus" >= 0 AND "completionStatus" <= 5);
 
+

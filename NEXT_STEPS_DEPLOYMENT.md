@@ -66,3 +66,4 @@ If you run into issues, check:
 - Environment variables are set correctly
 - Supabase redirect URLs include your Vercel domain
 
+

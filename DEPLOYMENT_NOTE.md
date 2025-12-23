@@ -65,3 +65,4 @@ Don't forget to set these in Vercel Dashboard → Settings → Environment Varia
 2. Update Supabase redirect URLs to include your Vercel URL
 3. Test the deployment
 
+

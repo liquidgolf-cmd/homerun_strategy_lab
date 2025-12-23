@@ -56,3 +56,4 @@ cd "/Users/michaelhill/Documents/GitHub/Homeruns Strategy Lab/backend" && FIREST
 
 
 
+

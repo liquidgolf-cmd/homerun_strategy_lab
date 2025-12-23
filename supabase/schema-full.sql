@@ -53,3 +53,4 @@ CREATE POLICY "Allow all operations on user_sessions" ON user_sessions
 CREATE POLICY "Allow all operations on module_responses" ON module_responses
   FOR ALL USING (true) WITH CHECK (true);
 
+
