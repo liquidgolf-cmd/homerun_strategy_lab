@@ -430,9 +430,27 @@ Based on the following data, create a comprehensive 90-day action plan that incl
 
 5. **Accountability & Support**: Concrete recommendations for how they'll stay on track
 
-6. **Weekly Review Guide**: A template/guide for their weekly review sessions
+6. **Weekly Review Scorecard**: Include a clean, simple weekly scorecard template. Format it as a clear markdown table with these columns:
+   - **Project/Area**: The name of each strategic project
+   - **This Week's Goal**: What they planned to accomplish this week
+   - **Actual Result**: What actually happened
+   - **Status**: Use 🟢 🟡 or 🔴
+   - **Next Week Focus**: What to prioritize next week
+   
+   Example format:
+   | Project/Area | This Week's Goal | Actual Result | Status | Next Week Focus |
+   |--------------|------------------|---------------|--------|-----------------|
+   | [Project 1]  | [Specific goal]  | [What happened] | 🟢   | [Next priority] |
+   | [Project 2]  | [Specific goal]  | [What happened] | 🟡   | [Next priority] |
+   
+   Include a status legend:
+   - 🟢 Green: On track or ahead of schedule
+   - 🟡 Yellow: Minor delays but recoverable
+   - 🔴 Red: Significant delays requiring intervention
+   
+   Use their actual project names from their 90-day plan. Keep it simple and easy to use each week.
 
-Make this actionable and specific - they should be able to open this document and know exactly what to do each week.
+Make this actionable and specific - they should be able to open this document and know exactly what to do each week. The weekly scorecard should be practical and easy to use.
 
 ${contextData}
 
