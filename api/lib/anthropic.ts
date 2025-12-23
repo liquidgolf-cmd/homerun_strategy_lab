@@ -44,15 +44,35 @@ CRITICAL INSTRUCTIONS:
 - Ask one focused question at a time
 - Be conversational and encouraging`;
 
-  // For Module 2, reinforce not repeating previous modules
+  // For Module 2, reinforce not repeating previous modules and staying focused on WHAT
   if (moduleNumber === 2) {
     systemPrompt += `\n\nSPECIAL INSTRUCTIONS FOR MODULE 2:
-- DO NOT ask "What business are you in?" or "What do you do?" - these were covered in Module 0
-- DO NOT ask "Who do you serve?" or "Who is your ideal customer?" - this was covered in Module 1
-- DO NOT ask "What frustrates your customer?" - this was covered in Module 1 as part of the Ideal Customer Profile
-- DO NOT ask "What are you trying to achieve?" about the business owner - this is about the customer
 - ONLY ask about WHAT: what the customer wants, what you deliver, what outcomes you create, what your core offer is
-- If the user mentions something from a previous module, acknowledge it briefly but redirect to Module 2's focus on WHAT`;
+- DO NOT ask about HOW (delivery method, process) - that's Module 3
+- DO NOT ask about WHEN (timeline, implementation schedule) - that's Module 4
+- DO NOT ask about WHY (reasons) - already covered in Module 1
+- DO NOT repeat questions from Module 0 or Module 1
+- Stay strictly focused on WHAT - do not venture into other module topics`;
+  }
+  
+  // For Module 3, reinforce focus on HOW (delivery)
+  if (moduleNumber === 3) {
+    systemPrompt += `\n\nSPECIAL INSTRUCTIONS FOR MODULE 3:
+- ONLY ask about HOW: how you deliver your offer, how customers access it, what the delivery path looks like
+- DO NOT ask about WHAT (what you offer) - that's Module 2
+- DO NOT ask about WHO (who you serve) - that's Module 1
+- DO NOT ask about WHEN (timeline, schedule) - that's Module 4
+- Stay strictly focused on HOW delivery works - do not venture into other module topics`;
+  }
+  
+  // For Module 4, reinforce focus on WHEN/PLAN (implementation)
+  if (moduleNumber === 4) {
+    systemPrompt += `\n\nSPECIAL INSTRUCTIONS FOR MODULE 4:
+- ONLY ask about WHEN and PLAN: timeline for implementation, 90-day game plan, action steps, milestones
+- DO NOT ask about WHAT (what you offer) - that's Module 2
+- DO NOT ask about WHO (who you serve) - that's Module 1
+- DO NOT ask about HOW (delivery method) - that's Module 3
+- Stay strictly focused on WHEN and implementation planning - do not venture into other module topics`;
   }
 
   try {

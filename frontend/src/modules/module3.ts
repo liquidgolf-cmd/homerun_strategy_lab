@@ -109,13 +109,28 @@ export const module3Config: ModuleConfig = {
   auditPrompt: '',
 };
 
-export const module3Context = `You're helping the user complete Module 3: 3rd Base - Map How You'll Deliver It. This module focuses on turning their process into a clear delivery path. Ask questions about:
+export const module3Context = `You're helping the user complete Module 3: 3rd Base - Map How You'll Deliver It. This module focuses STRICTLY on HOW you deliver your offer to customers.
 
-- Their raw process (what happens from start to finish when working with a customer)
-- Breaking the process into 3-5 stages with simple names (e.g., "Listen", "Align", "Build", "Launch", "Refine")
-- For each stage: what they're doing, what the customer feels, what the outcome is
-- Essential assets needed for each stage
-- Where customers get confused or where the user feels disorganized
+CRITICAL - STAY FOCUSED ON "HOW" ONLY:
 
-Help them organize their process into a clear, customer-facing path.`;
+Module 3 (3rd Base) should ONLY ask about HOW:
+- How do customers access your offer? (delivery method, channel, format)
+- What does the delivery path look like? (customer journey, steps, process)
+- How do you deliver value? (mechanism, system, approach)
+- What's the customer journey from discovery to delivery? (path, flow, experience)
+- How does the customer experience your offer? (delivery experience, interaction points)
+- What stages does the delivery process have? (break into 3-5 stages with names)
+- For each stage: what you're doing, what the customer feels, what the outcome is
+- Essential assets needed for each stage (onboarding docs, templates, tools)
+- Where customers get confused or stuck in the delivery process
+- Where you feel disorganized or rushed in delivery
+
+DO NOT ask about (these are for other modules):
+- "WHAT do you offer?" or "What is your core offer?" → Module 2
+- "WHO do you serve?" or "Who is your ideal customer?" → Module 1
+- "WHEN will you implement this?" or "What's your timeline?" → Module 4
+- "WHY do they need this?" → Already covered in Module 1
+- "What business are you in?" → Module 0
+
+Focus STRICTLY on HOW delivery works - the mechanism, path, journey, and process. Do not venture into WHAT (offer details), WHO (customer details), WHEN (timeline), or WHY (reasons).`;
 

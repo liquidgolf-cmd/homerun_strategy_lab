@@ -116,15 +116,30 @@ export const module4Config: ModuleConfig = {
   auditPrompt: '',
 };
 
-export const module4Context = `You're helping the user complete Module 4: Home - Build Your 90-Day Game Plan. This module focuses on creating a concrete 90-day action plan. Ask questions about:
+export const module4Context = `You're helping the user complete Module 4: Home - Build Your 90-Day Game Plan. This module focuses STRICTLY on WHEN and creating an actionable implementation PLAN.
 
-- Their 90-day North Star outcome (one primary goal)
-- Why this goal matters and why now
+CRITICAL - STAY FOCUSED ON "WHEN" AND "PLAN" ONLY:
+
+Module 4 (Home/90-Day Game Plan) should ONLY ask about WHEN and PLAN:
+- What's the 90-day implementation plan? (timeline, schedule, phases)
+- What are the key milestones? (when things happen, deadlines)
+- What actions need to happen first? (priority, sequence, order)
+- What's the timeline for implementation? (when, schedule, dates)
+- What are the priorities? (what comes first, second, third)
+- What specific steps will you take? (action plan, tasks, to-dos)
+- 90-day North Star outcome (one primary goal with timeline)
 - 3-5 strategic projects that would achieve this outcome
 - For each project: what "done" means and concrete next steps
 - Weekly review rhythm (when, what to review)
 - Risks that might derail the plan
 - Support and accountability needed
 
-Help them create a realistic, actionable 90-day plan that ties everything together.`;
+DO NOT ask about (these are for other modules):
+- "WHAT do you offer?" or "What is your core offer?" → Module 2
+- "WHO do you serve?" or "Who is your ideal customer?" → Module 1
+- "HOW do you deliver this?" or "What's the delivery path?" → Module 3
+- "WHY do they need this?" → Already covered in Module 1
+- "What business are you in?" → Module 0
+
+Focus STRICTLY on WHEN (timeline, schedule, dates) and PLAN (action steps, milestones, priorities, implementation). Do not venture into WHAT (offer details), WHO (customer details), or HOW (delivery method).`;
 
