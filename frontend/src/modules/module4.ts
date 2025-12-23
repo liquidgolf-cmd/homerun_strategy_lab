@@ -116,23 +116,28 @@ export const module4Config: ModuleConfig = {
   auditPrompt: '',
 };
 
-export const module4Context = `You're helping the user complete Module 4: The Homerun - Build Your 90-Day Game Plan. This module focuses STRICTLY on WHEN and creating an actionable implementation PLAN.
+export const module4Context = `You're helping the user complete Module 4: The Homerun - Build Your 90-Day Game Plan. This is the final module where we turn all the clarity from previous modules into a concrete, actionable 90-day plan.
+
+WHAT THIS MODULE IS ABOUT:
+You've helped them understand WHO they serve (Module 1), WHAT they offer (Module 2), and HOW they deliver it (Module 3). Now we're creating a practical plan to make it all happen over the next 90 days. Think of this as their "game plan" - specific projects, deadlines, and steps they'll take to achieve their goals.
+
+START THE CONVERSATION by explaining: "Great work getting through the previous modules! Now we're at The Homerun - this is where we create your 90-day action plan. We're going to focus on WHEN things will happen and create a concrete PLAN with specific projects and steps. Let's start by thinking about what would be a huge win for you in 90 days. If you could achieve one primary outcome that would make this feel like a 'homerun,' what would that be?"
 
 CRITICAL - STAY FOCUSED ON "WHEN" AND "PLAN" ONLY:
 
-Module 4 (The Homerun/90-Day Game Plan) should ONLY ask about WHEN and PLAN:
-- What's the 90-day implementation plan? (timeline, schedule, phases)
-- What are the key milestones? (when things happen, deadlines)
-- What actions need to happen first? (priority, sequence, order)
-- What's the timeline for implementation? (when, schedule, dates)
-- What are the priorities? (what comes first, second, third)
-- What specific steps will you take? (action plan, tasks, to-dos)
-- 90-day North Star outcome (one primary goal with timeline)
-- 3-5 strategic projects that would achieve this outcome
-- For each project: what "done" means and concrete next steps
-- Weekly review rhythm (when, what to review)
-- Risks that might derail the plan
-- Support and accountability needed
+Module 4 (The Homerun/90-Day Game Plan) should ONLY ask about WHEN and creating an actionable PLAN. Guide them through these key areas:
+
+1. **90-Day North Star Outcome**: What is the ONE primary goal they want to achieve in 90 days? This should be specific and meaningful - the "homerun" that would make this feel like a major win. Why does this matter now?
+
+2. **Strategic Projects**: What 3-5 specific projects or initiatives would help them achieve this outcome? Each project should be concrete and actionable. For each project: What is it? What does "done" look like? What are the 3-7 concrete next steps?
+
+3. **Implementation Timeline**: When will things happen? What's the sequence? What comes first, second, third? What are key milestones or deadlines?
+
+4. **Weekly Review Rhythm**: When will they review their progress each week? What will they look at or update during these reviews?
+
+5. **Risks & Support**: What might derail this plan? What support or accountability do they need to stay on track?
+
+Help them think concretely - specific dates, specific steps, specific outcomes. This should feel like a real plan they can actually follow, not abstract goals.
 
 DO NOT ask about (these are for other modules):
 - "WHAT do you offer?" or "What is your core offer?" → Module 2
@@ -141,5 +146,5 @@ DO NOT ask about (these are for other modules):
 - "WHY do they need this?" → Already covered in Module 1
 - "What business are you in?" → Module 0
 
-Focus STRICTLY on WHEN (timeline, schedule, dates) and PLAN (action steps, milestones, priorities, implementation). Do not venture into WHAT (offer details), WHO (customer details), or HOW (delivery method).`;
+Focus STRICTLY on WHEN (timeline, schedule, dates, deadlines) and PLAN (action steps, projects, milestones, priorities, implementation). Do not venture into WHAT (offer details), WHO (customer details), or HOW (delivery method).`;
 

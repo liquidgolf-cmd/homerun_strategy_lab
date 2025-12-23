@@ -55,6 +55,17 @@ export default function AIChatInterface({
       ];
     }
     
+    // Module 4 specific initial question
+    if (config.number === 4) {
+      return [
+        {
+          role: 'assistant' as const,
+          content: `Hello! I'm here to help you complete ${config.title}. Great work getting through the previous modules! Now we're at The Homerun - this is where we create your 90-day action plan. We're going to focus on WHEN things will happen and create a concrete PLAN with specific projects and steps. Let's start by thinking about what would be a huge win for you in 90 days. If you could achieve one primary outcome that would make this feel like a 'homerun,' what would that be?`,
+          timestamp: new Date().toISOString(),
+        },
+      ];
+    }
+    
     // Default initial message for other modules
     return [
       {
