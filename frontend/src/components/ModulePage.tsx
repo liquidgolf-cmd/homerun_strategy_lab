@@ -222,6 +222,19 @@ export default function ModulePage() {
             isLastModule={moduleNum === 4}
           />
         )}
+
+        {/* Loading overlay when generating audit review */}
+        {loading && viewState === 'input' && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-xl p-8 max-w-md mx-4">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Generating Your Audit Review</h3>
+                <p className="text-gray-600">This may take a moment. Please wait while we analyze your responses and create your personalized review.</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

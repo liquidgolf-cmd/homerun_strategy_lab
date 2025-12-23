@@ -284,3 +284,179 @@ export function getAuditPrompt(moduleNumber: number): string {
   }
 }
 
+/**
+ * Generate final combined overview document
+ */
+export async function generateCombinedOverview(allModuleResponses: Array<{
+  moduleNumber: number;
+  auditReviewDocument?: string;
+  aiTranscript?: Array<{ role: string; content: string }>;
+  formData?: Record<string, any>;
+}>): Promise<string> {
+  const moduleTitles = [
+    'Current Reality (At Bat)',
+    '1st Base: Define Who You\'re Really For',
+    '2nd Base: Design What They Actually Want',
+    '3rd Base: Map How You\'ll Deliver It',
+    'The Homerun: Build Your 90-Day Game Plan'
+  ];
+
+  // Build comprehensive data from all modules
+  let allData = '';
+  for (let i = 0; i < allModuleResponses.length; i++) {
+    const response = allModuleResponses[i];
+    allData += `\n\n=== MODULE ${response.moduleNumber}: ${moduleTitles[response.moduleNumber]} ===\n`;
+    
+    if (response.auditReviewDocument) {
+      allData += `Audit Review:\n${response.auditReviewDocument}\n`;
+    }
+    
+    if (response.aiTranscript && response.aiTranscript.length > 0) {
+      allData += `\nAI Chat Transcript:\n${JSON.stringify(response.aiTranscript, null, 2)}\n`;
+    }
+    
+    if (response.formData) {
+      allData += `\nForm Data:\n${JSON.stringify(response.formData, null, 2)}\n`;
+    }
+  }
+
+  const prompt = `You are creating a comprehensive combined overview document for a business strategy client who has completed all 5 modules of the Homerun Strategy Lab.
+
+This document should synthesize insights from all modules and provide a cohesive view of their business strategy.
+
+Based on the following data from all 5 modules, create a comprehensive overview document that includes:
+
+1. **Executive Summary**: A high-level overview of their business, ideal customer, core offer, delivery method, and 90-day plan
+
+2. **Current Reality**: Key insights about where they are now (from Module 0)
+
+3. **Ideal Customer Profile**: Who they're really for, based on their best-fit customer patterns (from Module 1)
+
+4. **Core Offer & Value Proposition**: What they deliver and the outcomes they create (from Module 2)
+
+5. **Delivery Path**: How they deliver value to customers (from Module 3)
+
+6. **90-Day Game Plan**: Their strategic projects and implementation plan (from Module 4)
+
+7. **Strategic Insights**: Cross-module insights, connections, and recommendations
+
+8. **Key Opportunities**: The most important opportunities they should focus on
+
+Format this as a clear, well-structured document that someone could use as their strategic playbook. Make it actionable and inspiring.
+
+${allData}
+
+Please generate a comprehensive combined overview document that synthesizes all of this information into a cohesive strategic document.`;
+
+  try {
+    const anthropic = getAnthropicClient();
+    const response = await anthropic.messages.create({
+      model: AUDIT_MODEL,
+      max_tokens: 8192,
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+    });
+
+    return response.content[0].type === 'text' ? response.content[0].text : '';
+  } catch (error: any) {
+    console.error('Anthropic API error:', error);
+    throw new Error(`Failed to generate combined overview: ${error.message || 'Unknown error'}`);
+  }
+}
+
+/**
+ * Generate final 90-day action plan document
+ */
+export async function generateActionPlan(allModuleResponses: Array<{
+  moduleNumber: number;
+  auditReviewDocument?: string;
+  aiTranscript?: Array<{ role: string; content: string }>;
+  formData?: Record<string, any>;
+}>): Promise<string> {
+  // Focus on Module 4 data but also reference other modules for context
+  const module4Data = allModuleResponses.find(r => r.moduleNumber === 4);
+  
+  let module4Content = '';
+  if (module4Data) {
+    if (module4Data.auditReviewDocument) {
+      module4Content += `Module 4 Audit Review:\n${module4Data.auditReviewDocument}\n\n`;
+    }
+    if (module4Data.aiTranscript) {
+      module4Content += `Module 4 AI Chat:\n${JSON.stringify(module4Data.aiTranscript, null, 2)}\n\n`;
+    }
+    if (module4Data.formData) {
+      module4Content += `Module 4 Form Data:\n${JSON.stringify(module4Data.formData, null, 2)}\n\n`;
+    }
+  }
+
+  // Include key context from other modules
+  const module0Data = allModuleResponses.find(r => r.moduleNumber === 0);
+  const module2Data = allModuleResponses.find(r => r.moduleNumber === 2);
+  
+  let contextData = '';
+  if (module0Data?.auditReviewDocument) {
+    contextData += `Current Reality Context:\n${module0Data.auditReviewDocument}\n\n`;
+  }
+  if (module2Data?.auditReviewDocument) {
+    contextData += `Core Offer Context:\n${module2Data.auditReviewDocument}\n\n`;
+  }
+
+  const prompt = `You are creating a detailed 90-day action plan document for a business strategy client.
+
+This document should take their 90-day game plan and expand it into a detailed, week-by-week action plan that they can actually execute.
+
+Based on the following data, create a comprehensive 90-day action plan that includes:
+
+1. **90-Day North Star Outcome**: Restate their primary goal clearly
+
+2. **Strategic Projects Breakdown**: For each project from their plan:
+   - Clear project description and objectives
+   - Detailed action steps broken down by week
+   - Dependencies and sequencing
+   - Success metrics
+   - Resource needs
+
+3. **Week-by-Week Timeline**: A week-by-week breakdown showing:
+   - What needs to happen each week
+   - Key milestones
+   - Deliverables
+   - Review points
+
+4. **Risk Mitigation**: Based on the risks they identified, provide specific mitigation strategies
+
+5. **Accountability & Support**: Concrete recommendations for how they'll stay on track
+
+6. **Weekly Review Guide**: A template/guide for their weekly review sessions
+
+Make this actionable and specific - they should be able to open this document and know exactly what to do each week.
+
+${contextData}
+
+${module4Content}
+
+Please generate a comprehensive 90-day action plan document that turns their game plan into a detailed execution guide.`;
+
+  try {
+    const anthropic = getAnthropicClient();
+    const response = await anthropic.messages.create({
+      model: AUDIT_MODEL,
+      max_tokens: 8192,
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+    });
+
+    return response.content[0].type === 'text' ? response.content[0].text : '';
+  } catch (error: any) {
+    console.error('Anthropic API error:', error);
+    throw new Error(`Failed to generate action plan: ${error.message || 'Unknown error'}`);
+  }
+}
+

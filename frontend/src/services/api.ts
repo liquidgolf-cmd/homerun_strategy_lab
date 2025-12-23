@@ -141,4 +141,13 @@ export const apiService = {
     });
     return response.data.auditReview;
   },
+
+  generateFinalDocuments: async () => {
+    const response = await api.post<{
+      success: boolean;
+      combinedOverview: string;
+      actionPlan: string;
+    }>('/documents/generate');
+    return response.data;
+  },
 };

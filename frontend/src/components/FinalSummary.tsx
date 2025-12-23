@@ -2,12 +2,16 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
+import ReactMarkdown from 'react-markdown';
 
 export default function FinalSummary() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [combinedOverview, setCombinedOverview] = useState<string>('');
+  const [actionPlan, setActionPlan] = useState<string>('');
 
   useEffect(() => {
     if (!authLoading) {
@@ -22,7 +26,7 @@ export default function FinalSummary() {
 
   useEffect(() => {
     if (session) {
-      loadDocuments();
+      checkCompletion();
     }
   }, [session]);
 
@@ -36,11 +40,7 @@ export default function FinalSummary() {
     }
   };
 
-  const loadDocuments = async () => {
-    // MVP: Final documents not available yet (need all modules)
-    // This component is disabled in MVP
-    console.log('Final documents not available in MVP');
-    
+  const checkCompletion = async () => {
     // Verify that all modules are actually completed
     if (session?.session) {
       const completionStatus = session.session.completionStatus || 0;
@@ -53,6 +53,20 @@ export default function FinalSummary() {
     }
     
     setLoading(false);
+  };
+
+  const handleGenerateDocuments = async () => {
+    setGenerating(true);
+    try {
+      const result = await apiService.generateFinalDocuments();
+      setCombinedOverview(result.combinedOverview);
+      setActionPlan(result.actionPlan);
+    } catch (error: any) {
+      console.error('Error generating final documents:', error);
+      alert(error.response?.data?.error || error.message || 'Error generating final documents. Please try again.');
+    } finally {
+      setGenerating(false);
+    }
   };
 
 
@@ -80,20 +94,99 @@ export default function FinalSummary() {
             </p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            <p className="text-lg text-secondary mb-6">
-              Final documents generation will be available after all modules are complete.
-            </p>
-            <p className="text-gray-600 mb-6">
-              Currently, only Module 0 (Current Reality) is available in the MVP.
-            </p>
-            <button
-              onClick={() => navigate('/')}
-              className="px-6 py-2 bg-primary text-white rounded-md font-medium hover:bg-primary-dark transition-colors"
-            >
-              Back to Home
-            </button>
-          </div>
+          {!combinedOverview && !actionPlan && (
+            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+              <p className="text-lg text-secondary mb-6">
+                Ready to generate your final strategic documents?
+              </p>
+              <p className="text-gray-600 mb-6">
+                We'll create a Combined Overview and a detailed 90-Day Action Plan based on all your module work.
+              </p>
+              <button
+                onClick={handleGenerateDocuments}
+                disabled={generating}
+                className="px-6 py-3 bg-primary text-white rounded-md font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {generating ? (
+                  <>
+                    <span className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+                    Generating Documents...
+                  </>
+                ) : (
+                  'Generate Final Documents'
+                )}
+              </button>
+            </div>
+          )}
+
+          {generating && (
+            <div className="bg-white rounded-lg shadow-lg p-8 text-center mb-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Generating Your Final Documents</h3>
+              <p className="text-gray-600">This may take a moment. Please wait while we create your comprehensive overview and action plan.</p>
+            </div>
+          )}
+
+          {combinedOverview && (
+            <div className="bg-white rounded-lg shadow-xl border border-gray-200 mb-8 overflow-hidden">
+              <div className="border-b border-gray-200 bg-gray-50 px-8 py-4">
+                <h2 className="text-2xl font-bold text-primary">Combined Overview</h2>
+              </div>
+              <div className="p-8">
+                <div className="prose prose-lg prose-slate max-w-none 
+                          prose-headings:text-primary prose-headings:font-bold
+                          prose-h1:text-3xl prose-h1:border-b prose-h1:border-gray-200 prose-h1:pb-3 prose-h1:mb-6
+                          prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:text-primary
+                          prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-h3:text-gray-900
+                          prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4
+                          prose-ul:list-disc prose-ul:ml-6 prose-ul:mb-4 prose-ul:space-y-1
+                          prose-ol:list-decimal prose-ol:ml-6 prose-ol:mb-4 prose-ol:space-y-1
+                          prose-li:text-gray-700 prose-li:mb-1
+                          prose-strong:text-gray-900 prose-strong:font-semibold
+                          prose-code:text-primary prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                          prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:my-4
+                          prose-a:text-primary prose-a:underline hover:prose-a:text-primary-dark">
+                  <ReactMarkdown>{combinedOverview}</ReactMarkdown>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {actionPlan && (
+            <div className="bg-white rounded-lg shadow-xl border border-gray-200 mb-8 overflow-hidden">
+              <div className="border-b border-gray-200 bg-gray-50 px-8 py-4">
+                <h2 className="text-2xl font-bold text-primary">90-Day Action Plan</h2>
+              </div>
+              <div className="p-8">
+                <div className="prose prose-lg prose-slate max-w-none 
+                          prose-headings:text-primary prose-headings:font-bold
+                          prose-h1:text-3xl prose-h1:border-b prose-h1:border-gray-200 prose-h1:pb-3 prose-h1:mb-6
+                          prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:text-primary
+                          prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-h3:text-gray-900
+                          prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4
+                          prose-ul:list-disc prose-ul:ml-6 prose-ul:mb-4 prose-ul:space-y-1
+                          prose-ol:list-decimal prose-ol:ml-6 prose-ol:mb-4 prose-ol:space-y-1
+                          prose-li:text-gray-700 prose-li:mb-1
+                          prose-strong:text-gray-900 prose-strong:font-semibold
+                          prose-code:text-primary prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                          prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:my-4
+                          prose-a:text-primary prose-a:underline hover:prose-a:text-primary-dark">
+                  <ReactMarkdown>{actionPlan}</ReactMarkdown>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {(combinedOverview || actionPlan) && (
+            <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+              <button
+                onClick={() => navigate('/')}
+                className="px-6 py-2 bg-primary text-white rounded-md font-medium hover:bg-primary-dark transition-colors"
+              >
+                Back to Home
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

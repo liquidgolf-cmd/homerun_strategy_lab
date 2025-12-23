@@ -218,6 +218,36 @@ export async function saveModuleResponse(
 }
 
 /**
+ * Get all module responses for a user
+ */
+export async function getAllModuleResponses(userId: string): Promise<ModuleResponse[]> {
+  const { data, error } = await supabase
+    .from('module_responses')
+    .select('*')
+    .eq('userId', userId)
+    .order('moduleNumber', { ascending: true });
+
+  if (error) throw error;
+  if (!data) return [];
+
+  return data.map((item) => ({
+    ...item,
+    id: String(item.id),
+    userId: String(item.userId),
+    aiTranscript: item.aiTranscript
+      ? typeof item.aiTranscript === 'string'
+        ? JSON.parse(item.aiTranscript)
+        : item.aiTranscript
+      : undefined,
+    formData: item.formData
+      ? typeof item.formData === 'string'
+        ? JSON.parse(item.formData)
+        : item.formData
+      : undefined,
+  })) as ModuleResponse[];
+}
+
+/**
  * Update user session
  */
 export async function updateUserSession(
