@@ -250,7 +250,7 @@ Format your response as a clear, well-structured audit review document focused o
 
 IMPORTANT: At the very end of your audit review document, add a brief reminder section that says: "Remember to click the 'Next Module' button below to submit your review and continue to the next module."`;
 
-export const module4AuditPrompt = `You are reviewing the user's "Home: Build Your 90-Day Game Plan" module responses. This module focuses on creating a concrete 90-day action plan.
+export const module4AuditPrompt = `You are reviewing the user's "The Homerun: Build Your 90-Day Game Plan" module responses. This module focuses on creating a concrete 90-day action plan.
 
 Please:
 

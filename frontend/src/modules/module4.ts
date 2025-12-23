@@ -2,9 +2,9 @@ import type { ModuleConfig } from '../types';
 
 export const module4Config: ModuleConfig = {
   number: 4,
-  title: 'Home: Build Your 90-Day Game Plan',
+  title: 'The Homerun: Build Your 90-Day Game Plan',
   description:
-    "We're at Home. This is where we turn all the clarity you've created into a concrete 90-day plan. We'll choose one primary outcome, translate it into strategic projects, and design a weekly rhythm.",
+    "We're at The Homerun. This is where we turn all the clarity you've created into a concrete 90-day plan. We'll choose one primary outcome, translate it into strategic projects, and design a weekly rhythm.",
   videoUrl: '', // Add Module 4 video URL here
   questions: [
     {
@@ -116,11 +116,11 @@ export const module4Config: ModuleConfig = {
   auditPrompt: '',
 };
 
-export const module4Context = `You're helping the user complete Module 4: Home - Build Your 90-Day Game Plan. This module focuses STRICTLY on WHEN and creating an actionable implementation PLAN.
+export const module4Context = `You're helping the user complete Module 4: The Homerun - Build Your 90-Day Game Plan. This module focuses STRICTLY on WHEN and creating an actionable implementation PLAN.
 
 CRITICAL - STAY FOCUSED ON "WHEN" AND "PLAN" ONLY:
 
-Module 4 (Home/90-Day Game Plan) should ONLY ask about WHEN and PLAN:
+Module 4 (The Homerun/90-Day Game Plan) should ONLY ask about WHEN and PLAN:
 - What's the 90-day implementation plan? (timeline, schedule, phases)
 - What are the key milestones? (when things happen, deadlines)
 - What actions need to happen first? (priority, sequence, order)
