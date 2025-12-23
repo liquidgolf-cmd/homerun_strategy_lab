@@ -335,24 +335,20 @@ export default function AuditReview({
           </span>
         </div>
         <h1 className="text-3xl font-bold text-primary mb-4">{moduleTitle}</h1>
-        <p className="text-lg text-secondary">
+        <p className="text-lg text-secondary mb-4">
           Here's your module audit review. Review it carefully before proceeding.
         </p>
+        <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mt-4">
+          <p className="text-blue-800 text-sm font-medium">
+            💡 After reviewing your audit, remember to click the "{isLastModule ? 'View Final Summary' : 'Next Module'}" button below to submit your review and continue.
+          </p>
+        </div>
       </div>
 
       {/* Audit Review Document */}
       <div className="bg-white rounded-lg shadow-xl border border-gray-200 mb-6 overflow-hidden">
-        <div className="border-b border-gray-200 bg-gray-50 px-8 py-4 flex justify-between items-center">
+        <div className="border-b border-gray-200 bg-gray-50 px-8 py-4">
           <h2 className="text-2xl font-bold text-primary">Audit Review Document</h2>
-          <button
-            onClick={handleDownloadPDF}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors text-sm font-medium"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-            Download PDF
-          </button>
         </div>
         <div className="p-8">
           <div ref={pdfContentRef} className="prose prose-lg prose-slate max-w-none 
@@ -369,6 +365,17 @@ export default function AuditReview({
                           prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:my-4
                           prose-a:text-primary prose-a:underline hover:prose-a:text-primary-dark">
             <ReactMarkdown>{auditReview}</ReactMarkdown>
+          </div>
+          <div className="mt-8 pt-6 border-t border-gray-200 flex justify-center">
+            <button
+              onClick={handleDownloadPDF}
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors text-sm font-medium"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              Save PDF
+            </button>
           </div>
         </div>
       </div>
