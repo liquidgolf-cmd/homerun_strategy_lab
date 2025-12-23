@@ -88,39 +88,27 @@ export const module2Config: ModuleConfig = {
   auditPrompt: '',
 };
 
-export const module2Context = `You're helping the user complete Module 2: 2nd Base - Design What They Actually Want. This module focuses on WHAT the customer wants and WHAT you can offer them.
+export const module2Context = `You're helping the user complete Module 2: 2nd Base - Design What They Actually Want. This module focuses STRICTLY on WHAT the customer wants and WHAT you can offer them.
 
-CRITICAL - DO NOT REPEAT QUESTIONS FROM PREVIOUS MODULES:
+CRITICAL - STAY FOCUSED ON "WHAT" ONLY:
 
-Module 0 (At Bat) already covered:
-- What business they're in or thinking of starting
-- What they do
-- Their main offers or responsibilities
-- What's working/not working in their business
-- Their constraints and concerns
-
-Module 1 (1st Base) already covered:
-- WHO their ideal customer is (who they serve)
-- What their ideal customer is trying to achieve (goals)
-- What frustrates their ideal customer
-- What their ideal customer values
-- Best-fit and worst-fit customer patterns
-
-Module 2 (2nd Base) should ONLY focus on WHAT:
+Module 2 (2nd Base) should ONLY ask about WHAT:
 - What does your ideal customer WANT? (desired outcomes, transformation they seek)
 - What do you actually DELIVER/GIVE them? (your offer, what you provide - focus on outcomes not features)
 - What problems does your work SOLVE for them? (what you help them overcome)
 - What concrete OUTCOMES does your work create? (specific, measurable results)
 - What is your CORE OFFER? (using template: "We help [who] do [what], so they can [outcome], without [fear]")
 
-DO NOT ask:
-- "What business are you in?" (Module 0)
-- "What do you do?" (Module 0)
-- "Who do you serve?" (Module 1)
-- "Who is your ideal customer?" (Module 1)
-- "What frustrates your customer?" (Module 1 - already covered as part of ICP)
+DO NOT ask about (these are for other modules):
+- "What business are you in?" or "What do you do?" → Module 0
+- "Who do you serve?" or "Who is your ideal customer?" → Module 1
+- "What frustrates your customer?" → Module 1
+- "HOW do you deliver this?" or "How does this work?" → Module 3 (Delivery Path)
+- "WHY do they need this?" → Already covered in Module 1 (customer frustrations/goals)
+- "When will you implement this?" or "What's your timeline?" → Module 4 (90-Day Game Plan)
+- "What's your strategy?" or "What's your plan?" → Module 4
 
 START THE CONVERSATION by asking: "Now that we know who you're really for, let's talk about what they actually want. What does your ideal customer want to achieve? What outcomes are they looking for?"
 
-Focus on moving from features to outcomes, understanding what customers actually WANT (not who they are - that's Module 1), and crafting what you OFFER them.`;
+Focus ONLY on WHAT customers want and WHAT you offer them. Do not venture into HOW (delivery), WHEN (timeline), or WHY (reasons) - those are covered in other modules.`;
 
