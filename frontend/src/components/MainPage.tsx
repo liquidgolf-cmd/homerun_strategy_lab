@@ -155,13 +155,17 @@ export default function MainPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 md:py-12">
         {/* Hero Section */}
-        <div className="mb-6 md:mb-8 text-center">
-          <h1 className="text-2xl md:text-4xl font-bold text-primary mb-2">{introConfig.hero.title}</h1>
-          <p className="text-base md:text-xl text-secondary px-2">
-            {introConfig.hero.subtitle}
-          </p>
+        <div className="relative overflow-hidden mb-8 md:mb-12">
+          {/* Subtle background pattern */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10"></div>
+          <div className="relative text-center py-8 md:py-12">
+            <h1 className="text-4xl md:text-6xl font-bold text-primary mb-4 md:mb-6 leading-tight">{introConfig.hero.title}</h1>
+            <p className="text-xl md:text-2xl text-secondary px-2 max-w-3xl mx-auto leading-relaxed">
+              {introConfig.hero.subtitle}
+            </p>
+          </div>
         </div>
 
         {/* Intro Video */}
@@ -172,89 +176,122 @@ export default function MainPage() {
         )}
 
         {/* Instructional Content */}
-        <div className="max-w-4xl mx-auto mb-6 md:mb-12 space-y-4 md:space-y-6">
+        <div className="max-w-4xl mx-auto mb-8 md:mb-12 space-y-6 md:space-y-8">
           {/* What You'll See */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatYoullSee.title}</h2>
-            <p className="text-secondary leading-relaxed">{introConfig.whatYoullSee.content}</p>
+          <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatYoullSee.title}</h2>
+                <p className="text-secondary leading-relaxed">{introConfig.whatYoullSee.content}</p>
+              </div>
+            </div>
           </div>
 
           {/* What You Need to Do */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatToDo.title}</h2>
-            <p className="text-secondary leading-relaxed">{introConfig.whatToDo.content}</p>
+          <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatToDo.title}</h2>
+                <p className="text-secondary leading-relaxed">{introConfig.whatToDo.content}</p>
+              </div>
+            </div>
           </div>
 
           {/* What You Can Expect to Get */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatToExpect.title}</h2>
-            <p className="text-secondary leading-relaxed">{introConfig.whatToExpect.content}</p>
+          <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatToExpect.title}</h2>
+                <p className="text-secondary leading-relaxed">{introConfig.whatToExpect.content}</p>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Sign In / Session View */}
         {!user ? (
-          <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-primary mb-6">Get Started</h2>
-            <p className="text-gray-600 mb-6">
-              Sign in to begin your strategy journey.
-            </p>
-
-            {authError && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
-                {authError}
+          <div className="max-w-md mx-auto">
+            <div className="bg-white rounded-xl shadow-xl p-8 md:p-10 border border-gray-100">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-primary mb-2">Get Started</h2>
+                <p className="text-gray-600">
+                  Sign in to begin your strategy journey.
+                </p>
               </div>
-            )}
 
-            {authMode === 'choose' && (
-              <div className="space-y-4">
-                <button
-                  onClick={handleSignInWithGoogle}
-                  disabled={authLoadingState}
-                  className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-300 text-gray-700 py-3 px-6 rounded-md font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path
-                      fill="#4285F4"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    />
-                  </svg>
-                  Sign in with Google
-                </button>
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300"></div>
+              {authError && (
+                <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-md">
+                  <p className="text-red-700 text-sm">{authError}</p>
+                </div>
+              )}
+
+              {authMode === 'choose' && (
+                <div className="space-y-4">
+                  <button
+                    onClick={handleSignInWithGoogle}
+                    disabled={authLoadingState}
+                    className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-300 text-gray-700 py-3.5 px-6 rounded-lg font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm disabled:opacity-50"
+                  >
+                    <svg className="w-5 h-5" viewBox="0 0 24 24">
+                      <path
+                        fill="#4285F4"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                      />
+                      <path
+                        fill="#34A853"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      />
+                      <path
+                        fill="#FBBC05"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                      />
+                      <path
+                        fill="#EA4335"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                      />
+                    </svg>
+                    Continue with Google
+                  </button>
+                  <div className="relative my-6">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-4 bg-white text-gray-500">Or continue with email</span>
+                    </div>
                   </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">Or</span>
+                  <button
+                    onClick={() => setAuthMode('email-signin')}
+                    className="w-full py-3.5 px-6 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white transition-all shadow-sm"
+                  >
+                    Sign in with Email
+                  </button>
+                  <div className="text-center pt-4">
+                    <button
+                      onClick={() => setAuthMode('email-signup')}
+                      className="text-sm text-secondary hover:text-primary transition-colors underline"
+                    >
+                      Don't have an account? Sign up
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => setAuthMode('email-signin')}
-                  className="w-full py-3 px-6 border-2 border-primary text-primary rounded-md font-medium hover:bg-primary hover:text-white transition-colors"
-                >
-                  Sign in with Email
-                </button>
-                <button
-                  onClick={() => setAuthMode('email-signup')}
-                  className="w-full py-3 px-6 text-gray-600 hover:text-primary transition-colors text-sm"
-                >
-                  Don't have an account? Sign up
-                </button>
-              </div>
-            )}
+              )}
 
             {authMode === 'email-signin' && (
               <form onSubmit={handleSignInWithEmail} className="space-y-4">
@@ -268,7 +305,7 @@ export default function MainPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -282,14 +319,14 @@ export default function MainPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="••••••••"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={authLoadingState}
-                  className="w-full py-3 px-6 bg-primary text-white rounded-md font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+                  className="w-full py-3.5 px-6 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-sm disabled:opacity-50"
                 >
                   {authLoadingState ? 'Signing in...' : 'Sign In'}
                 </button>
@@ -319,7 +356,7 @@ export default function MainPage() {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="Your Name"
                   />
                 </div>
@@ -333,7 +370,7 @@ export default function MainPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -348,14 +385,14 @@ export default function MainPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="•••••••• (min 6 characters)"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={authLoadingState}
-                  className="w-full py-3 px-6 bg-primary text-white rounded-md font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+                  className="w-full py-3.5 px-6 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-sm disabled:opacity-50"
                 >
                   {authLoadingState ? 'Signing up...' : 'Sign Up'}
                 </button>
@@ -374,6 +411,17 @@ export default function MainPage() {
                 </button>
               </form>
             )}
+            </div>
+            
+            {/* Trust Indicators */}
+            <div className="mt-6 text-center">
+              <div className="flex items-center justify-center gap-2 text-sm text-secondary">
+                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span>Secure & Private</span>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="max-w-4xl mx-auto">
@@ -405,7 +453,7 @@ export default function MainPage() {
                   </p>
                   <button
                     onClick={handleContinue}
-                    className="bg-primary text-white py-3 px-6 rounded-md font-medium hover:bg-primary-dark transition-colors"
+                    className="bg-primary text-white py-3.5 px-6 rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-sm"
                   >
                     {appSession.session.completionStatus >= 5
                       ? 'View Final Summary'
