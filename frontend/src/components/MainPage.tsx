@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
@@ -18,6 +18,39 @@ export default function MainPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoadingState, setAuthLoadingState] = useState(false);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set(['hero'])); // Hero visible immediately
+  
+  // Refs for scroll animations
+  const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px',
+    };
+
+    Object.keys(sectionRefs.current).forEach((key) => {
+      const element = sectionRefs.current[key];
+      if (element) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setVisibleSections((prev) => new Set(prev).add(key));
+            }
+          });
+        }, observerOptions);
+        
+        observer.observe(element);
+        observers.push(observer);
+      }
+    });
+
+    return () => {
+      observers.forEach((observer) => observer.disconnect());
+    };
+  }, []);
 
   // When user is authenticated, get or create app session
   useEffect(() => {
@@ -172,16 +205,16 @@ export default function MainPage() {
             
             {/* Quick stats or benefits */}
             <div className="flex flex-wrap justify-center gap-8 md:gap-12 text-center mt-8">
-              <div className="flex flex-col items-center">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">5</div>
+              <div className="flex flex-col items-center animate-[fadeInUp_0.6s_ease-out_0.2s_both]">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2 transform hover:scale-110 transition-transform duration-300">5</div>
                 <div className="text-sm md:text-base text-secondary">Strategic Modules</div>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">90</div>
+              <div className="flex flex-col items-center animate-[fadeInUp_0.6s_ease-out_0.4s_both]">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2 transform hover:scale-110 transition-transform duration-300">90</div>
                 <div className="text-sm md:text-base text-secondary">Day Action Plan</div>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">AI</div>
+              <div className="flex flex-col items-center animate-[fadeInUp_0.6s_ease-out_0.6s_both]">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2 transform hover:scale-110 transition-transform duration-300">AI</div>
                 <div className="text-sm md:text-base text-secondary">Guided Coaching</div>
               </div>
             </div>
@@ -196,7 +229,14 @@ export default function MainPage() {
         )}
 
         {/* Instructional Content */}
-        <div className="max-w-4xl mx-auto mb-8 md:mb-12 space-y-6 md:space-y-8">
+        <div 
+          ref={(el) => (sectionRefs.current['instructional'] = el)}
+          className={`max-w-4xl mx-auto mb-8 md:mb-12 space-y-6 md:space-y-8 transition-all duration-700 ${
+            visibleSections.has('instructional') 
+              ? 'opacity-100 translate-y-0' 
+              : 'opacity-0 translate-y-8'
+          }`}
+        >
           {/* What You'll See */}
           <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
             <div className="flex items-start gap-4">
@@ -246,7 +286,14 @@ export default function MainPage() {
 
         {/* Module Preview Section - For unauthenticated users */}
         {!user && (
-          <div className="max-w-6xl mx-auto mb-12 md:mb-16">
+          <div 
+            ref={(el) => (sectionRefs.current['modules'] = el)}
+            className={`max-w-6xl mx-auto mb-12 md:mb-16 transition-all duration-700 ${
+              visibleSections.has('modules') 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-8'
+            }`}
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-primary text-center mb-4 md:mb-6">Your Journey to Clarity</h2>
             <p className="text-center text-secondary mb-8 md:mb-12 max-w-2xl mx-auto">
               Work through five strategic modules, each building on the last, to create a comprehensive strategy tailored to your business.
@@ -273,7 +320,14 @@ export default function MainPage() {
 
         {/* Key Benefits Section - For unauthenticated users */}
         {!user && (
-          <div className="max-w-5xl mx-auto mb-12 md:mb-16">
+          <div 
+            ref={(el) => (sectionRefs.current['benefits'] = el)}
+            className={`max-w-5xl mx-auto mb-12 md:mb-16 transition-all duration-700 ${
+              visibleSections.has('benefits') 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-8'
+            }`}
+          >
             <div className="bg-gradient-to-br from-primary/5 to-transparent rounded-2xl p-8 md:p-12 border border-primary/10">
               <h2 className="text-2xl md:text-3xl font-bold text-primary text-center mb-8">Why This Approach Works</h2>
               <div className="grid md:grid-cols-3 gap-6 md:gap-8">
@@ -311,7 +365,14 @@ export default function MainPage() {
 
         {/* Testimonials Section - For unauthenticated users */}
         {!user && introConfig.testimonials.length > 0 && (
-          <div className="max-w-6xl mx-auto mb-12 md:mb-16">
+          <div 
+            ref={(el) => (sectionRefs.current['testimonials'] = el)}
+            className={`max-w-6xl mx-auto mb-12 md:mb-16 transition-all duration-700 ${
+              visibleSections.has('testimonials') 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-8'
+            }`}
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-primary text-center mb-8 md:mb-12">What Others Are Saying</h2>
             <div className="grid md:grid-cols-3 gap-6 md:gap-8">
               {introConfig.testimonials.map((testimonial, index) => {
@@ -341,7 +402,14 @@ export default function MainPage() {
 
         {/* FAQ Section - For unauthenticated users */}
         {!user && introConfig.faqs && introConfig.faqs.length > 0 && (
-          <div className="max-w-4xl mx-auto mb-12 md:mb-16">
+          <div 
+            ref={(el) => (sectionRefs.current['faq'] = el)}
+            className={`max-w-4xl mx-auto mb-12 md:mb-16 transition-all duration-700 ${
+              visibleSections.has('faq') 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 translate-y-8'
+            }`}
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-primary text-center mb-8 md:mb-12">Frequently Asked Questions</h2>
             <div className="space-y-4">
               {introConfig.faqs.map((faq, index) => (
@@ -404,7 +472,7 @@ export default function MainPage() {
                   <button
                     onClick={handleSignInWithGoogle}
                     disabled={authLoadingState}
-                    className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-300 text-gray-700 py-3.5 px-6 rounded-lg font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-300 text-gray-700 py-3.5 px-6 rounded-lg font-medium hover:bg-gray-50 hover:border-gray-400 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                       <path
@@ -436,7 +504,7 @@ export default function MainPage() {
                   </div>
                   <button
                     onClick={() => setAuthMode('email-signin')}
-                    className="w-full py-3.5 px-6 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white transition-all shadow-sm"
+                    className="w-full py-3.5 px-6 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm"
                   >
                     Sign in with Email
                   </button>
@@ -481,13 +549,13 @@ export default function MainPage() {
                     placeholder="••••••••"
                   />
                 </div>
-                <button
-                  type="submit"
-                  disabled={authLoadingState}
-                  className="w-full py-3.5 px-6 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-sm disabled:opacity-50"
-                >
-                  {authLoadingState ? 'Signing in...' : 'Sign In'}
-                </button>
+                  <button
+                    type="submit"
+                    disabled={authLoadingState}
+                    className="w-full py-3.5 px-6 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  >
+                    {authLoadingState ? 'Signing in...' : 'Sign In'}
+                  </button>
                 <button
                   type="button"
                   onClick={() => {
@@ -550,7 +618,7 @@ export default function MainPage() {
                 <button
                   type="submit"
                   disabled={authLoadingState}
-                  className="w-full py-3.5 px-6 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-sm disabled:opacity-50"
+                  className="w-full py-3.5 px-6 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   {authLoadingState ? 'Signing up...' : 'Sign Up'}
                 </button>
@@ -625,7 +693,7 @@ export default function MainPage() {
                   </p>
                   <button
                     onClick={handleContinue}
-                    className="bg-primary text-white py-3.5 px-6 rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-sm"
+                    className="bg-primary text-white py-3.5 px-6 rounded-lg font-medium hover:bg-primary-dark hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm"
                   >
                     {appSession.session.completionStatus >= 5
                       ? 'View Final Summary'
@@ -688,6 +756,53 @@ export default function MainPage() {
             )}
           </div>
         )}
+
+        {/* Footer */}
+        <footer className="bg-gray-900 text-gray-300 mt-16 md:mt-24">
+          <div className="container mx-auto px-4 py-12 md:py-16">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-8">
+                <div>
+                  <h3 className="text-white font-bold text-lg mb-4">Homerun Strategy Lab</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    Transform your business clarity with a proven, step-by-step strategy framework designed to help you achieve your goals.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold mb-4">Resources</h4>
+                  <ul className="space-y-2 text-sm">
+                    <li>
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors">How It Works</a>
+                    </li>
+                    <li>
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors">FAQs</a>
+                    </li>
+                    <li>
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors">Support</a>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold mb-4">About</h4>
+                  <ul className="space-y-2 text-sm">
+                    <li>
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+                    </li>
+                    <li>
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+                    </li>
+                    <li>
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
+                <p>© {new Date().getFullYear()} Homerun Strategy Lab. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );
