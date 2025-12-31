@@ -698,7 +698,7 @@ export default function MainPage() {
             <div className="max-w-6xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-8">
                 <div>
-                  <h3 className="text-white font-bold text-lg mb-4">Homerun Strategy Lab</h3>
+                  <h3 className="text-white font-bold text-lg mb-4">Loam Strategy, LLC</h3>
                   <p className="text-gray-400 text-sm leading-relaxed">
                     Transform your business clarity with a proven, step-by-step strategy framework designed to help you achieve your goals.
                   </p>
@@ -733,7 +733,7 @@ export default function MainPage() {
                 </div>
               </div>
               <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
-                <p>© {new Date().getFullYear()} Homerun Strategy Lab. All rights reserved.</p>
+                <p>© {new Date().getFullYear()} Loam Strategy, LLC. All rights reserved.</p>
               </div>
             </div>
           </div>
