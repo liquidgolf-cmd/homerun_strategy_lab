@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
 import { supabase } from '../lib/supabase';
 import VideoEmbed from './VideoEmbed';
+import VideoPlaceholder from './VideoPlaceholder';
 import { introConfig } from '../config/intro';
 
 export default function MainPage() {
@@ -188,12 +189,14 @@ export default function MainPage() {
           </div>
         </div>
 
-        {/* Intro Video */}
-        {introConfig.videoUrl && (
-          <div className="mb-6 md:mb-12 max-w-4xl mx-auto">
-            <VideoEmbed videoUrl={introConfig.videoUrl} />
-          </div>
-        )}
+        {/* Intro Video - Always show, with placeholder if no URL */}
+        <div className="mb-8 md:mb-16 max-w-5xl mx-auto px-4">
+          {introConfig.videoUrl ? (
+            <VideoEmbed videoUrl={introConfig.videoUrl} title="Introduction Video" />
+          ) : (
+            <VideoPlaceholder />
+          )}
+        </div>
 
         {/* Instructional Content */}
         <div className="max-w-4xl mx-auto mb-8 md:mb-12 space-y-6 md:space-y-8">
