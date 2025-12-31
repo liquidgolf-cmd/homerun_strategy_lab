@@ -76,14 +76,14 @@ export default function VideoEmbed({ videoUrl, title }: VideoEmbedProps) {
   return (
     <div className="w-full">
       {title && (
-        <h3 className="text-xl font-bold text-primary mb-4">{title}</h3>
+        <h3 className="text-lg md:text-xl font-bold text-primary mb-3 md:mb-4 px-4 md:px-0">{title}</h3>
       )}
-      <div className="bg-gray-900 rounded-lg overflow-hidden aspect-video">
+      <div className="bg-gray-900 rounded-lg overflow-hidden aspect-video w-full max-w-full">
         {source === 'direct' ? (
           <video
             src={embedUrl}
             controls
-            className="w-full h-full"
+            className="w-full h-full object-contain"
             style={{ maxHeight: '100%' }}
           >
             Your browser does not support the video tag.
@@ -91,7 +91,7 @@ export default function VideoEmbed({ videoUrl, title }: VideoEmbedProps) {
         ) : (
           <iframe
             src={embedUrl}
-            className="w-full h-full"
+            className="w-full h-full min-h-[250px] md:min-h-0"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

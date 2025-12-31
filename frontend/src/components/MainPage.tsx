@@ -19,6 +19,7 @@ export default function MainPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoadingState, setAuthLoadingState] = useState(false);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   // When user is authenticated, get or create app session
   useEffect(() => {
@@ -201,49 +202,148 @@ export default function MainPage() {
         {/* Instructional Content */}
         <div className="max-w-4xl mx-auto mb-8 md:mb-12 space-y-6 md:space-y-8 px-4">
           {/* What You'll See */}
-          <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 group overflow-hidden">
+            <button
+              onClick={() => {
+                const newSet = new Set(expandedCards);
+                if (newSet.has('whatYoullSee')) {
+                  newSet.delete('whatYoullSee');
+                } else {
+                  newSet.add('whatYoullSee');
+                }
+                setExpandedCards(newSet);
+              }}
+              className="w-full md:pointer-events-none touch-manipulation focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset rounded-lg"
+            >
+              <div className="flex items-start gap-4 p-6 md:p-8">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </div>
+                <div className="flex-1 text-left">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl md:text-2xl font-bold text-primary mb-0 md:mb-4">{introConfig.whatYoullSee.title}</h2>
+                    <svg
+                      className={`w-5 h-5 text-primary md:hidden transform transition-transform duration-300 flex-shrink-0 ml-2 ${
+                        expandedCards.has('whatYoullSee') ? 'rotate-180' : ''
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 md:max-h-none md:opacity-100 ${
+                      expandedCards.has('whatYoullSee')
+                        ? 'max-h-96 opacity-100 mt-3'
+                        : 'max-h-0 opacity-0 md:mt-0'
+                    }`}
+                  >
+                    <p className="text-secondary leading-relaxed text-sm md:text-base">{introConfig.whatYoullSee.content}</p>
+                  </div>
+                </div>
               </div>
-              <div className="flex-1">
-                <h2 className="text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">{introConfig.whatYoullSee.title}</h2>
-                <p className="text-secondary leading-relaxed text-sm md:text-base">{introConfig.whatYoullSee.content}</p>
-              </div>
-            </div>
+            </button>
           </div>
 
           {/* What You Need to Do */}
-          <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 group overflow-hidden">
+            <button
+              onClick={() => {
+                const newSet = new Set(expandedCards);
+                if (newSet.has('whatToDo')) {
+                  newSet.delete('whatToDo');
+                } else {
+                  newSet.add('whatToDo');
+                }
+                setExpandedCards(newSet);
+              }}
+              className="w-full md:pointer-events-none touch-manipulation focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset rounded-lg"
+            >
+              <div className="flex items-start gap-4 p-6 md:p-8">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+                <div className="flex-1 text-left">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl md:text-2xl font-bold text-primary mb-0 md:mb-4">{introConfig.whatToDo.title}</h2>
+                    <svg
+                      className={`w-5 h-5 text-primary md:hidden transform transition-transform duration-300 flex-shrink-0 ml-2 ${
+                        expandedCards.has('whatToDo') ? 'rotate-180' : ''
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 md:max-h-none md:opacity-100 ${
+                      expandedCards.has('whatToDo')
+                        ? 'max-h-96 opacity-100 mt-3'
+                        : 'max-h-0 opacity-0 md:mt-0'
+                    }`}
+                  >
+                    <p className="text-secondary leading-relaxed text-sm md:text-base">{introConfig.whatToDo.content}</p>
+                  </div>
+                </div>
               </div>
-              <div className="flex-1">
-                <h2 className="text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">{introConfig.whatToDo.title}</h2>
-                <p className="text-secondary leading-relaxed text-sm md:text-base">{introConfig.whatToDo.content}</p>
-              </div>
-            </div>
+            </button>
           </div>
 
           {/* What You Can Expect to Get */}
-          <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                </svg>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 group overflow-hidden">
+            <button
+              onClick={() => {
+                const newSet = new Set(expandedCards);
+                if (newSet.has('whatToExpect')) {
+                  newSet.delete('whatToExpect');
+                } else {
+                  newSet.add('whatToExpect');
+                }
+                setExpandedCards(newSet);
+              }}
+              className="w-full md:pointer-events-none touch-manipulation focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset rounded-lg"
+            >
+              <div className="flex items-start gap-4 p-6 md:p-8">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                  </svg>
+                </div>
+                <div className="flex-1 text-left">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl md:text-2xl font-bold text-primary mb-0 md:mb-4">{introConfig.whatToExpect.title}</h2>
+                    <svg
+                      className={`w-5 h-5 text-primary md:hidden transform transition-transform duration-300 flex-shrink-0 ml-2 ${
+                        expandedCards.has('whatToExpect') ? 'rotate-180' : ''
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 md:max-h-none md:opacity-100 ${
+                      expandedCards.has('whatToExpect')
+                        ? 'max-h-96 opacity-100 mt-3'
+                        : 'max-h-0 opacity-0 md:mt-0'
+                    }`}
+                  >
+                    <p className="text-secondary leading-relaxed text-sm md:text-base">{introConfig.whatToExpect.content}</p>
+                  </div>
+                </div>
               </div>
-              <div className="flex-1">
-                <h2 className="text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">{introConfig.whatToExpect.title}</h2>
-                <p className="text-secondary leading-relaxed text-sm md:text-base">{introConfig.whatToExpect.content}</p>
-              </div>
-            </div>
+            </button>
           </div>
         </div>
 
