@@ -172,17 +172,17 @@ export default function MainPage() {
             </p>
             
             {/* Quick stats or benefits */}
-            <div className="flex flex-wrap justify-center gap-8 md:gap-12 text-center mt-8">
-              <div className="flex flex-col items-center animate-[fadeInUp_0.6s_ease-out_0.2s_both]">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2 transform hover:scale-110 transition-transform duration-300">5</div>
+            <div className="flex flex-wrap justify-center gap-6 md:gap-12 text-center mt-6 md:mt-8">
+              <div className="flex flex-col items-center animate-[fadeInUp_0.6s_ease-out_0.2s_both] min-w-[100px]">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2 transform hover:scale-110 active:scale-95 transition-transform duration-300 touch-manipulation">5</div>
                 <div className="text-sm md:text-base text-secondary">Strategic Modules</div>
               </div>
-              <div className="flex flex-col items-center animate-[fadeInUp_0.6s_ease-out_0.4s_both]">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2 transform hover:scale-110 transition-transform duration-300">90</div>
+              <div className="flex flex-col items-center animate-[fadeInUp_0.6s_ease-out_0.4s_both] min-w-[100px]">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2 transform hover:scale-110 active:scale-95 transition-transform duration-300 touch-manipulation">90</div>
                 <div className="text-sm md:text-base text-secondary">Day Action Plan</div>
               </div>
-              <div className="flex flex-col items-center animate-[fadeInUp_0.6s_ease-out_0.6s_both]">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2 transform hover:scale-110 transition-transform duration-300">AI</div>
+              <div className="flex flex-col items-center animate-[fadeInUp_0.6s_ease-out_0.6s_both] min-w-[100px]">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2 transform hover:scale-110 active:scale-95 transition-transform duration-300 touch-manipulation">AI</div>
                 <div className="text-sm md:text-base text-secondary">Guided Coaching</div>
               </div>
             </div>
@@ -199,49 +199,49 @@ export default function MainPage() {
         </div>
 
         {/* Instructional Content */}
-        <div className="max-w-4xl mx-auto mb-8 md:mb-12 space-y-6 md:space-y-8">
+        <div className="max-w-4xl mx-auto mb-8 md:mb-12 space-y-6 md:space-y-8 px-4">
           {/* What You'll See */}
-          <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
+          <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
                 <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
               </div>
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatYoullSee.title}</h2>
-                <p className="text-secondary leading-relaxed">{introConfig.whatYoullSee.content}</p>
+                <h2 className="text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">{introConfig.whatYoullSee.title}</h2>
+                <p className="text-secondary leading-relaxed text-sm md:text-base">{introConfig.whatYoullSee.content}</p>
               </div>
             </div>
           </div>
 
           {/* What You Need to Do */}
-          <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
+          <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
                 <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatToDo.title}</h2>
-                <p className="text-secondary leading-relaxed">{introConfig.whatToDo.content}</p>
+                <h2 className="text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">{introConfig.whatToDo.title}</h2>
+                <p className="text-secondary leading-relaxed text-sm md:text-base">{introConfig.whatToDo.content}</p>
               </div>
             </div>
           </div>
 
           {/* What You Can Expect to Get */}
-          <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
+          <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
                 <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                 </svg>
               </div>
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-primary mb-4">{introConfig.whatToExpect.title}</h2>
-                <p className="text-secondary leading-relaxed">{introConfig.whatToExpect.content}</p>
+                <h2 className="text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">{introConfig.whatToExpect.title}</h2>
+                <p className="text-secondary leading-relaxed text-sm md:text-base">{introConfig.whatToExpect.content}</p>
               </div>
             </div>
           </div>
@@ -249,12 +249,12 @@ export default function MainPage() {
 
         {/* Module Preview Section - For unauthenticated users */}
         {!user && (
-          <div className="max-w-6xl mx-auto mb-12 md:mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary text-center mb-4 md:mb-6">Your Journey to Clarity</h2>
-            <p className="text-center text-secondary mb-8 md:mb-12 max-w-2xl mx-auto">
+          <div className="max-w-6xl mx-auto mb-12 md:mb-16 px-4">
+            <h2 className="text-2xl md:text-4xl font-bold text-primary text-center mb-3 md:mb-6">Your Journey to Clarity</h2>
+            <p className="text-center text-secondary mb-6 md:mb-12 max-w-2xl mx-auto text-sm md:text-base px-4">
               Work through five strategic modules, each building on the last, to create a comprehensive strategy tailored to your business.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
               {[
                 { num: 0, title: 'Current Reality', subtitle: 'At Bat', icon: '🎯', description: 'Understand where you are' },
                 { num: 1, title: 'Ideal Customer', subtitle: '1st Base', icon: '👥', description: 'Define who you serve' },
@@ -262,7 +262,7 @@ export default function MainPage() {
                 { num: 3, title: 'Delivery Path', subtitle: '3rd Base', icon: '🚀', description: 'Map how you deliver' },
                 { num: 4, title: '90-Day Plan', subtitle: 'Home', icon: '🏆', description: 'Create your action plan' },
               ].map((module) => (
-                <div key={module.num} className="bg-white rounded-lg p-6 border-2 border-gray-200 text-center hover:border-primary hover:shadow-lg transition-all duration-300 group">
+                <div key={module.num} className="bg-white rounded-lg p-5 md:p-6 border-2 border-gray-200 text-center hover:border-primary hover:shadow-lg active:scale-[0.98] transition-all duration-300 group touch-manipulation">
                   <div className="text-4xl md:text-5xl mb-3 transform group-hover:scale-110 transition-transform duration-300">{module.icon}</div>
                   <div className="text-xs font-semibold text-primary mb-1">Module {module.num}</div>
                   <div className="font-bold text-sm md:text-base mb-1 text-gray-900">{module.title}</div>
@@ -276,9 +276,9 @@ export default function MainPage() {
 
         {/* Key Benefits Section - For unauthenticated users */}
         {!user && (
-          <div className="max-w-5xl mx-auto mb-12 md:mb-16">
-            <div className="bg-gradient-to-br from-primary/5 to-transparent rounded-2xl p-8 md:p-12 border border-primary/10">
-              <h2 className="text-2xl md:text-3xl font-bold text-primary text-center mb-8">Why This Approach Works</h2>
+          <div className="max-w-5xl mx-auto mb-12 md:mb-16 px-4">
+            <div className="bg-gradient-to-br from-primary/5 to-transparent rounded-2xl p-6 md:p-12 border border-primary/10">
+              <h2 className="text-xl md:text-3xl font-bold text-primary text-center mb-6 md:mb-8">Why This Approach Works</h2>
               <div className="grid md:grid-cols-3 gap-6 md:gap-8">
                 <div className="text-center">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -344,19 +344,19 @@ export default function MainPage() {
 
         {/* FAQ Section - For unauthenticated users */}
         {!user && introConfig.faqs && introConfig.faqs.length > 0 && (
-          <div className="max-w-4xl mx-auto mb-12 md:mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary text-center mb-8 md:mb-12">Frequently Asked Questions</h2>
-            <div className="space-y-4">
+          <div className="max-w-4xl mx-auto mb-12 md:mb-16 px-4">
+            <h2 className="text-2xl md:text-4xl font-bold text-primary text-center mb-6 md:mb-12">Frequently Asked Questions</h2>
+            <div className="space-y-3 md:space-y-4">
               {introConfig.faqs.map((faq, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300"
+                  className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md active:shadow-sm transition-shadow duration-300 touch-manipulation"
                 >
                   <button
                     onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
-                    className="w-full px-6 py-4 md:px-8 md:py-5 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset group"
+                    className="w-full px-4 py-4 md:px-8 md:py-5 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset group min-h-[60px] md:min-h-[72px]"
                   >
-                    <span className="font-semibold text-gray-900 text-base md:text-lg pr-8 group-hover:text-primary transition-colors">
+                    <span className="font-semibold text-gray-900 text-sm md:text-lg pr-8 group-hover:text-primary transition-colors">
                       {faq.question}
                     </span>
                     <svg
@@ -375,8 +375,8 @@ export default function MainPage() {
                       openFAQ === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                     }`}
                   >
-                    <div className="px-6 md:px-8 pb-4 md:pb-5 pt-0">
-                      <p className="text-secondary leading-relaxed">{faq.answer}</p>
+                    <div className="px-4 md:px-8 pb-4 md:pb-5 pt-0">
+                      <p className="text-secondary leading-relaxed text-sm md:text-base">{faq.answer}</p>
                     </div>
                   </div>
                 </div>
@@ -388,10 +388,10 @@ export default function MainPage() {
         {/* Sign In / Session View */}
         {!user ? (
           <div className="max-w-md mx-auto">
-            <div className="bg-white rounded-xl shadow-xl p-8 md:p-10 border border-gray-100">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-primary mb-2">Get Started Today</h2>
-                <p className="text-gray-600">
+            <div className="bg-white rounded-xl shadow-xl p-6 md:p-10 border border-gray-100">
+              <div className="text-center mb-6 md:mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold text-primary mb-2">Get Started Today</h2>
+                <p className="text-gray-600 text-sm md:text-base">
                   Join entrepreneurs building clearer, more strategic businesses
                 </p>
               </div>
@@ -407,7 +407,7 @@ export default function MainPage() {
                   <button
                     onClick={handleSignInWithGoogle}
                     disabled={authLoadingState}
-                    className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-300 text-gray-700 py-3.5 px-6 rounded-lg font-medium hover:bg-gray-50 hover:border-gray-400 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-300 text-gray-700 py-4 md:py-3.5 px-6 rounded-lg font-medium hover:bg-gray-50 hover:border-gray-400 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation min-h-[48px]"
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                       <path
@@ -439,7 +439,7 @@ export default function MainPage() {
                   </div>
                   <button
                     onClick={() => setAuthMode('email-signin')}
-                    className="w-full py-3.5 px-6 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm"
+                    className="w-full py-4 md:py-3.5 px-6 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm touch-manipulation min-h-[48px]"
                   >
                     Sign in with Email
                   </button>
@@ -484,13 +484,13 @@ export default function MainPage() {
                     placeholder="••••••••"
                   />
                 </div>
-                  <button
-                    type="submit"
-                    disabled={authLoadingState}
-                    className="w-full py-3.5 px-6 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                  >
-                    {authLoadingState ? 'Signing in...' : 'Sign In'}
-                  </button>
+                <button
+                  type="submit"
+                  disabled={authLoadingState}
+                  className="w-full py-4 md:py-3.5 px-6 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 touch-manipulation min-h-[48px]"
+                >
+                  {authLoadingState ? 'Signing in...' : 'Sign In'}
+                </button>
                 <button
                   type="button"
                   onClick={() => {
@@ -553,7 +553,7 @@ export default function MainPage() {
                 <button
                   type="submit"
                   disabled={authLoadingState}
-                  className="w-full py-3.5 px-6 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="w-full py-4 md:py-3.5 px-6 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 touch-manipulation min-h-[48px]"
                 >
                   {authLoadingState ? 'Signing up...' : 'Sign Up'}
                 </button>
@@ -628,7 +628,7 @@ export default function MainPage() {
                   </p>
                   <button
                     onClick={handleContinue}
-                    className="bg-primary text-white py-3.5 px-6 rounded-lg font-medium hover:bg-primary-dark hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm"
+                    className="bg-primary text-white py-4 md:py-3.5 px-6 rounded-lg font-medium hover:bg-primary-dark hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm touch-manipulation min-h-[48px]"
                   >
                     {appSession.session.completionStatus >= 5
                       ? 'View Final Summary'
