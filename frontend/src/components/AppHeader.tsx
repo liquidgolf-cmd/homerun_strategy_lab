@@ -57,14 +57,13 @@ export default function AppHeader() {
               <span className="text-xs text-gray-600 font-medium">{ttsEnabled ? 'ON' : 'OFF'}</span>
             </div>
           </div>
-          {/* Bottom Row: Logo and Title */}
+          {/* Bottom Row: Logo */}
           <div className="flex items-center gap-2">
             <img
               src={logo}
               alt="Loam Strategy"
               className="h-8"
             />
-            <h1 className="text-base font-bold text-primary leading-tight">Homerun Strategy Lab</h1>
           </div>
         </div>
 
@@ -99,7 +98,6 @@ export default function AppHeader() {
                 alt="Loam Strategy"
                 className="h-10"
               />
-              <h1 className="text-xl font-bold text-primary">Homerun Strategy Lab</h1>
             </div>
           </div>
 
