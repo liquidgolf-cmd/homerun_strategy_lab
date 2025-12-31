@@ -17,6 +17,7 @@ export default function MainPage() {
   const [name, setName] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoadingState, setAuthLoadingState] = useState(false);
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
 
   // When user is authenticated, get or create app session
   useEffect(() => {
@@ -274,7 +275,7 @@ export default function MainPage() {
         {!user && (
           <div className="max-w-5xl mx-auto mb-12 md:mb-16">
             <div className="bg-gradient-to-br from-primary/5 to-transparent rounded-2xl p-8 md:p-12 border border-primary/10">
-              <h2 className="text-2xl md:text-3xl font-bold text-primary text-center mb-8">Why Choose This Approach?</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-primary text-center mb-8">Why This Approach Works</h2>
               <div className="grid md:grid-cols-3 gap-6 md:gap-8">
                 <div className="text-center">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -282,8 +283,8 @@ export default function MainPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-lg text-gray-900 mb-2">Structured Process</h3>
-                  <p className="text-secondary text-sm">Step-by-step guidance prevents overwhelm and ensures nothing is missed</p>
+                  <h3 className="font-bold text-lg text-gray-900 mb-2">No More Guessing</h3>
+                  <p className="text-secondary text-sm">Follow a proven framework that eliminates confusion and gives you confidence in every decision</p>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -291,8 +292,8 @@ export default function MainPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-lg text-gray-900 mb-2">AI-Powered Insights</h3>
-                  <p className="text-secondary text-sm">Get personalized feedback and strategic recommendations tailored to your business</p>
+                  <h3 className="font-bold text-lg text-gray-900 mb-2">Personalized Strategy</h3>
+                  <p className="text-secondary text-sm">Get expert-level insights and recommendations specifically tailored to your unique business situation</p>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -300,8 +301,8 @@ export default function MainPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-lg text-gray-900 mb-2">Actionable Results</h3>
-                  <p className="text-secondary text-sm">Walk away with a concrete 90-day plan you can implement immediately</p>
+                  <h3 className="font-bold text-lg text-gray-900 mb-2">Ready to Execute</h3>
+                  <p className="text-secondary text-sm">Leave with a concrete 90-day roadmap that you can start implementing the moment you finish</p>
                 </div>
               </div>
             </div>
@@ -334,6 +335,49 @@ export default function MainPage() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {/* FAQ Section - For unauthenticated users */}
+        {!user && introConfig.faqs && introConfig.faqs.length > 0 && (
+          <div className="max-w-4xl mx-auto mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary text-center mb-8 md:mb-12">Frequently Asked Questions</h2>
+            <div className="space-y-4">
+              {introConfig.faqs.map((faq, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300"
+                >
+                  <button
+                    onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
+                    className="w-full px-6 py-4 md:px-8 md:py-5 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset group"
+                  >
+                    <span className="font-semibold text-gray-900 text-base md:text-lg pr-8 group-hover:text-primary transition-colors">
+                      {faq.question}
+                    </span>
+                    <svg
+                      className={`w-5 h-5 text-primary flex-shrink-0 transform transition-transform duration-300 ${
+                        openFAQ === index ? 'rotate-180' : ''
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      openFAQ === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                    }`}
+                  >
+                    <div className="px-6 md:px-8 pb-4 md:pb-5 pt-0">
+                      <p className="text-secondary leading-relaxed">{faq.answer}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
