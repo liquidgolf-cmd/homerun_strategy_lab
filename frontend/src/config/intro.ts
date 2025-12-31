@@ -1,3 +1,11 @@
+export interface Testimonial {
+  name: string;
+  role: string;
+  company?: string;
+  text: string;
+  rating?: number;
+}
+
 export const introConfig = {
   videoUrl: '', // Add your intro video URL here (YouTube, Vimeo, or direct video URL)
   
@@ -20,5 +28,18 @@ export const introConfig = {
     title: 'What You Can Expect to Get',
     content: `By the end of this course, you'll have a clear understanding of your current business reality, who you're really serving, what they actually want, how you'll deliver value, and a concrete 90-day action plan. You'll receive comprehensive audit reviews for each module, and ultimately, a combined overview document and detailed action plan to guide your next steps.`,
   },
+  
+  // Optional testimonials - set to empty array to hide the section
+  testimonials: [] as Testimonial[],
+  // Example format (uncomment and customize as needed):
+  // testimonials: [
+  //   {
+  //     name: 'Jane Smith',
+  //     role: 'Business Owner',
+  //     company: 'ABC Consulting',
+  //     text: 'This strategy lab helped me gain clarity on my business direction in ways I never expected.',
+  //     rating: 5,
+  //   },
+  // ] as Testimonial[],
 };
 
