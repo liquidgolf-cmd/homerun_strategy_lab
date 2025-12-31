@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
@@ -18,39 +18,6 @@ export default function MainPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoadingState, setAuthLoadingState] = useState(false);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set(['hero'])); // Hero visible immediately
-  
-  // Refs for scroll animations
-  const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-
-  // Intersection Observer for scroll animations
-  useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px',
-    };
-
-    Object.keys(sectionRefs.current).forEach((key) => {
-      const element = sectionRefs.current[key];
-      if (element) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setVisibleSections((prev) => new Set(prev).add(key));
-            }
-          });
-        }, observerOptions);
-        
-        observer.observe(element);
-        observers.push(observer);
-      }
-    });
-
-    return () => {
-      observers.forEach((observer) => observer.disconnect());
-    };
-  }, []);
 
   // When user is authenticated, get or create app session
   useEffect(() => {
@@ -229,14 +196,7 @@ export default function MainPage() {
         )}
 
         {/* Instructional Content */}
-        <div 
-          ref={(el) => (sectionRefs.current['instructional'] = el)}
-          className={`max-w-4xl mx-auto mb-8 md:mb-12 space-y-6 md:space-y-8 transition-all duration-700 ${
-            visibleSections.has('instructional') 
-              ? 'opacity-100 translate-y-0' 
-              : 'opacity-0 translate-y-8'
-          }`}
-        >
+        <div className="max-w-4xl mx-auto mb-8 md:mb-12 space-y-6 md:space-y-8">
           {/* What You'll See */}
           <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow duration-300 group">
             <div className="flex items-start gap-4">
@@ -286,14 +246,7 @@ export default function MainPage() {
 
         {/* Module Preview Section - For unauthenticated users */}
         {!user && (
-          <div 
-            ref={(el) => (sectionRefs.current['modules'] = el)}
-            className={`max-w-6xl mx-auto mb-12 md:mb-16 transition-all duration-700 ${
-              visibleSections.has('modules') 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-8'
-            }`}
-          >
+          <div className="max-w-6xl mx-auto mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-primary text-center mb-4 md:mb-6">Your Journey to Clarity</h2>
             <p className="text-center text-secondary mb-8 md:mb-12 max-w-2xl mx-auto">
               Work through five strategic modules, each building on the last, to create a comprehensive strategy tailored to your business.
@@ -320,14 +273,7 @@ export default function MainPage() {
 
         {/* Key Benefits Section - For unauthenticated users */}
         {!user && (
-          <div 
-            ref={(el) => (sectionRefs.current['benefits'] = el)}
-            className={`max-w-5xl mx-auto mb-12 md:mb-16 transition-all duration-700 ${
-              visibleSections.has('benefits') 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-8'
-            }`}
-          >
+          <div className="max-w-5xl mx-auto mb-12 md:mb-16">
             <div className="bg-gradient-to-br from-primary/5 to-transparent rounded-2xl p-8 md:p-12 border border-primary/10">
               <h2 className="text-2xl md:text-3xl font-bold text-primary text-center mb-8">Why This Approach Works</h2>
               <div className="grid md:grid-cols-3 gap-6 md:gap-8">
@@ -365,14 +311,7 @@ export default function MainPage() {
 
         {/* Testimonials Section - For unauthenticated users */}
         {!user && introConfig.testimonials.length > 0 && (
-          <div 
-            ref={(el) => (sectionRefs.current['testimonials'] = el)}
-            className={`max-w-6xl mx-auto mb-12 md:mb-16 transition-all duration-700 ${
-              visibleSections.has('testimonials') 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-8'
-            }`}
-          >
+          <div className="max-w-6xl mx-auto mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-primary text-center mb-8 md:mb-12">What Others Are Saying</h2>
             <div className="grid md:grid-cols-3 gap-6 md:gap-8">
               {introConfig.testimonials.map((testimonial, index) => {
@@ -402,14 +341,7 @@ export default function MainPage() {
 
         {/* FAQ Section - For unauthenticated users */}
         {!user && introConfig.faqs && introConfig.faqs.length > 0 && (
-          <div 
-            ref={(el) => (sectionRefs.current['faq'] = el)}
-            className={`max-w-4xl mx-auto mb-12 md:mb-16 transition-all duration-700 ${
-              visibleSections.has('faq') 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-8'
-            }`}
-          >
+          <div className="max-w-4xl mx-auto mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-primary text-center mb-8 md:mb-12">Frequently Asked Questions</h2>
             <div className="space-y-4">
               {introConfig.faqs.map((faq, index) => (
