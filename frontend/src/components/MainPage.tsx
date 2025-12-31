@@ -161,10 +161,29 @@ export default function MainPage() {
           {/* Subtle background pattern */}
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10"></div>
           <div className="relative text-center py-8 md:py-12">
+            <div className="inline-block mb-4 px-4 py-2 bg-primary/10 rounded-full">
+              <span className="text-primary font-semibold text-sm">Strategic Business Planning Made Simple</span>
+            </div>
             <h1 className="text-4xl md:text-6xl font-bold text-primary mb-4 md:mb-6 leading-tight">{introConfig.hero.title}</h1>
-            <p className="text-xl md:text-2xl text-secondary px-2 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-secondary px-2 max-w-3xl mx-auto leading-relaxed mb-8 md:mb-12">
               {introConfig.hero.subtitle}
             </p>
+            
+            {/* Quick stats or benefits */}
+            <div className="flex flex-wrap justify-center gap-8 md:gap-12 text-center mt-8">
+              <div className="flex flex-col items-center">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">5</div>
+                <div className="text-sm md:text-base text-secondary">Strategic Modules</div>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">90</div>
+                <div className="text-sm md:text-base text-secondary">Day Action Plan</div>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">AI</div>
+                <div className="text-sm md:text-base text-secondary">Guided Coaching</div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -224,14 +243,41 @@ export default function MainPage() {
           </div>
         </div>
 
+        {/* Module Preview Section - For unauthenticated users */}
+        {!user && (
+          <div className="max-w-6xl mx-auto mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary text-center mb-4 md:mb-6">Your Journey to Clarity</h2>
+            <p className="text-center text-secondary mb-8 md:mb-12 max-w-2xl mx-auto">
+              Work through five strategic modules, each building on the last, to create a comprehensive strategy tailored to your business.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 md:gap-6">
+              {[
+                { num: 0, title: 'Current Reality', subtitle: 'At Bat', icon: '🎯', description: 'Understand where you are' },
+                { num: 1, title: 'Ideal Customer', subtitle: '1st Base', icon: '👥', description: 'Define who you serve' },
+                { num: 2, title: 'Core Offer', subtitle: '2nd Base', icon: '💎', description: 'Clarify what they want' },
+                { num: 3, title: 'Delivery Path', subtitle: '3rd Base', icon: '🚀', description: 'Map how you deliver' },
+                { num: 4, title: '90-Day Plan', subtitle: 'Home', icon: '🏆', description: 'Create your action plan' },
+              ].map((module) => (
+                <div key={module.num} className="bg-white rounded-lg p-6 border-2 border-gray-200 text-center hover:border-primary hover:shadow-lg transition-all duration-300 group">
+                  <div className="text-4xl md:text-5xl mb-3 transform group-hover:scale-110 transition-transform duration-300">{module.icon}</div>
+                  <div className="text-xs font-semibold text-primary mb-1">Module {module.num}</div>
+                  <div className="font-bold text-sm md:text-base mb-1 text-gray-900">{module.title}</div>
+                  <div className="text-xs md:text-sm text-secondary mb-2">{module.subtitle}</div>
+                  <div className="text-xs text-gray-500 mt-2">{module.description}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Sign In / Session View */}
         {!user ? (
           <div className="max-w-md mx-auto">
             <div className="bg-white rounded-xl shadow-xl p-8 md:p-10 border border-gray-100">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-primary mb-2">Get Started</h2>
+                <h2 className="text-3xl font-bold text-primary mb-2">Get Started Today</h2>
                 <p className="text-gray-600">
-                  Sign in to begin your strategy journey.
+                  Join entrepreneurs building clearer, more strategic businesses
                 </p>
               </div>
 
