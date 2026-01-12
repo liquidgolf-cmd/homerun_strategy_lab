@@ -1,13 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
 import ReactMarkdown from 'react-markdown';
 import { marked } from 'marked';
 import { jsPDF } from 'jspdf';
+import {
+  generateBreadcrumbSchema,
+  injectSchemaScript,
+  removeAllSchemaScripts,
+} from '../utils/schema';
 
 export default function FinalSummary() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, loading: authLoading } = useAuth();
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -15,6 +21,16 @@ export default function FinalSummary() {
   const [combinedOverview, setCombinedOverview] = useState<string>('');
   const [actionPlan, setActionPlan] = useState<string>('');
   const overviewContentRef = useRef<HTMLDivElement>(null);
+
+  // Inject breadcrumb schema for summary page
+  useEffect(() => {
+    removeAllSchemaScripts();
+    injectSchemaScript(generateBreadcrumbSchema(location.pathname), 'breadcrumb');
+    
+    return () => {
+      removeAllSchemaScripts();
+    };
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!authLoading) {

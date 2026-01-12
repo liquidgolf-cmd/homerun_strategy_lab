@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
 import { moduleConfigs, moduleContexts } from '../modules';
@@ -7,12 +7,18 @@ import ModuleLanding from './ModuleLanding';
 import AIChatInterface from './AIChatInterface';
 import ManualForm from './ManualForm';
 import AuditReview from './AuditReview';
+import {
+  generateBreadcrumbSchema,
+  injectSchemaScript,
+  removeAllSchemaScripts,
+} from '../utils/schema';
 
 type ViewState = 'landing' | 'input' | 'review';
 
 export default function ModulePage() {
   const { moduleNumber } = useParams<{ moduleNumber: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, loading: authLoading } = useAuth();
   const moduleNum = parseInt(moduleNumber || '0');
   
@@ -31,6 +37,16 @@ export default function ModulePage() {
   const [moduleResponse, setModuleResponse] = useState<any>(null);
   const [auditReview, setAuditReview] = useState<string>('');
   const [loading, setLoading] = useState(true);
+
+  // Inject breadcrumb schema for module pages
+  useEffect(() => {
+    removeAllSchemaScripts();
+    injectSchemaScript(generateBreadcrumbSchema(location.pathname), 'breadcrumb');
+    
+    return () => {
+      removeAllSchemaScripts();
+    };
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!authLoading) {

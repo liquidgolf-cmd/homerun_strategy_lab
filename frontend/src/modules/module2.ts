@@ -98,6 +98,7 @@ Module 2 (2nd Base) should ONLY ask about WHAT:
 - What problems does your work SOLVE for them? (what you help them overcome)
 - What concrete OUTCOMES does your work create? (specific, measurable results)
 - What is your CORE OFFER? (using template: "We help [who] do [what], so they can [outcome], without [fear]")
+- Turn 5-7 fuzzy offers into 1-2 focused ones (help them consolidate multiple offers - if they have multiple offers, help them identify which ones can be combined or focused)
 
 DO NOT ask about (these are for other modules):
 - "What business are you in?" or "What do you do?" → Module 0
@@ -109,6 +110,8 @@ DO NOT ask about (these are for other modules):
 - "What's your strategy?" or "What's your plan?" → Module 4
 
 START THE CONVERSATION by asking: "Now that we know who you're really for, let's talk about what they actually want. What does your ideal customer want to achieve? What outcomes are they looking for?"
+
+Help them identify if they have multiple offers and consolidate them. The goal is to move from 5-7 fuzzy offers to 1-2 focused ones that clearly align with what the customer wants.
 
 Focus ONLY on WHAT customers want and WHAT you offer them. Do not venture into HOW (delivery), WHEN (timeline), or WHY (reasons) - those are covered in other modules.`;
 

@@ -6,6 +6,15 @@ import { supabase } from '../lib/supabase';
 import VideoEmbed from './VideoEmbed';
 import VideoPlaceholder from './VideoPlaceholder';
 import { introConfig } from '../config/intro';
+import {
+  generateOrganizationSchema,
+  generateCourseSchema,
+  generateFAQSchema,
+  generateWebSiteSchema,
+  generateBreadcrumbSchema,
+  injectSchemaScript,
+  removeAllSchemaScripts,
+} from '../utils/schema';
 
 export default function MainPage() {
   const navigate = useNavigate();
@@ -20,6 +29,29 @@ export default function MainPage() {
   const [authLoadingState, setAuthLoadingState] = useState(false);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+
+  // Inject structured data (Schema.org JSON-LD) into document head
+  useEffect(() => {
+    // Clean up any existing schema scripts
+    removeAllSchemaScripts();
+
+    // Inject all schema types
+    injectSchemaScript(generateOrganizationSchema(), 'organization');
+    injectSchemaScript(generateCourseSchema(), 'course');
+    injectSchemaScript(generateWebSiteSchema(), 'website');
+    injectSchemaScript(generateBreadcrumbSchema('/'), 'breadcrumb');
+
+    // Inject FAQ schema if FAQs exist
+    const faqSchema = generateFAQSchema();
+    if (faqSchema) {
+      injectSchemaScript(faqSchema, 'faq');
+    }
+
+    // Cleanup function
+    return () => {
+      removeAllSchemaScripts();
+    };
+  }, []); // Run once on mount
 
   // When user is authenticated, get or create app session
   useEffect(() => {

@@ -121,7 +121,7 @@ Module 3 (3rd Base) should ONLY ask about HOW:
 - How does the customer experience your offer? (delivery experience, interaction points)
 - What stages does the delivery process have? (break into 3-5 stages with names)
 - For each stage: what you're doing, what the customer feels, what the outcome is
-- Essential assets needed for each stage (onboarding docs, templates, tools)
+- Essential assets needed for each stage - prioritize which assets move the needle first (focus on what's most important, not everything - help them identify essential vs "nice to have")
 - Where customers get confused or stuck in the delivery process
 - Where you feel disorganized or rushed in delivery
 
@@ -131,6 +131,8 @@ DO NOT ask about (these are for other modules):
 - "WHEN will you implement this?" or "What's your timeline?" → Module 4
 - "WHY do they need this?" → Already covered in Module 1
 - "What business are you in?" → Module 0
+
+Help them prioritize assets - which assets move the needle first? Focus on what's essential, not everything. Help them identify which assets are essential vs "nice to have".
 
 Focus STRICTLY on HOW delivery works - the mechanism, path, journey, and process. Do not venture into WHAT (offer details), WHO (customer details), WHEN (timeline), or WHY (reasons).`;
 

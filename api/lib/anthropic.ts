@@ -33,7 +33,7 @@ export async function chatWithCoach(
   moduleNumber?: number
 ): Promise<string> {
   // Build system prompt with special handling for Module 2
-  let systemPrompt = `You are a business strategy coach with 20 years of experience in homerun methodology and business strategy. Your role is to guide users through a structured interview process to help them clarify their business strategy.
+  let systemPrompt = `You are a business strategy coach with 20 years of experience in HomeRun methodology and business strategy. Your role is to guide users through a structured interview process to help them clarify their business strategy.
 
 Context for this module: ${moduleContext}
 
@@ -80,24 +80,26 @@ When you have gathered sufficient information to create a comprehensive audit re
 - Stay strictly focused on WHAT - do not venture into other module topics`;
   }
   
-  // For Module 3, reinforce focus on HOW (delivery)
+  // For Module 3, reinforce focus on HOW (delivery) and prioritizing assets
   if (moduleNumber === 3) {
     systemPrompt += `\n\nSPECIAL INSTRUCTIONS FOR MODULE 3:
 - ONLY ask about HOW: how you deliver your offer, how customers access it, what the delivery path looks like
+- Help them prioritize assets - which assets move the needle first? Focus on essential vs "nice to have"
 - DO NOT ask about WHAT (what you offer) - that's Module 2
 - DO NOT ask about WHO (who you serve) - that's Module 1
 - DO NOT ask about WHEN (timeline, schedule) - that's Module 4
-- Stay strictly focused on HOW delivery works - do not venture into other module topics`;
+- Stay strictly focused on HOW delivery works and prioritizing assets - do not venture into other module topics`;
   }
   
-  // For Module 4, reinforce focus on WHEN/PLAN (implementation)
+  // For Module 4, reinforce focus on WHEN/PLAN (implementation) and connecting to customer value
   if (moduleNumber === 4) {
     systemPrompt += `\n\nSPECIAL INSTRUCTIONS FOR MODULE 4:
-- ONLY ask about WHEN and PLAN: timeline for implementation, 90-day game plan, action steps, milestones
-- DO NOT ask about WHAT (what you offer) - that's Module 2
+- Focus on WHEN, PLAN, and WHY IT MATTERS TO CUSTOMER: timeline for implementation, 90-day game plan, action steps, milestones, and connecting the plan back to what matters to the customer (from Module 2)
+- Help them connect their 90-day plan to customer value - why does this plan matter to their customer? What customer outcomes does it align with?
+- DO NOT ask about WHAT (what you offer) - that's Module 2 (but you can reference customer value from Module 2)
 - DO NOT ask about WHO (who you serve) - that's Module 1
 - DO NOT ask about HOW (delivery method) - that's Module 3
-- Stay strictly focused on WHEN and implementation planning - do not venture into other module topics`;
+- Stay focused on WHEN, implementation planning, and connecting the plan to customer value - do not venture into other module topics`;
   }
 
   try {
@@ -205,6 +207,12 @@ Please:
 
 Format your response as a clear, well-structured audit review document focused on the business itself, not on their customer base.
 
+Then, include a dedicated "For Your Team" section that includes:
+- Executive summary/key takeaways (concise overview for sharing with stakeholders)
+- Action items and next steps (specific, actionable items they can share with their team)
+- Team communication templates/talking points (talking points, email templates, or meeting agendas for sharing module insights with their team)
+- Decision frameworks (criteria or guidelines for team decision-making based on module insights, where applicable)
+
 IMPORTANT: At the very end of your audit review document, add a brief reminder section that says: "Remember to click the 'Next Module' button below to submit your review and continue to the next module."`;
 
 export const module1AuditPrompt = `You are reviewing the user's "1st Base: Define Who You're Really For" module responses. This module focuses on identifying their ideal customer profile.
@@ -218,6 +226,12 @@ Please:
 5. Suggest 3 ways they could better identify and attract their ideal customers
 
 Format your response as a clear, well-structured audit review document focused on customer clarity and targeting strategy.
+
+Then, include a dedicated "For Your Team" section that includes:
+- Executive summary/key takeaways (concise overview for sharing with stakeholders)
+- Action items and next steps (specific, actionable items they can share with their team)
+- Team communication templates/talking points (talking points, email templates, or meeting agendas for sharing customer profile insights with their team)
+- Decision frameworks (criteria for identifying ideal customers and avoiding poor fits - guidelines for team decision-making, where applicable)
 
 IMPORTANT: At the very end of your audit review document, add a brief reminder section that says: "Remember to click the 'Next Module' button below to submit your review and continue to the next module."`;
 
@@ -233,6 +247,12 @@ Please:
 
 Format your response as a clear, well-structured audit review document focused on offer clarity and value articulation.
 
+Then, include a dedicated "For Your Team" section that includes:
+- Executive summary/key takeaways (concise overview for sharing with stakeholders)
+- Action items and next steps (specific, actionable items they can share with their team)
+- Team communication templates/talking points (talking points, email templates, or meeting agendas for sharing core offer insights with their team)
+- Decision frameworks (criteria for evaluating offers and articulating value - guidelines for team decision-making, where applicable)
+
 IMPORTANT: At the very end of your audit review document, add a brief reminder section that says: "Remember to click the 'Next Module' button below to submit your review and continue to the next module."`;
 
 export const module3AuditPrompt = `You are reviewing the user's "3rd Base: Map How You'll Deliver It" module responses. This module focuses on turning their process into a clear delivery path.
@@ -241,20 +261,26 @@ Please:
 
 1. Summarize their delivery process broken down into stages
 2. For each stage, highlight what's working well and what could be improved
-3. Identify the essential assets they've identified and suggest any additional assets that might be helpful
+3. Identify the essential assets they've identified and suggest any additional assets that might be helpful (prioritize which assets move the needle first)
 4. Address the confusion points they mentioned - suggest ways to clarify or streamline these areas
 5. Propose 3-5 improvements to help them feel more organized and less rushed
 6. Suggest how they could better communicate the delivery path to customers
 
 Format your response as a clear, well-structured audit review document focused on process clarity and operational excellence.
 
+Then, include a dedicated "For Your Team" section that includes:
+- Executive summary/key takeaways (concise overview for sharing with stakeholders)
+- Action items and next steps (specific, actionable items they can share with their team)
+- Team communication templates/talking points (talking points, email templates, or meeting agendas for sharing delivery process insights with their team)
+- Decision frameworks (criteria for prioritizing assets and improving delivery - guidelines for team decision-making, where applicable)
+
 IMPORTANT: At the very end of your audit review document, add a brief reminder section that says: "Remember to click the 'Next Module' button below to submit your review and continue to the next module."`;
 
-export const module4AuditPrompt = `You are reviewing the user's "The Homerun: Build Your 90-Day Game Plan" module responses. This module focuses on creating a concrete 90-day action plan.
+export const module4AuditPrompt = `You are reviewing the user's "The HomeRun: Build Your 90-Day Game Plan" module responses. This module focuses on creating a concrete 90-day action plan.
 
 Please:
 
-1. Summarize their 90-day North Star outcome and why it matters now
+1. Summarize their 90-day North Star outcome, why it matters now, and why it matters to their customer
 2. Review each strategic project they've outlined - assess if they're realistic and well-defined
 3. For each project, suggest any missing steps or considerations
 4. Evaluate their weekly review rhythm - is it realistic and sufficient?
@@ -263,6 +289,12 @@ Please:
 7. Prioritize the projects if there are multiple - which should come first and why?
 
 Format your response as a clear, well-structured audit review document that serves as a strategic guide for their 90-day execution plan.
+
+Then, include a dedicated "For Your Team" section that includes:
+- Executive summary/key takeaways (concise overview for sharing with stakeholders)
+- Action items and next steps (specific, actionable items they can share with their team)
+- Team communication templates/talking points (talking points, email templates, or meeting agendas for sharing 90-day plan insights with their team)
+- Decision frameworks (criteria for prioritizing projects and managing the 90-day plan - guidelines for team decision-making, where applicable)
 
 IMPORTANT: At the very end of your audit review document, add a brief reminder section that says: "Remember to click the 'View Final Summary' button below to submit your review and view your complete strategy summary."`;
 
@@ -298,7 +330,7 @@ export async function generateCombinedOverview(allModuleResponses: Array<{
     '1st Base: Define Who You\'re Really For',
     '2nd Base: Design What They Actually Want',
     '3rd Base: Map How You\'ll Deliver It',
-    'The Homerun: Build Your 90-Day Game Plan'
+    'The HomeRun: Build Your 90-Day Game Plan'
   ];
 
   // Build comprehensive data from all modules
@@ -320,7 +352,7 @@ export async function generateCombinedOverview(allModuleResponses: Array<{
     }
   }
 
-  const prompt = `You are creating a comprehensive combined overview document for a business strategy client who has completed all 5 modules of the Homerun Strategy Lab.
+  const prompt = `You are creating a comprehensive combined overview document for a business strategy client who has completed all 5 modules of the HomeRun Strategy Lab.
 
 This document should synthesize insights from all modules and provide a cohesive view of their business strategy.
 

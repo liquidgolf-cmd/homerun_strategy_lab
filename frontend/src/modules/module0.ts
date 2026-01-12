@@ -15,6 +15,13 @@ export const module0Config: ModuleConfig = {
       placeholder: 'Tell us about your business or role...',
     },
     {
+      id: 'whyNow',
+      label: 'Why are you doing this lab now? What\'s driving you to work on your strategy at this moment?',
+      type: 'textarea',
+      required: true,
+      placeholder: 'What\'s motivating you to focus on strategy right now...',
+    },
+    {
       id: 'mainOffers',
       label: 'What are your main offers or responsibilities right now?',
       type: 'textarea',
@@ -86,6 +93,7 @@ export const module0Context = `You're helping the user complete Module 0: Curren
 IMPORTANT: Do NOT ask about who they serve (customers, clients, target audience). That will be covered in the next module. Focus ONLY on:
 
 - Their business/role description (what they do, what their business is)
+- Why now? Why are they doing this lab now? What's driving them to work on their strategy at this moment? (This is a key focus area)
 - Why they're struggling or what's not working
 - Why they want to change something about their business
 - What's working and why it's working

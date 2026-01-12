@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { marked } from 'marked';
 import { jsPDF } from 'jspdf';
+import { getModuleWorksheets } from '../utils/worksheets';
 
 interface AuditReviewProps {
   moduleNumber: number;
@@ -376,6 +377,32 @@ export default function AuditReview({
               </svg>
               Save PDF
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Worksheets Download Section */}
+      <div className="bg-white rounded-lg shadow-lg border border-gray-200 mb-6 overflow-hidden">
+        <div className="border-b border-gray-200 bg-gray-50 px-8 py-4">
+          <h2 className="text-2xl font-bold text-primary">Download Worksheets</h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Download printable worksheets to use with your team. Each worksheet is formatted for printing.
+          </p>
+        </div>
+        <div className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {getModuleWorksheets(moduleNumber).map((worksheet, index) => (
+              <button
+                key={index}
+                onClick={worksheet.generator}
+                className="flex items-center justify-between p-4 border border-gray-300 rounded-md hover:bg-gray-50 hover:border-primary transition-colors text-left"
+              >
+                <span className="text-gray-900 font-medium">{worksheet.name}</span>
+                <svg className="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </button>
+            ))}
           </div>
         </div>
       </div>
