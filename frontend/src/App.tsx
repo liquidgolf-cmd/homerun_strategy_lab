@@ -5,6 +5,7 @@ import AppHeader from './components/AppHeader';
 import MainPage from './components/MainPage';
 import ModulePage from './components/ModulePage';
 import FinalSummary from './components/FinalSummary';
+import WorksheetTestPage from './components/WorksheetTestPage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<MainPage />} />
             <Route path="/module/:moduleNumber" element={<ModulePage />} />
             <Route path="/summary" element={<FinalSummary />} />
+            <Route path="/test-worksheets" element={<WorksheetTestPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
