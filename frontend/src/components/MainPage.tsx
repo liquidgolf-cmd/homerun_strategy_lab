@@ -204,6 +204,26 @@ export default function MainPage() {
               {introConfig.hero.subtitle}
             </p>
             
+            {/* Get Started Button */}
+            {!user && (
+              <div className="mb-8 md:mb-12">
+                <button
+                  onClick={() => {
+                    const authSection = document.getElementById('auth-section');
+                    if (authSection) {
+                      authSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
+                  className="inline-flex items-center gap-2 px-8 py-4 md:py-3.5 bg-primary text-white text-lg md:text-base font-semibold rounded-lg hover:bg-primary-dark hover:scale-105 active:scale-95 transition-all shadow-lg hover:shadow-xl touch-manipulation"
+                >
+                  Get Started Now
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </button>
+              </div>
+            )}
+            
             {/* Quick stats or benefits */}
             <div className="flex flex-wrap justify-center gap-6 md:gap-12 text-center mt-6 md:mt-8">
               <div className="flex flex-col items-center animate-[fadeInUp_0.6s_ease-out_0.2s_both] min-w-[100px]">
@@ -519,7 +539,7 @@ export default function MainPage() {
 
         {/* Sign In / Session View */}
         {!user ? (
-          <div className="max-w-md mx-auto">
+          <div id="auth-section" className="max-w-md mx-auto">
             <div className="bg-white rounded-xl shadow-xl p-6 md:p-10 border border-gray-100">
               <div className="text-center mb-6 md:mb-8">
                 <h2 className="text-2xl md:text-3xl font-bold text-primary mb-2">Get Started Today</h2>
