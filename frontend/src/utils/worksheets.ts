@@ -5,10 +5,16 @@
 
 import { jsPDF } from 'jspdf';
 
-// Brand colors
-const PRIMARY_COLOR = [15, 71, 97]; // #0f4761
-const TEXT_COLOR = [51, 51, 51]; // #333
-const SECONDARY_TEXT = [102, 102, 102]; // #666
+// Brand colors (RGB values)
+const PRIMARY_COLOR_R = 15;
+const PRIMARY_COLOR_G = 71;
+const PRIMARY_COLOR_B = 97;
+const TEXT_COLOR_R = 51;
+const TEXT_COLOR_G = 51;
+const TEXT_COLOR_B = 51;
+const SECONDARY_TEXT_R = 102;
+const SECONDARY_TEXT_G = 102;
+const SECONDARY_TEXT_B = 102;
 
 // Page settings
 const PAGE_WIDTH = 8.5;
@@ -24,20 +30,20 @@ function addWorksheetHeader(pdf: jsPDF, moduleTitle: string, worksheetName: stri
   
   // Module title
   pdf.setFontSize(16);
-  pdf.setTextColor(...PRIMARY_COLOR);
+  pdf.setTextColor(PRIMARY_COLOR_R, PRIMARY_COLOR_G, PRIMARY_COLOR_B);
   pdf.setFont('helvetica', 'bold');
   pdf.text(moduleTitle, MARGIN, yPos);
   yPos += 0.25;
   
   // Worksheet name
   pdf.setFontSize(14);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'bold');
   pdf.text(worksheetName, MARGIN, yPos);
   yPos += 0.2;
   
   // Draw line
-  pdf.setDrawColor(...PRIMARY_COLOR);
+  pdf.setDrawColor(PRIMARY_COLOR_R, PRIMARY_COLOR_G, PRIMARY_COLOR_B);
   pdf.setLineWidth(0.01);
   pdf.line(MARGIN, yPos, PAGE_WIDTH - MARGIN, yPos);
   yPos += 0.25;
@@ -50,7 +56,7 @@ function addWorksheetHeader(pdf: jsPDF, moduleTitle: string, worksheetName: stri
  */
 function addSectionHeading(pdf: jsPDF, text: string, yPos: number): number {
   pdf.setFontSize(12);
-  pdf.setTextColor(...PRIMARY_COLOR);
+  pdf.setTextColor(PRIMARY_COLOR_R, PRIMARY_COLOR_G, PRIMARY_COLOR_B);
   pdf.setFont('helvetica', 'bold');
   pdf.text(text, MARGIN, yPos);
   return yPos + 0.2;
@@ -65,7 +71,7 @@ function addField(pdf: jsPDF, label: string, yPos: number, multiline: boolean = 
   
   // Label
   pdf.setFontSize(10);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'normal');
   const labelLines = pdf.splitTextToSize(label, CONTENT_WIDTH);
   pdf.text(labelLines, MARGIN, yPos);
@@ -104,7 +110,7 @@ export function generateAtBatSnapshotPDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 0: Current Reality (At Bat)', 'At Bat Snapshot');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Use this worksheet to capture your current business reality and starting point.', MARGIN, yPos);
   yPos += 0.25;
@@ -145,7 +151,7 @@ export function generateHomeRunClarityExercisePDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 0: Current Reality (At Bat)', 'Home Run for the Next 90 Days');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Complete this exercise to define what success looks like for you over the next 90 days.', MARGIN, yPos);
   yPos += 0.3;
@@ -153,7 +159,7 @@ export function generateHomeRunClarityExercisePDF(): void {
   yPos = addSectionHeading(pdf, 'Define Your 90-Day Home Run', yPos);
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'normal');
   const instruction = 'Complete this sentence: "If, 90 days from now, ____ had happened, this would feel like a home run."';
   const instructionLines = pdf.splitTextToSize(instruction, CONTENT_WIDTH);
@@ -184,7 +190,7 @@ export function generateIdealCustomerProfilePDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 1: 1st Base - Define Who You\'re Really For', 'Ideal Customer Profile');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Use this template to create 1-2 clear Ideal Customer Profiles. Fill out one template per profile.', MARGIN, yPos);
   yPos += 0.3;
@@ -222,7 +228,7 @@ export function generateBestVsWorstClientsPDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 1: 1st Base - Define Who You\'re Really For', 'Best vs Worst Clients');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Reflect on your past clients to identify patterns that define your best and worst fits.', MARGIN, yPos);
   yPos += 0.3;
@@ -230,7 +236,7 @@ export function generateBestVsWorstClientsPDF(): void {
   yPos = addSectionHeading(pdf, 'Best-Fit Clients', yPos);
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'normal');
   pdf.text('List 3-5 of your favorite past customers/clients:', MARGIN, yPos);
   yPos += 0.2;
@@ -241,7 +247,7 @@ export function generateBestVsWorstClientsPDF(): void {
   
   yPos = checkNewPage(pdf, yPos, 2.0);
   pdf.setFontSize(10);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'normal');
   pdf.text('Why did working with them feel good?', MARGIN, yPos);
   yPos += 0.2;
@@ -256,7 +262,7 @@ export function generateBestVsWorstClientsPDF(): void {
   yPos = addSectionHeading(pdf, 'Worst-Fit Clients', yPos);
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'normal');
   pdf.text('List 2-3 customers you wouldn\'t want to repeat:', MARGIN, yPos);
   yPos += 0.2;
@@ -287,7 +293,7 @@ export function generatePainsDesiresOutcomesMapPDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 2: 2nd Base - Design What They Actually Want', 'Pains / Desires / Outcomes Map');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Map your customer\'s journey from pain to possibility. Focus on outcomes, not features.', MARGIN, yPos);
   yPos += 0.3;
@@ -306,7 +312,7 @@ export function generatePainsDesiresOutcomesMapPDF(): void {
   yPos = checkNewPage(pdf, yPos, 1.5);
   yPos = addSectionHeading(pdf, 'Desired Outcomes', yPos);
   pdf.setFontSize(10);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'normal');
   pdf.text('List 5-10 concrete outcomes your work helps create:', MARGIN, yPos);
   yPos += 0.2;
@@ -323,7 +329,7 @@ export function generateCoreOfferBuilderPDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 2: 2nd Base - Design What They Actually Want', 'Core Offer Builder');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Use this template to build your core offer statement: "We help [who] do [what], so they can [outcome], without [fear]."', MARGIN, yPos);
   yPos += 0.35;
@@ -331,7 +337,7 @@ export function generateCoreOfferBuilderPDF(): void {
   yPos = addSectionHeading(pdf, 'Core Offer Components', yPos);
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'normal');
   pdf.text('We help [WHO]', MARGIN, yPos);
   yPos += 0.15;
@@ -355,7 +361,7 @@ export function generateCoreOfferBuilderPDF(): void {
   yPos = checkNewPage(pdf, yPos, 1.5);
   yPos = addSectionHeading(pdf, 'Complete Core Offer Statement', yPos);
   pdf.setFontSize(10);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'normal');
   pdf.text('Write your complete core offer statement:', MARGIN, yPos);
   yPos += 0.2;
@@ -382,7 +388,7 @@ export function generateOfferPathDiagramPDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 3: 3rd Base - Map How You\'ll Deliver It', 'Offer Path Diagram');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Break your delivery process into 3-5 simple stages. Name each stage in human, non-jargony language.', MARGIN, yPos);
   yPos += 0.35;
@@ -405,7 +411,7 @@ export function generateEssentialAssetsChecklistPDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 3: 3rd Base - Map How You\'ll Deliver It', 'Essential Assets Checklist');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Prioritize which assets move the needle first. Focus on essential, not "nice to have".', MARGIN, yPos);
   yPos += 0.3;
@@ -413,7 +419,7 @@ export function generateEssentialAssetsChecklistPDF(): void {
   yPos = addSectionHeading(pdf, 'Essential Assets (Must Have)', yPos);
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'normal');
   pdf.text('Assets that are critical for delivery:', MARGIN, yPos);
   yPos += 0.2;
@@ -450,7 +456,7 @@ export function generateBlindSpotAuditPDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 3: 3rd Base - Map How You\'ll Deliver It', 'Blind-Spot Audit');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Use this audit to identify gaps in your current strategy, visuals, and messaging.', MARGIN, yPos);
   yPos += 0.3;
@@ -486,14 +492,14 @@ export function generate90DayGamePlanPDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 4: The HomeRun - Build Your 90-Day Game Plan', '90-Day Game Plan');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Translate your strategy into a focused, realistic 90-day plan with 3-5 strategic projects.', MARGIN, yPos);
   yPos += 0.3;
   
   yPos = addSectionHeading(pdf, '90-Day North Star', yPos);
   pdf.setFontSize(10);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'normal');
   pdf.text('In one sentence: "In 90 days, it will be a win if _____, and this matters to my customer because ____."', MARGIN, yPos);
   yPos += 0.25;
@@ -508,13 +514,13 @@ export function generate90DayGamePlanPDF(): void {
   for (let i = 1; i <= 5; i++) {
     yPos = checkNewPage(pdf, yPos, 1.5);
     pdf.setFontSize(11);
-    pdf.setTextColor(...PRIMARY_COLOR);
+    pdf.setTextColor(PRIMARY_COLOR_R, PRIMARY_COLOR_G, PRIMARY_COLOR_B);
     pdf.setFont('helvetica', 'bold');
     pdf.text(`Project ${i}`, MARGIN, yPos);
     yPos += 0.2;
     
     pdf.setFontSize(10);
-    pdf.setTextColor(...TEXT_COLOR);
+    pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
     pdf.setFont('helvetica', 'normal');
     yPos = addField(pdf, 'Project name:', yPos);
     yPos = addField(pdf, 'What does "done" mean?', yPos, true);
@@ -530,7 +536,7 @@ export function generateProjectBreakdownSheetPDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 4: The HomeRun - Build Your 90-Day Game Plan', 'Project → Task Breakdown Sheet');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Break down each project into specific tasks with timelines and owners.', MARGIN, yPos);
   yPos += 0.3;
@@ -538,13 +544,13 @@ export function generateProjectBreakdownSheetPDF(): void {
   for (let i = 1; i <= 3; i++) {
     yPos = checkNewPage(pdf, yPos, 2.0);
     pdf.setFontSize(11);
-    pdf.setTextColor(...PRIMARY_COLOR);
+    pdf.setTextColor(PRIMARY_COLOR_R, PRIMARY_COLOR_G, PRIMARY_COLOR_B);
     pdf.setFont('helvetica', 'bold');
     pdf.text(`Project ${i}`, MARGIN, yPos);
     yPos += 0.2;
     
     pdf.setFontSize(10);
-    pdf.setTextColor(...TEXT_COLOR);
+    pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
     pdf.setFont('helvetica', 'normal');
     yPos = addField(pdf, 'Project name:', yPos);
     
@@ -577,7 +583,7 @@ export function generateWeeklyRhythmChecklistPDF(): void {
   let yPos = addWorksheetHeader(pdf, 'Module 4: The HomeRun - Build Your 90-Day Game Plan', 'Weekly Rhythm & Review Checklist');
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...SECONDARY_TEXT);
+  pdf.setTextColor(SECONDARY_TEXT_R, SECONDARY_TEXT_G, SECONDARY_TEXT_B);
   pdf.setFont('helvetica', 'italic');
   pdf.text('Design a simple weekly check-in routine to track progress and adjust as needed.', MARGIN, yPos);
   yPos += 0.3;
@@ -590,7 +596,7 @@ export function generateWeeklyRhythmChecklistPDF(): void {
   yPos = addSectionHeading(pdf, 'Weekly Review Checklist', yPos);
   
   pdf.setFontSize(10);
-  pdf.setTextColor(...TEXT_COLOR);
+  pdf.setTextColor(TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B);
   pdf.setFont('helvetica', 'normal');
   pdf.text('Use this checklist each week:', MARGIN, yPos);
   yPos += 0.2;
