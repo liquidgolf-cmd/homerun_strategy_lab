@@ -4,6 +4,12 @@
   "outputDirectory": "frontend/dist",
   "installCommand": "npm install && cd frontend && npm install && cd ../api && npm install",
   "framework": "vite",
+  "crons": [
+    {
+      "path": "/api/health",
+      "schedule": "0 2 * * *"
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
